@@ -1,4 +1,4 @@
-/* $Id: compress.c,v 1.3 2000-09-07 21:03:39 cory Exp $
+/* $Id: compress.c,v 1.4 2000-09-08 22:46:22 cory Exp $
 
    $Log: not supported by cvs2svn $
    Revision 1.1.1.1  1999/12/06 03:09:16  toast
@@ -67,7 +67,7 @@
 
 extern int seekable;
 
-static char rcsid[] = "$Id: compress.c,v 1.3 2000-09-07 21:03:39 cory Exp $";
+static char rcsid[] = "$Id: compress.c,v 1.4 2000-09-08 22:46:22 cory Exp $";
 
 static z_stream zs;
 
@@ -357,13 +357,14 @@ ub4 crc = 0;
 	crc = crc32(crc, NULL, 0); /* initialize crc */
 
 	if(zs.next_in = in_buff = (Bytef *) malloc(csize)) {
-		if(zs.next_out = out_buff = (Bytef *) malloc(usize)) { 
+		if(zs.next_out = out_buff = (Bytef *) malloc(usize + 1)) { 
 			if((rdamt = pb_read(pbf, zs.next_in, csize)) == csize) {
 				zs.avail_in = csize;
 				zs.avail_out = usize;
 				report_str_error(inflate(&zs, 0));
 				free(in_buff);
 				inflateReset(&zs);
+				out_buff[usize] = '\0';
 				
        		 	crc = crc32(crc, out_buff, usize);
 			}

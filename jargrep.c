@@ -155,25 +155,68 @@ char *filename;
 	return filename;
 }
 
-char *read_string(pb_file *pbf, int size, int *slen)
+char *read_string(pb_file *pbf, int size)
 {
 char *page;
-int i;
 	
-	for(i = 1; !(page = (char *) malloc(size / i)); i++);
-
-	*slen = pb_read(pbf, page, size / i);
+	if(page = (char *) malloc(size + 1)) {
+		pb_read(pbf, page, size);
+		page[size] = '\0';
+	}
+	else {
+		fprintf(stderr, "Malloc of page buffer failed.\n");
+		fprintf(stderr, "Error: %s\n", strerror(errno));
+		exit(16);
+	}
 
 	return page;
 }
 
+char *extract_line(char *stream, regoff_t begin, regoff_t end, int *b)
+{
+int e, length;
+char *retstr;
+
+	for(*b = begin; *b >= 0 && !iscntrl(stream[*b]); (*b)--);
+	(*b)++;
+	for(e = end; !iscntrl(stream[e]); e++);
+	length = e - *b;
+	if(retstr = (char *) malloc(length + 1)) {
+		strncpy(retstr, &(stream[*b]), length);
+		retstr[length] = '\0';
+	}
+	else {
+		fprintf(stderr, "Malloc failed of output string.\n");
+		fprintf(stderr, "Error: %s\n", strerror(errno));
+		exit(1);
+	}
+
+	return retstr;
+}
+
+void prnt_mtchs(char *filename, char *stream, regmatch_t *pmatch, int num)
+{
+int i, begin, o_begin;
+char *str;
+
+	o_begin = -1;
+	for(i = 0; i < num; i++) {
+		str = extract_line(stream, pmatch[i].rm_so, pmatch[i].rm_eo, &begin);
+		if(begin > o_begin)
+			printf("%s:%s\n", filename, str);
+		o_begin = begin;
+		free(str);
+	}
+}
+
 int cont_grep(regex_t *exp, int fd, char *jarfile, ub4 *signature, ub1 *scratch, pb_file *pbf)
 {
-int rdamt, retflag = TRUE, slen;
+int rdamt, retflag = TRUE, regflag, i;
 ub4 csize, usize, crc;
 ub2 fnlen, eflen, flags, method;
 ub1 file_header[30];
 char *filename, *str_stream;
+regmatch_t match, *match_array, *tmp;
 
 	if((rdamt = pb_read(pbf, (file_header + 4), 26)) != 26) {
 		perror("read");
@@ -186,17 +229,31 @@ char *filename, *str_stream;
 			lseek(fd, eflen, SEEK_CUR);
 		}
 		else {
-			if(method == 8 || (flags & 0x0008)) {
-				lseek(fd, eflen, SEEK_CUR);
-				str_stream = (char *) inflate_string(pbf, csize, usize);
-				/*call grep routine */
-				free(str_stream);
-			}
-			else {
-				str_stream = read_string(pbf, csize, &slen);
-				/*call grep routine */
-				free(str_stream);
-			}
+			lseek(fd, eflen, SEEK_CUR);
+			str_stream = (method == 8 || (flags & 0x0008)) ? 
+				(char *) inflate_string(pbf, csize, usize) : read_string(pbf, csize);
+			match_array = NULL;
+			for(i = 0, regflag = regexec(exp, str_stream, 1, &match, 0); !regflag; 
+				regflag =  regexec(exp, &(str_stream[match.rm_eo]), 1, &match, 0), i++)
+			{
+				if(tmp = (regmatch_t *) realloc(match_array, sizeof(regmatch_t) * (i + 1))) {
+					match_array = tmp;
+					if(i) {
+						match.rm_so += match_array[i - 1].rm_eo;
+						match.rm_eo += match_array[i - 1].rm_eo;
+					}
+					match_array[i] = match;
+				}
+				else {
+					fprintf(stderr, "Realloc of match_array failed.\n");
+					fprintf(stderr, "Error: %s\n", strerror(errno));
+					exit(1);
+				}
+			} 
+			if(i) prnt_mtchs(filename, str_stream, match_array, i);
+			else printf("%s:no match\n", filename);
+			free(str_stream);
+			if(match_array) free(match_array);
 		}
 		free(filename);
 		retflag = TRUE;
