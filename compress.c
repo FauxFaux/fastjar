@@ -1,6 +1,10 @@
-/* $Id: compress.c,v 1.6 2000-09-12 22:29:36 cory Exp $
+/* $Id: compress.c,v 1.7 2000-09-13 14:02:02 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.6  2000/09/12 22:29:36  cory
+   Jargrep now seems to do what I want it to do.  Performs properly on Linux x86,
+   will test some other platforms later.
+
    Revision 1.1.1.1  1999/12/06 03:09:16  toast
    initial checkin..
 
@@ -67,7 +71,7 @@
 
 extern int seekable;
 
-static char rcsid[] = "$Id: compress.c,v 1.6 2000-09-12 22:29:36 cory Exp $";
+static char rcsid[] = "$Id: compress.c,v 1.7 2000-09-13 14:02:02 cory Exp $";
 
 static z_stream zs;
 
@@ -327,8 +331,7 @@ purpose: Put out an error message corresponding to error code returned from zlib
 Be suitably cryptic seeing I don't really know exactly what these errors mean.
 */
 
-void report_str_error(int val)
-{
+void report_str_error(int val) {
 	switch(val) {
 	case Z_STREAM_END:
 		break;
@@ -365,11 +368,11 @@ byte array.
 returns: Byte array of uncompressed embedded file.
 */
 
-static Bytef *ez_inflate_str(pb_file *pbf, ub4 csize, ub4 usize)
-{
-Bytef *out_buff, *in_buff;
-unsigned int rdamt;
-ub4 crc = 0;
+static Bytef *ez_inflate_str(pb_file *pbf, ub4 csize, ub4 usize) {
+	Bytef *out_buff;
+	Bytef *in_buff;
+	unsigned int rdamt;
+	ub4 crc = 0;
 
 	if(zs.next_in = in_buff = (Bytef *) malloc(csize)) {
 		if(zs.next_out = out_buff = (Bytef *) malloc(usize + 1)) { 
@@ -416,12 +419,14 @@ information in the header for the embedded file.
 returns: Byte array of the contents of the embedded file.
 */
 
-static Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize)
-{
-Bytef *out_buff, *tmp, in_buff[RDSZ];
-unsigned int rdamt;
-int i, zret;
-ub4 crc = 0;
+static Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize) {
+	Bytef *out_buff;
+	Bytef *tmp;
+	Bytef in_buff[RDSZ];
+	unsigned int rdamt;
+	int i;
+	int zret;
+	ub4 crc = 0;
 
 	i = 1; 
 	out_buff = NULL;
@@ -468,8 +473,7 @@ returns: Pointer to a string containing the decompressed contents of the embedde
 If csize and usize are not set set them to correct numbers.
 */
 
-Bytef *inflate_string(pb_file *pbf, ub4 *csize, ub4 *usize)
-{
+Bytef *inflate_string(pb_file *pbf, ub4 *csize, ub4 *usize) {
 Bytef *ret_buf;
 
 	if(*csize && *usize) ret_buf = ez_inflate_str(pbf, *csize, *usize);
