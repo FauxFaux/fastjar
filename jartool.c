@@ -17,9 +17,14 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: jartool.c,v 1.1.1.1 1999-12-06 03:09:34 toast Exp $
+/* $Id: jartool.c,v 1.2 1999-12-06 07:38:28 toast Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.1.1.1  1999/12/06 03:09:34  toast
+   initial checkin..
+
+
+
    Revision 1.22  1999/10/12 19:45:13  burnsbr
    adding patch to fix compat problem
 
@@ -125,7 +130,7 @@
 #include "compress.h"
 
 static char version_string[] = VERSION;
-static char rcsid[] = "$Id: jartool.c,v 1.1.1.1 1999-12-06 03:09:34 toast Exp $";
+static char rcsid[] = "$Id: jartool.c,v 1.2 1999-12-06 07:38:28 toast Exp $";
 
 extern int errno;
 
@@ -147,6 +152,7 @@ ub1 data_descriptor[16];
 int do_compress;
 int seekable;
 int verbose;
+char jarfile[256];
 
 zipentry *ziplist; /* linked list of entries */
 zipentry *ziptail; /* tail of the linked list */
@@ -155,7 +161,6 @@ int number_of_entries; /* number of entries in the linked list */
 
 int main(int argc, char **argv){
 
-  char jarfile[256];
   char mfile[256];
   
   int action = ACTION_NONE;
@@ -235,20 +240,20 @@ int main(int argc, char **argv){
     if(i >= argc)
       usage(argv[0]);
 
-    strcpy(jarfile, argv[i++]);
+    strncpy(jarfile, argv[i++], 256);
   }
   if(manifest_file){
     if(i >= argc)
       usage(argv[0]);
 
-    strcpy(mfile, argv[i++]);
+    strncpy(mfile, argv[i++], 256);
   }
 
   if(file && !file_first){
     if(i >= argc)
       usage(argv[0]);
 
-    strcpy(jarfile, argv[i++]);
+    strncpy(jarfile, argv[i++], 256);
   }
 
   /* create the jarfile */
@@ -562,6 +567,12 @@ int add_to_jar(int fd, char *new_dir, char *file){
     }
   }
 
+  if(!strcmp(file, jarfile)){
+    if(verbose)
+      printf("skipping: %s\n", file);
+    return 0;  /* we don't want to add ourselves.. */
+  }
+
   stat_return = stat(file, &statbuf);
   
   if(stat_return == -1){
@@ -636,6 +647,11 @@ int add_to_jar(int fd, char *new_dir, char *file){
     while((de = readdir(dir)) != NULL){
       if(de->d_name[0] == '.')
         continue;
+      if(!strcmp(de->d_name, jarfile)){ /* we don't want to add ourselves.  Believe me */
+        if(verbose)
+          printf("skipping: %s\n", de->d_name);
+        continue;
+      }
 
       strcpy(t_ptr, de->d_name);
 
