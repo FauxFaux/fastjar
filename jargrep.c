@@ -96,11 +96,16 @@ int retflag = 0;
 	return retflag;
 }
 
-void decd_siz(ub4 *csize, ub2 *fnlen, ub2 *eflen, ub2 *flags, ub2 *method, ub4 *crc, ub1 *file_header)
+void decd_siz(ub4 *csize, ub4 *usize, ub2 *fnlen, ub2 *eflen, ub2 *flags, ub2 *method, ub4 *crc, ub1 *file_header)
 {
     *csize = UNPACK_UB4(file_header, LOC_CSIZE);
 #ifdef DEBUG    
     printf("Compressed size is %u\n", *csize);
+#endif
+
+	*usize = UNPACK_UB4(file_header, LOC_USIZE);
+#ifdef DEBUG
+	printf("Uncompressed size is %u\n", *usize);
 #endif
 
     *fnlen = UNPACK_UB2(file_header, LOC_FNLEN);
@@ -150,28 +155,51 @@ char *filename;
 	return filename;
 }
 
+char *read_string(pb_file *pbf, int size, int *slen)
+{
+char *page;
+int i;
+	
+	for(i = 1; !(page = (char *) malloc(size / i)); i++);
+
+	*slen = pb_read(pbf, page, size / i);
+
+	return page;
+}
+
 int cont_grep(regex_t *exp, int fd, char *jarfile, ub4 *signature, ub1 *scratch, pb_file *pbf)
 {
 int rdamt, retflag = TRUE, slen;
-ub4 csize, crc;
+ub4 csize, usize, crc;
 ub2 fnlen, eflen, flags, method;
 ub1 file_header[30];
-char *filename;
-zipentry ze;
+char *filename, *str_stream;
 
-	do { 
-		if((rdamt = pb_read(pbf, (file_header + 4), 26)) != 26) {
-			perror("read");
-			retflag = FALSE;
-    	}
+	if((rdamt = pb_read(pbf, (file_header + 4), 26)) != 26) {
+		perror("read");
+		retflag = FALSE;
+   	}
+	else {
+		decd_siz(&csize, &usize, &fnlen, &eflen, &flags, &method, &crc, file_header);
+		filename = new_filename(pbf, fnlen);
+		if(filename[fnlen - 1] == '/') {
+			lseek(fd, eflen, SEEK_CUR);
+		}
 		else {
-			decd_siz(&csize, &fnlen, &eflen, &flags, &method, &crc, file_header);
-			filename = new_filename(pbf, fnlen);
-			if(filename[strlen(filename) - 1] != '/') {
-				inflate_string(pbf, &slen);
-				free(filename);
+			if(method == 8 || (flags & 0x0008)) {
+				lseek(fd, eflen, SEEK_CUR);
+				str_stream = (char *) inflate_string(pbf, csize, usize);
+				/*call grep routine */
+				free(str_stream);
+			}
+			else {
+				str_stream = read_string(pbf, csize, &slen);
+				/*call grep routine */
+				free(str_stream);
 			}
 		}
+		free(filename);
+		retflag = TRUE;
 	}
 
 	return retflag;
@@ -207,14 +235,13 @@ ub1 scratch[16];
 					/* fall through continue */
 				}
 			}
-		}
-		while(floop);
+		} while(floop);
 	}
 }
 
 int main(int argc, char **argv)
 {
-int c, retval, fileindex;
+int c, retval = 0, fileindex;
 regex_t *regexp;
 char *regexpstr = NULL, *jarfile;
 

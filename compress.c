@@ -1,4 +1,4 @@
-/* $Id: compress.c,v 1.2 2000-09-06 20:54:35 cory Exp $
+/* $Id: compress.c,v 1.3 2000-09-07 21:03:39 cory Exp $
 
    $Log: not supported by cvs2svn $
    Revision 1.1.1.1  1999/12/06 03:09:16  toast
@@ -67,7 +67,7 @@
 
 extern int seekable;
 
-static char rcsid[] = "$Id: compress.c,v 1.2 2000-09-06 20:54:35 cory Exp $";
+static char rcsid[] = "$Id: compress.c,v 1.3 2000-09-07 21:03:39 cory Exp $";
 
 static z_stream zs;
 
@@ -320,57 +320,72 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
   return 0;
 }
 
-Bytef *inflate_string(pb_file *pbf, int *slen)
+void report_str_error(int val)
 {
-Bytef in_buff[RDSZ], *out_buff, *tmp_buff;
+	switch(val) {
+	case Z_STREAM_END:
+		break;
+	case Z_NEED_DICT:
+		fprintf(stderr, "Need a dictionary?\n");
+		exit(10);
+	case Z_DATA_ERROR:
+		fprintf(stderr, "Z_DATA_ERROR\n");
+		exit(11);
+	case Z_STREAM_ERROR:
+		fprintf(stderr, "Z_STREAM_ERROR\n");
+		exit(12);
+	case Z_MEM_ERROR:
+		fprintf(stderr, "Z_MEM_ERROR\n");
+		exit(13);
+	case Z_BUF_ERROR:
+		fprintf(stderr, "Z_BUF_ERROR\n");
+		exit(14);
+	case Z_OK:
+		break;
+	default:
+		fprintf(stderr, "Unknown behavior from inflate\n");
+		exit(16);
+	}
+}
+
+Bytef *inflate_string(pb_file *pbf, int csize, int usize)
+{
+Bytef *out_buff, *in_buff;
 unsigned int rdamt;
-int rtval, i;
 ub4 crc = 0;
 
 	crc = crc32(crc, NULL, 0); /* initialize crc */
 
-  /* loop until we've consumed all the compressed data */
-	if(rdamt = pb_read(pbf, in_buff, RDSZ)) {
-   		zs.next_in = in_buff;
-   		zs.avail_in = rdamt;
-   		zs.next_out = out_buff;
-   		zs.avail_out = RDSZ;
-		i = 0;
-		out_buff = NULL;
-		do {
-			if(tmp_buff = (Bytef *) realloc(out_buff, RDSZ * ++i)) {
-				out_buff = tmp_buff;
-				zs.next_out = &(out_buff[(RDSZ * i) - zs.avail_out]);
-				zs.avail_out += RDSZ;
+	if(zs.next_in = in_buff = (Bytef *) malloc(csize)) {
+		if(zs.next_out = out_buff = (Bytef *) malloc(usize)) { 
+			if((rdamt = pb_read(pbf, zs.next_in, csize)) == csize) {
+				zs.avail_in = csize;
+				zs.avail_out = usize;
+				report_str_error(inflate(&zs, 0));
+				free(in_buff);
+				inflateReset(&zs);
+				
+       		 	crc = crc32(crc, out_buff, usize);
 			}
 			else {
-				fprintf(stderr, "Realloc of unzip out buffer failed.\n");
-				fprintf(stderr, "Error: %s\n", strerror(errno));
-				exit(9);
+				fprintf(stderr, "Read failed on input file.\n");
+				fprintf(stderr, "Tried to read %u but read %u instead.\n", csize, rdamt);
+				free(in_buff);
+				free(out_buff);
+				exit(17);
 			}
-   		} while((rtval = inflate(&zs, 0)) == Z_OK);
-
-		switch(rtval) {
-		case Z_STREAM_END:
-			break;
-		case Z_NEED_DICT:
-			fprintf(stderr, "Need a dictionary?\n");
-			exit(10);
-		case Z_DATA_ERROR:
-			fprintf(stderr, "Z_DATA_ERROR\n");
-			exit(11);
-		case Z_STREAM_ERROR:
-			fprintf(stderr, "Z_STREAM_ERROR\n");
-			exit(12);
-		case Z_MEM_ERROR:
-			fprintf(stderr, "Z_MEM_ERROR\n");
-			exit(13);
-		case Z_BUF_ERROR:
-			fprintf(stderr, "Z_BUF_ERROR\n");
-			exit(14);
 		}
-		*slen = (RDSZ * i) - zs.avail_out;
-        crc = crc32(crc, out_buff, *slen);
+		else {
+			fprintf(stderr, "Malloc of out_buff failed.\n");
+			fprintf(stderr, "Error: %s\n", strerror(errno));
+			free(in_buff);
+			exit(18);
+		}
+	}
+	else {
+		fprintf(stderr, "Malloc of in_buff failed.\n");
+		fprintf(stderr, "Error: %s\n", strerror(errno));
+		exit(15);
 	}
 
 	return out_buff;
