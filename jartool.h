@@ -1,6 +1,12 @@
-/* $Id: jartool.h,v 1.3 2000-08-23 19:42:17 cory Exp $
+/* $Id: jartool.h,v 1.4 2000-08-24 15:23:35 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.3  2000/08/23 19:42:17  cory
+   Added support for more Unix platforms.  The following code has been hacked
+   to work on AIX, Solaris, True 64, and HP-UX.
+   Added bigendian check.  Probably works on most big and little endian platforms
+   now.
+
    Revision 1.2  1999/12/06 03:47:20  toast
    fixing version string
 
@@ -54,7 +60,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define VERSION "fastjar version 0.91 (08/23/2000)"
+#define VERSION "fastjar version 0.92 (08/24/2000)"
 
 /* Amount of bytes to read at a time.  You can change this to optimize for
    your system */

@@ -26,7 +26,7 @@ do
 done
 
 ac_given_srcdir=.
-ac_given_INSTALL="/usr/bin/install -c"
+ac_given_INSTALL="/usr/bin/ginstall -c"
 
 trap 'rm -fr Makefile install-defs.sh config.h conftest*; exit 1' 1 2 15
 

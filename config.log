@@ -19,7 +19,7 @@ configure:1030: checking for dirent.h that defines DIR
 configure:1043: gcc -c -g -O2  conftest.c 1>&5
 configure:1068: checking for opendir in -ldir
 configure:1087: gcc -o conftest -g -O2   conftest.c -ldir  -lz  1>&5
-/usr/bin/ld: cannot open -ldir: No such file or directory
+/usr/i486-suse-linux/bin/ld: cannot find -ldir
 collect2: ld returned 1 exit status
 configure: failed program was:
 #line 1076 "configure"
@@ -65,3 +65,22 @@ configure:1841: checking size of long
 configure:1860: gcc -o conftest -g -O2   conftest.c -lz  1>&5
 configure:1880: checking size of long long
 configure:1899: gcc -o conftest -g -O2   conftest.c -lz  1>&5
+configure:1920: checking whether byte ordering is bigendian
+configure:1938: gcc -c -g -O2  conftest.c 1>&5
+configure:1953: gcc -c -g -O2  conftest.c 1>&5
+configure: In function `main':
+configure:1948: `not' undeclared (first use in this function)
+configure:1948: (Each undeclared identifier is reported only once
+configure:1948: for each function it appears in.)
+configure:1948: parse error before `big'
+configure: failed program was:
+#line 1942 "configure"
+#include "confdefs.h"
+#include <sys/types.h>
+#include <sys/param.h>
+int main() {
+
+#if BYTE_ORDER != BIG_ENDIAN
+ not big endian
+#endif
+; return 0; }

@@ -1,7 +1,7 @@
 # Generated automatically from Makefile.in by configure.
 CFLAGS = -g -O2  -DHAVE_CONFIG_H
 CC = gcc
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/bin/ginstall -c
 prefix = /usr/local
 exec_prefix = ${prefix}
 BINARY = ${exec_prefix}/bin/fastjar
