@@ -17,9 +17,13 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: jartool.c,v 1.4 2000-08-24 13:39:21 cory Exp $
+/* $Id: jartool.c,v 1.5 2000-08-24 15:01:27 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.4  2000/08/24 13:39:21  cory
+   Changed +'s to |'s in jartool.c to insure there was no confusion with sign
+   when byte swapping.  Better safe than sorry.
+
    Revision 1.3  2000/08/23 19:42:17  cory
    Added support for more Unix platforms.  The following code has been hacked
    to work on AIX, Solaris, True 64, and HP-UX.
@@ -150,7 +154,7 @@
 #endif
 
 static char version_string[] = VERSION;
-static char rcsid[] = "$Id: jartool.c,v 1.4 2000-08-24 13:39:21 cory Exp $";
+static char rcsid[] = "$Id: jartool.c,v 1.5 2000-08-24 15:01:27 cory Exp $";
 
 extern int errno;
 
@@ -323,7 +327,15 @@ int main(int argc, char **argv){
 
   if(action == ACTION_CREATE || action == ACTION_UPDATE){
     init_headers();
-    
+
+   if((action == ACTION_UPDATE) && file) {
+      if((jarfd = open(jarfile, O_RDWR)) < 0) {
+	fprintf(stderr, "Error opening %s for reading!\n", jarfile);
+        perror(jarfile);
+        exit(1);
+      }
+   }
+
     if(do_compress)
       init_compression();
   
