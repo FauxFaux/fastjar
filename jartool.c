@@ -17,9 +17,15 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: jartool.c,v 1.3 2000-08-23 19:42:17 cory Exp $
+/* $Id: jartool.c,v 1.4 2000-08-24 13:39:21 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.3  2000/08/23 19:42:17  cory
+   Added support for more Unix platforms.  The following code has been hacked
+   to work on AIX, Solaris, True 64, and HP-UX.
+   Added bigendian check.  Probably works on most big and little endian platforms
+   now.
+
    Revision 1.2  1999/12/06 07:38:28  toast
    fixed recursive archiving bug
 
@@ -134,17 +140,17 @@
 
 #ifdef WORDS_BIGENDIAN
 
-#define L2BI(l) ((l & 0xff000000) >> 24) + \
-		((l & 0x00ff0000) >> 8)  + \
-		((l & 0x0000ff00) << 8)  + \
+#define L2BI(l) ((l & 0xff000000) >> 24) | \
+		((l & 0x00ff0000) >> 8)  | \
+		((l & 0x0000ff00) << 8)  | \
 		((l & 0x000000ff) << 24);
 
-#define L2BS(l) ((l & 0xff00) >> 8) + ((l & 0x00ff) << 8);
+#define L2BS(l) ((l & 0xff00) >> 8) | ((l & 0x00ff) << 8);
 
 #endif
 
 static char version_string[] = VERSION;
-static char rcsid[] = "$Id: jartool.c,v 1.3 2000-08-23 19:42:17 cory Exp $";
+static char rcsid[] = "$Id: jartool.c,v 1.4 2000-08-24 13:39:21 cory Exp $";
 
 extern int errno;
 
