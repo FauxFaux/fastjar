@@ -1,6 +1,9 @@
-/* $Id: jartool.h,v 1.2 1999-12-06 03:47:20 toast Exp $
+/* $Id: jartool.h,v 1.3 2000-08-23 19:42:17 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.2  1999/12/06 03:47:20  toast
+   fixing version string
+
    Revision 1.1.1.1  1999/12/06 03:08:24  toast
    initial checkin..
 
@@ -51,7 +54,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define VERSION "fastjar version 0.86 (12/06/1999)"
+#define VERSION "fastjar version 0.91 (08/23/2000)"
 
 /* Amount of bytes to read at a time.  You can change this to optimize for
    your system */

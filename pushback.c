@@ -1,6 +1,11 @@
-/* $Id: pushback.c,v 1.1.1.1 1999-12-06 03:09:13 toast Exp $
+/* $Id: pushback.c,v 1.2 2000-08-23 19:42:17 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.1.1.1  1999/12/06 03:09:13  toast
+   initial checkin..
+
+
+
    Revision 1.1  1999/05/10 08:32:37  burnsbr
    Initial revision
 
@@ -32,7 +37,7 @@
 #include "jartool.h"
 #include "pushback.h"
 
-static char rcsid[] = "$Id: pushback.c,v 1.1.1.1 1999-12-06 03:09:13 toast Exp $";
+static char rcsid[] = "$Id: pushback.c,v 1.2 2000-08-23 19:42:17 cory Exp $";
 
 void pb_init(pb_file *pbf, int fd){
   pbf->fd = fd;
@@ -65,7 +70,7 @@ int pb_push(pb_file *pbf, void *buff, int amt){
   memcpy(pbf->next, buff, (in_amt - wrap));
 
   /* finish writing what's wrapped around */
-  memcpy(pbf->pb_buff, (buff + (in_amt - wrap)), wrap);
+  memcpy(pbf->pb_buff, ((char *)buff + (in_amt - wrap)), wrap);
          
   /* update the buff_amt field */
   pbf->buff_amt += in_amt;
@@ -106,12 +111,12 @@ int pb_read(pb_file *pbf, void *buff, int amt){
         wrap = tmp - ((pbf->pb_buff + RDSZ) - pbf->next);
       
       memcpy(bp, pbf->next, (tmp - wrap));
-      bp += (tmp - wrap);
+      bp = &(((char *)bp)[tmp - wrap]);
       
       /* If we need to wrap, read from the start of the buffer */
       if(wrap > 0){
         memcpy(bp, pbf->pb_buff, wrap);
-        bp += wrap;
+        bp = &(((char *)bp)[wrap]);
       }
       
       /* update the buff_amt field */
@@ -141,7 +146,7 @@ int pb_read(pb_file *pbf, void *buff, int amt){
       else
         out_amt += tmp;
       
-      bp += tmp;
+      bp = &(((char *)bp)[tmp]);
     }
   }
 

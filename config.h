@@ -45,3 +45,6 @@
 
 /* Define if you have the z library (-lz).  */
 #define HAVE_LIBZ 1
+
+/* Define if platform is big endian. */
+/* #undef WORDS_BIGENDIAN */

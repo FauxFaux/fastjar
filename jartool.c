@@ -17,9 +17,12 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: jartool.c,v 1.2 1999-12-06 07:38:28 toast Exp $
+/* $Id: jartool.c,v 1.3 2000-08-23 19:42:17 cory Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.2  1999/12/06 07:38:28  toast
+   fixed recursive archiving bug
+
    Revision 1.1.1.1  1999/12/06 03:09:34  toast
    initial checkin..
 
@@ -129,8 +132,19 @@
 #include "pushback.h"
 #include "compress.h"
 
+#ifdef WORDS_BIGENDIAN
+
+#define L2BI(l) ((l & 0xff000000) >> 24) + \
+		((l & 0x00ff0000) >> 8)  + \
+		((l & 0x0000ff00) << 8)  + \
+		((l & 0x000000ff) << 24);
+
+#define L2BS(l) ((l & 0xff00) >> 8) + ((l & 0x00ff) << 8);
+
+#endif
+
 static char version_string[] = VERSION;
-static char rcsid[] = "$Id: jartool.c,v 1.2 1999-12-06 07:38:28 toast Exp $";
+static char rcsid[] = "$Id: jartool.c,v 1.3 2000-08-23 19:42:17 cory Exp $";
 
 extern int errno;
 
@@ -462,8 +476,10 @@ int make_manifest(int jfd, char *mf_name){
   /* if the user didn't specify an external manifest file... */
   if(mf_name == NULL){
     int mf_len = 37 + strlen(VERSION);
+    char *mf;
+
+    if(mf = (char *) malloc(mf_len + 1)) {
     uLong crc;
-    char mf[mf_len + 1];
 
     sprintf(mf, "Manifest-Version: 1.0\nCreated-By: %s\n\n", VERSION);
 
@@ -509,7 +525,12 @@ int make_manifest(int jfd, char *mf_name){
     write(jfd, file_header, 30);
     write(jfd, "META-INF/MANIFEST.MF", nlen);
     write(jfd, mf, mf_len);
-    
+    free(mf);
+    }
+    else {
+	printf("malloc errror\n");
+	exit(-1);
+    }
   } else {
     int mfd;
     struct stat statbuf;
@@ -1310,7 +1331,11 @@ int list_jar(int fd, char **files, int file_num){
       perror("read");
       exit(1);
     }
-    
+
+#ifdef WORDS_BIGENDIAN
+    tmp = L2BI(tmp);
+#endif
+
     if(tmp != 0x06054b50){
       fprintf(stderr, "Error in JAR file format. zip-style comment?\n");
       exit(1);
@@ -1326,6 +1351,10 @@ int list_jar(int fd, char **files, int file_num){
       exit(1);
     }
 
+#ifdef WORDS_BIGENDIAN
+    cen_size = L2BS(cen_size);
+#endif
+
     /*   printf("%hu entries in central header\n", cen_size); */
 
     if(lseek(fd, 4, SEEK_CUR) == (off_t)-1){
@@ -1337,6 +1366,10 @@ int list_jar(int fd, char **files, int file_num){
       perror("read");
       exit(1);
     }
+
+#ifdef WORDS_BIGENDIAN
+    tmp = L2BI(tmp);
+#endif
 
     /*   printf("Central header offset = %d\n", tmp); */
 
