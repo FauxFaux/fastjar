@@ -2,7 +2,7 @@
 # Generated automatically by configure.
 # Run this file to recreate the current configuration.
 # This directory was configured as follows,
-# on host skaro:
+# on host KILLBOT:
 #
 # ./configure 
 #
@@ -26,7 +26,7 @@ do
 done
 
 ac_given_srcdir=.
-ac_given_INSTALL="/usr/bin/ginstall -c"
+ac_given_INSTALL="/usr/bin/install -c"
 
 trap 'rm -fr Makefile install-defs.sh config.h conftest*; exit 1' 1 2 15
 
@@ -58,14 +58,23 @@ s%@includedir@%${prefix}/include%g
 s%@oldincludedir@%/usr/include%g
 s%@infodir@%${prefix}/info%g
 s%@mandir@%${prefix}/man%g
-s%@CC@%gcc%g
 s%@INSTALL_PROGRAM@%${INSTALL}%g
 s%@INSTALL_SCRIPT@%${INSTALL_PROGRAM}%g
 s%@INSTALL_DATA@%${INSTALL} -m 644%g
-s%@RM@%/bin/rm%g
-s%@CP@%/bin/cp%g
+s%@PACKAGE@%fastar%g
+s%@VERSION@%0.92%g
+s%@ACLOCAL@%/cygdrive/d/fastjar/src/missing aclocal%g
+s%@AUTOCONF@%autoconf%g
+s%@AUTOMAKE@%/cygdrive/d/fastjar/src/missing automake%g
+s%@AUTOHEADER@%autoheader%g
+s%@MAKEINFO@%makeinfo%g
+s%@SET_MAKE@%%g
+s%@CC@%gcc%g
+s%@RM@%/usr/bin/rm%g
+s%@CP@%/usr/bin/cp%g
 s%@STRIP@%/usr/bin/strip%g
-s%@CHMOD@%/bin/chmod%g
+s%@CHMOD@%/usr/bin/chmod%g
+s%@fastjar_warn_cflags@%-W -Wall -pedantic -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings%g
 s%@CPP@%gcc -E%g
 
 CEOF
@@ -196,27 +205,42 @@ for ac_file in .. $CONFIG_HEADERS; do if test "x$ac_file" != x..; then
   cat $ac_file_inputs > conftest.in
 
   cat > conftest.frag <<CEOF
+${ac_dA}PACKAGE${ac_dB}PACKAGE${ac_dC}"fastar"${ac_dD}
+${ac_uA}PACKAGE${ac_uB}PACKAGE${ac_uC}"fastar"${ac_uD}
+${ac_eA}PACKAGE${ac_eB}PACKAGE${ac_eC}"fastar"${ac_eD}
+${ac_dA}VERSION${ac_dB}VERSION${ac_dC}"0.92"${ac_dD}
+${ac_uA}VERSION${ac_uB}VERSION${ac_uC}"0.92"${ac_uD}
+${ac_eA}VERSION${ac_eB}VERSION${ac_eC}"0.92"${ac_eD}
 ${ac_dA}HAVE_LIBZ${ac_dB}HAVE_LIBZ${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_LIBZ${ac_uB}HAVE_LIBZ${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_LIBZ${ac_eB}HAVE_LIBZ${ac_eC}1${ac_eD}
 ${ac_dA}HAVE_DIRENT_H${ac_dB}HAVE_DIRENT_H${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_DIRENT_H${ac_uB}HAVE_DIRENT_H${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_DIRENT_H${ac_eB}HAVE_DIRENT_H${ac_eC}1${ac_eD}
-${ac_dA}STDC_HEADERS${ac_dB}STDC_HEADERS${ac_dC}1${ac_dD}
-${ac_uA}STDC_HEADERS${ac_uB}STDC_HEADERS${ac_uC}1${ac_uD}
-${ac_eA}STDC_HEADERS${ac_eB}STDC_HEADERS${ac_eC}1${ac_eD}
-${ac_dA}HAVE_FCNTL_H${ac_dB}HAVE_FCNTL_H${ac_dC}1${ac_dD}
-${ac_uA}HAVE_FCNTL_H${ac_uB}HAVE_FCNTL_H${ac_uC}1${ac_uD}
-${ac_eA}HAVE_FCNTL_H${ac_eB}HAVE_FCNTL_H${ac_eC}1${ac_eD}
 CEOF
   sed -f conftest.frag conftest.in > conftest.out
   rm -f conftest.in
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
+${ac_dA}STDC_HEADERS${ac_dB}STDC_HEADERS${ac_dC}1${ac_dD}
+${ac_uA}STDC_HEADERS${ac_uB}STDC_HEADERS${ac_uC}1${ac_uD}
+${ac_eA}STDC_HEADERS${ac_eB}STDC_HEADERS${ac_eC}1${ac_eD}
+${ac_dA}HAVE_FCNTL_H${ac_dB}HAVE_FCNTL_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_FCNTL_H${ac_uB}HAVE_FCNTL_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_FCNTL_H${ac_eB}HAVE_FCNTL_H${ac_eC}1${ac_eD}
 ${ac_dA}HAVE_UNISTD_H${ac_dB}HAVE_UNISTD_H${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_UNISTD_H${ac_uB}HAVE_UNISTD_H${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_UNISTD_H${ac_eB}HAVE_UNISTD_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_PARAM_H${ac_dB}HAVE_SYS_PARAM_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_PARAM_H${ac_uB}HAVE_SYS_PARAM_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_PARAM_H${ac_eB}HAVE_SYS_PARAM_H${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
 ${ac_dA}SIZEOF_CHAR${ac_dB}SIZEOF_CHAR${ac_dC}1${ac_dD}
 ${ac_uA}SIZEOF_CHAR${ac_uB}SIZEOF_CHAR${ac_uC}1${ac_uD}
 ${ac_eA}SIZEOF_CHAR${ac_eB}SIZEOF_CHAR${ac_eC}1${ac_eD}
@@ -226,15 +250,15 @@ ${ac_eA}SIZEOF_SHORT${ac_eB}SIZEOF_SHORT${ac_eC}2${ac_eD}
 ${ac_dA}SIZEOF_INT${ac_dB}SIZEOF_INT${ac_dC}4${ac_dD}
 ${ac_uA}SIZEOF_INT${ac_uB}SIZEOF_INT${ac_uC}4${ac_uD}
 ${ac_eA}SIZEOF_INT${ac_eB}SIZEOF_INT${ac_eC}4${ac_eD}
+${ac_dA}SIZEOF_LONG${ac_dB}SIZEOF_LONG${ac_dC}4${ac_dD}
+${ac_uA}SIZEOF_LONG${ac_uB}SIZEOF_LONG${ac_uC}4${ac_uD}
+${ac_eA}SIZEOF_LONG${ac_eB}SIZEOF_LONG${ac_eC}4${ac_eD}
 CEOF
   sed -f conftest.frag conftest.in > conftest.out
   rm -f conftest.in
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
-${ac_dA}SIZEOF_LONG${ac_dB}SIZEOF_LONG${ac_dC}4${ac_dD}
-${ac_uA}SIZEOF_LONG${ac_uB}SIZEOF_LONG${ac_uC}4${ac_uD}
-${ac_eA}SIZEOF_LONG${ac_eB}SIZEOF_LONG${ac_eC}4${ac_eD}
 ${ac_dA}SIZEOF_LONG_LONG${ac_dB}SIZEOF_LONG_LONG${ac_dC}8${ac_dD}
 ${ac_uA}SIZEOF_LONG_LONG${ac_uB}SIZEOF_LONG_LONG${ac_uC}8${ac_uD}
 ${ac_eA}SIZEOF_LONG_LONG${ac_eB}SIZEOF_LONG_LONG${ac_eC}8${ac_eD}
@@ -264,5 +288,7 @@ CEOF
 fi; done
 
 
+
+test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h
 
 exit 0

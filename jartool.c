@@ -1,6 +1,6 @@
 /*
   jartool.c - main functions for fastjar utility
-  Copyright (C) 1999  Bryan Burns
+  Copyright (C) 1999, 2000  Bryan Burns
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -17,9 +17,13 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: jartool.c,v 1.5 2000-08-24 15:01:27 cory Exp $
+/* $Id: jartool.c,v 1.6 2000-12-14 23:23:40 toast Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.5  2000/08/24 15:01:27  cory
+   Made certain that fastjar opened the jar file before trying to update it
+   with the -u option.
+
    Revision 1.4  2000/08/24 13:39:21  cory
    Changed +'s to |'s in jartool.c to insure there was no confusion with sign
    when byte swapping.  Better safe than sorry.
@@ -119,6 +123,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#else
+#define MAXPATHLEN 1024
+#endif
+
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
 #endif
@@ -154,7 +164,7 @@
 #endif
 
 static char version_string[] = VERSION;
-static char rcsid[] = "$Id: jartool.c,v 1.5 2000-08-24 15:01:27 cory Exp $";
+static char rcsid[] = "$Id: jartool.c,v 1.6 2000-12-14 23:23:40 toast Exp $";
 
 extern int errno;
 
@@ -169,6 +179,8 @@ int add_file_to_jar(int, int, char*, struct stat*);
 int add_to_jar(int, char*, char*);
 int create_central_header(int);
 int make_manifest(int, char*);
+static void init_args(char **, int);
+static char *get_next_arg ();
 
 /* global variables */
 ub1 file_header[30];
@@ -177,6 +189,15 @@ int do_compress;
 int seekable;
 int verbose;
 char jarfile[256];
+
+/* If non zero, then don't recurse in directory. Instead, add the
+   directory entry and relie on an explicit list of files to populate
+   the archive. This option isn't supported by the original jar tool. */
+int use_explicit_list_only;
+
+/* If non zero, then read the entry names from stdin. This option
+   isn't supported by the original jar tool. */
+int read_names_from_stdin;
 
 zipentry *ziplist; /* linked list of entries */
 zipentry *ziptail; /* tail of the linked list */
@@ -246,6 +267,13 @@ int main(int argc, char **argv){
       break;
     case '-':
       break;
+    /* The following options aren't supported by the original jar tool. */
+    case 'E':
+      use_explicit_list_only = TRUE;
+      break;
+    case '@':
+      read_names_from_stdin = TRUE;
+      break;
     default:
       fprintf(stderr, "Illegal option: %c\n", argv[1][i]);
       usage(argv[0]);
@@ -255,6 +283,18 @@ int main(int argc, char **argv){
   if(action == ACTION_NONE){
     fprintf(stderr, "One of options -{ctxu} must be specified.\n");
     usage(argv[0]);
+  }
+
+  /* Verify unsupported combinations and warn of the use of non
+     standard features */
+  if(verbose && use_explicit_list_only)
+    fprintf (stderr, "Warning: using non standard '-E' option\n");
+  if(verbose && read_names_from_stdin)
+    fprintf (stderr, "Warning: using non standard '-@' option\n");
+  if(read_names_from_stdin
+      && (action != ACTION_CREATE && action != ACTION_UPDATE)){
+      fprintf(stderr, "Option '-@' is supported only with '-c' or '-u'.\n");
+      usage(argv[0]);
   }
 
   i = 2;
@@ -326,6 +366,7 @@ int main(int argc, char **argv){
   }
 
   if(action == ACTION_CREATE || action == ACTION_UPDATE){
+    char *arg;
     init_headers();
 
    if((action == ACTION_UPDATE) && file) {
@@ -334,7 +375,7 @@ int main(int argc, char **argv){
         perror(jarfile);
         exit(1);
       }
-   }
+    }
 
     if(do_compress)
       init_compression();
@@ -346,18 +387,22 @@ int main(int argc, char **argv){
     else if(manifest)
       make_manifest(jarfd, NULL);
     
+    init_args (argv, i);
     /* now we add the files to the archive */
-    for(; i < argc; i++){  /* i already is in the right location*/
-      
-      if(!strcmp(argv[i], "-C")){
-        if(add_to_jar(jarfd, argv[i+1], argv[i+2])){
-          printf("Error adding %s to jar archive!\n", argv[i]);
+    while ((arg = get_next_arg ())){
+
+      if(!strcmp(arg, "-C")){
+	char *dir_to_change = get_next_arg ();
+	char *file_to_add = get_next_arg ();
+        if(!dir_to_change 
+	   || !file_to_add
+	   || add_to_jar(jarfd, dir_to_change, file_to_add)){
+          printf("Error adding %s to jar archive!\n", arg);
           exit(1);
         }
-        i += 2;
       } else {
-        if(add_to_jar(jarfd, NULL, argv[i])){
-          printf("Error adding %s to jar archive!\n", argv[i]);
+        if(add_to_jar(jarfd, NULL, arg)){
+          printf("Error adding %s to jar archive!\n", arg);
           exit(1);
         }
       }
@@ -378,6 +423,82 @@ int main(int argc, char **argv){
   }
   
   exit(0);
+}
+
+static int args_current_g;
+static char **args_g;
+
+static void 
+init_args(args, current)
+     char **args;
+     int current;
+{
+  if(!read_names_from_stdin)
+    {
+      args_g = args;
+      args_current_g = current;
+    }
+}
+
+static char *
+get_next_arg ()
+{
+  static int reached_end = 0;
+
+  if (reached_end)
+    return NULL;
+
+  if (args_g)
+    {
+      if (!args_g [args_current_g])
+	{
+	  reached_end = 1;
+	  return NULL;
+	}
+      return args_g [args_current_g++];
+    }
+  else
+    {
+      /* Read the name from stdin. Delimiters are '\n' and
+	 '\r'. Reading EOF indicates that we don't have anymore file
+	 names characters to read. */
+
+      char s [MAXPATHLEN];
+      int  pos = 0;
+
+      /* Get rid of '\n' and '\r' first. */
+      while (1)
+	{
+	  int c = getc (stdin);
+	  if (c == '\n' || c == '\r')
+	    continue;
+	  else
+	    {
+	      if (c == EOF)
+		return NULL;
+	      ungetc (c, stdin);
+	      break;
+	    }
+	}
+
+      while (1)
+	{
+	  int c = getc (stdin);
+	  /* Exit when we get a delimiter or don't have any characters
+             to read */
+	  if (c == '\n'|| c == '\r'|| c == EOF)
+	    break;
+	  s [pos++] = (char) c;
+	}
+
+      if (pos)
+	{
+	  s [pos] = '\0';
+	  return strdup (s);
+	}
+      else
+	return NULL;
+    }
 }
 
 void init_headers(){
@@ -683,7 +804,7 @@ int add_to_jar(int fd, char *new_dir, char *file){
     write(fd, file_header, 30);
     write(fd, fullname, nlen);
 
-    while((de = readdir(dir)) != NULL){
+    while(!use_explicit_list_only && (de = readdir(dir)) != NULL){
       if(de->d_name[0] == '.')
         continue;
       if(!strcmp(de->d_name, jarfile)){ /* we don't want to add ourselves.  Believe me */
@@ -1145,7 +1266,7 @@ int extract_jar(int fd, char **files, int file_num){
     /* OK, there is some directory information in the file.  Nothing to do
        but ensure the directory(s) exist, and create them if they don't.
        What a pain! */
-    if(index(filename, '/') != NULL && handle){
+    if(strchr(filename, '/') != NULL && handle){
       /* Loop through all the directories in the path, (everything w/ a '/') */
       ub1 *start = filename;
       char *tmp_buff;
@@ -1154,7 +1275,7 @@ int extract_jar(int fd, char **files, int file_num){
       tmp_buff = malloc(sizeof(char) * strlen(filename));
 
       for(;;){
-        ub1 *idx = index(start, '/');
+        ub1 *idx = strchr(start, '/');
 
         if(idx == NULL)
           break;
@@ -1630,7 +1751,7 @@ int consume(pb_file *pbf, int amt){
 }
 
 void usage(char *filename){
-  fprintf(stderr, "Usage: %s {ctxuV}[vfm0M] [jar-file] [manifest-file] [-C dir] files ...\nOptions\n -c  create new archive\n -t  list table of contents for archive\n -x  extract named (or all) files from archive\n -u  update existing archive\n -V  display version information\n -v  generate verbose output on standard output\n -f  specify archive file name\n -m  include manifest information from specified manifest file\n -0  store only; use no ZIP compression\n -M  Do not create a manifest file for the entries\n -C  change to the specified directory and include the following file\nIf any file is a directory then it is processed recursively.\nThe manifest file name and the archive file name needs to be specified\nin the same order the 'm' and 'f' flags are specified.\n\nExample 1: to archive two class files into an archive called classes.jar: \n     jar cvf classes.jar Foo.class Bar.class \nExample 2: use an existing manifest file 'mymanifest' and archive all the\n     files in the foo/ directory into 'classes.jar': \n     jar cvfm classes.jar mymanifest -C foo/ .\n", filename);
+  fprintf(stderr, "Usage: %s {ctxuV}[vfm0ME@] [jar-file] [manifest-file] [-C dir] files ...\nOptions\n -c  create new archive\n -t  list table of contents for archive\n -x  extract named (or all) files from archive\n -u  update existing archive\n -V  display version information\n -v  generate verbose output on standard output\n -f  specify archive file name\n -m  include manifest information from specified manifest file\n -0  store only; use no ZIP compression\n -M  Do not create a manifest file for the entries\n -C  change to the specified directory and include the following file\n -E  don't include the files found in a directory\n -@  Read names from stdin\nIf any file is a directory then it is processed recursively.\nThe manifest file name and the archive file name needs to be specified\nin the same order the 'm' and 'f' flags are specified.\n\nExample 1: to archive two class files into an archive called classes.jar: \n     jar cvf classes.jar Foo.class Bar.class \nExample 2: use an existing manifest file 'mymanifest' and archive all the\n     files in the foo/ directory into 'classes.jar': \n     jar cvfm classes.jar mymanifest -C foo/ .\n", filename);
 
   exit(1);
 }

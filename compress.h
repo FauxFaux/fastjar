@@ -1,6 +1,11 @@
-/* $Id: compress.h,v 1.1.1.1 1999-12-06 03:09:12 toast Exp $
+/* $Id: compress.h,v 1.2 2000-12-14 23:23:40 toast Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.1.1.1  1999/12/06 03:09:12  toast
+   initial checkin..
+
+
+
    Revision 1.3  1999/05/10 08:32:09  burnsbr
    added new function protos.
 
@@ -33,14 +38,15 @@
  */
 
 /* Initializes the compression data structure(s) */
-void init_compression();
+void init_compression(void);
 
 /* Compresses the file specified by in_fd and appends it to out_fd */
 int compress_file(int in_fd, int out_fd, struct zipentry *ze);
 
 /* Frees memory used by compression function */
-void end_compression();
+void end_compression(void);
 
-void init_inflation();
+void init_inflation(void);
 int inflate_file(pb_file *, int, struct zipentry *);
-void end_inflation();
+void end_inflation(void);
+Bytef *inflate_string(pb_file *, ub4 *, ub4 *);

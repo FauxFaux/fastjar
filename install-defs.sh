@@ -1,6 +1,6 @@
-CP=/bin/cp
+CP=/usr/bin/cp
 STRIP=/usr/bin/strip
-CHMOD=/bin/chmod
+CHMOD=/usr/bin/chmod
 
 prefix=/usr/local
 exec_prefix=${prefix}

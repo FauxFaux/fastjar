@@ -12,33 +12,35 @@
 # config.status only pays attention to the cache file if you give it the
 # --recheck option to rerun configure.
 #
-ac_cv_c_bigendian=${ac_cv_c_bigendian=no}
-ac_cv_func_crc32=${ac_cv_func_crc32=yes}
-ac_cv_func_deflate=${ac_cv_func_deflate=yes}
-ac_cv_func_deflateEnd=${ac_cv_func_deflateEnd=yes}
-ac_cv_func_deflateInit2_=${ac_cv_func_deflateInit2_=yes}
-ac_cv_func_deflateReset=${ac_cv_func_deflateReset=yes}
-ac_cv_header_dirent_dirent_h=${ac_cv_header_dirent_dirent_h=yes}
-ac_cv_header_fcntl_h=${ac_cv_header_fcntl_h=yes}
-ac_cv_header_stdc=${ac_cv_header_stdc=yes}
-ac_cv_header_unistd_h=${ac_cv_header_unistd_h=yes}
-ac_cv_lib_dir_opendir=${ac_cv_lib_dir_opendir=no}
-ac_cv_lib_z_deflate=${ac_cv_lib_z_deflate=yes}
-ac_cv_path_CHMOD=${ac_cv_path_CHMOD=/bin/chmod}
-ac_cv_path_CP=${ac_cv_path_CP=/bin/cp}
-ac_cv_path_RM=${ac_cv_path_RM=/bin/rm}
-ac_cv_path_STRIP=${ac_cv_path_STRIP=/usr/bin/strip}
-ac_cv_path_install=${ac_cv_path_install='/usr/bin/ginstall -c'}
-ac_cv_prog_CC=${ac_cv_prog_CC=gcc}
+ac_cv_prog_cc_works=${ac_cv_prog_cc_works='yes'}
+ac_cv_path_STRIP=${ac_cv_path_STRIP='/usr/bin/strip'}
+ac_cv_path_CHMOD=${ac_cv_path_CHMOD='/usr/bin/chmod'}
+ac_cv_sizeof_int=${ac_cv_sizeof_int='4'}
+ac_cv_c_bigendian=${ac_cv_c_bigendian='no'}
+ac_cv_sizeof_long_long=${ac_cv_sizeof_long_long='8'}
+ac_cv_prog_cc_g=${ac_cv_prog_cc_g='yes'}
+ac_cv_sizeof_char=${ac_cv_sizeof_char='1'}
+ac_cv_path_install=${ac_cv_path_install='/usr/bin/install -c'}
+ac_cv_header_dirent_dirent_h=${ac_cv_header_dirent_dirent_h='yes'}
+ac_cv_func_deflate=${ac_cv_func_deflate='yes'}
+ac_cv_func_crc32=${ac_cv_func_crc32='yes'}
+ac_cv_header_fcntl_h=${ac_cv_header_fcntl_h='yes'}
+ac_cv_func_deflateInit2_=${ac_cv_func_deflateInit2_='yes'}
+ac_cv_prog_CC=${ac_cv_prog_CC='gcc'}
+ac_cv_func_deflateEnd=${ac_cv_func_deflateEnd='yes'}
+ac_cv_path_CP=${ac_cv_path_CP='/usr/bin/cp'}
+ac_cv_func_deflateReset=${ac_cv_func_deflateReset='yes'}
+ac_cv_header_stdc=${ac_cv_header_stdc='yes'}
+ac_cv_prog_make_make_set=${ac_cv_prog_make_make_set='yes'}
+ac_cv_lib_dir_opendir=${ac_cv_lib_dir_opendir='no'}
+ac_cv_sizeof_long=${ac_cv_sizeof_long='4'}
+ac_cv_header_unistd_h=${ac_cv_header_unistd_h='yes'}
+ac_cv_header_sys_param_h=${ac_cv_header_sys_param_h='yes'}
+ac_cv_prog_cc_cross=${ac_cv_prog_cc_cross='no'}
+ac_cv_prog_gcc=${ac_cv_prog_gcc='yes'}
+ac_cv_type_off_t=${ac_cv_type_off_t='yes'}
+ac_cv_path_RM=${ac_cv_path_RM='/usr/bin/rm'}
 ac_cv_prog_CPP=${ac_cv_prog_CPP='gcc -E'}
-ac_cv_prog_cc_cross=${ac_cv_prog_cc_cross=no}
-ac_cv_prog_cc_g=${ac_cv_prog_cc_g=yes}
-ac_cv_prog_cc_works=${ac_cv_prog_cc_works=yes}
-ac_cv_prog_gcc=${ac_cv_prog_gcc=yes}
-ac_cv_sizeof_char=${ac_cv_sizeof_char=1}
-ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
-ac_cv_sizeof_long=${ac_cv_sizeof_long=4}
-ac_cv_sizeof_long_long=${ac_cv_sizeof_long_long=8}
-ac_cv_sizeof_short=${ac_cv_sizeof_short=2}
-ac_cv_struct_tm=${ac_cv_struct_tm=time.h}
-ac_cv_type_off_t=${ac_cv_type_off_t=yes}
+ac_cv_lib_z_deflate=${ac_cv_lib_z_deflate='yes'}
+ac_cv_struct_tm=${ac_cv_struct_tm='time.h'}
+ac_cv_sizeof_short=${ac_cv_sizeof_short='2'}
