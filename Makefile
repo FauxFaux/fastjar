@@ -6,10 +6,13 @@ prefix = /usr/local
 exec_prefix = ${prefix}
 BINARY = ${exec_prefix}/bin/fastjar
 
-all: fastjar
+all: fastjar grepjar
 
 fastjar: jartool.o dostime.o compress.o pushback.o
 	$(CC) -o $@ jartool.o dostime.o compress.o pushback.o -lz 
+
+grepjar: jargrep.o dostime.o compress.o pushback.o
+	$(CC) -o $@ jargrep.o dostime.o compress.o pushback.o -lz 
 
 install: fastjar
 	${INSTALL} -s -m 755 fastjar $(BINARY)
@@ -32,6 +35,10 @@ compress.c: compress.h
 pushback.o: pushback.c pushback.h
 
 pushback.c: pushback.h
+
+jargrep.c: jargrep.h
+
+jargrep.o: jargrep.c jargrep.h
 
 clean:
 	rm -rf *.o *~ core fastjar
