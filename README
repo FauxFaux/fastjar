@@ -1,9 +1,8 @@
 =======
-FastJar 0.86
-=======
+FastJar 0.90
 
-written by Bryan Burns
-Seventh public release, 10/12/1999
+12/6/1999
+=======
 
 FastJar is an attempt at creating a feature-for-feature copy of Sun's JDK's
 'jar' command.  Sun's jar (or Blackdown's for that matter) is written entirely
@@ -28,7 +27,7 @@ zlib installed.
 Please mail any bug reports to burnsbr@ucs.orst.edu.
 
 If you use FastJar and want me to add the rest of the features, send me mail
-(burnsbr@ucs.orst.edu).  I'll be much more likely to put more work into this
+(toast@users.sourceforge.net).  I'll be much more likely to put more work into this
 if I know other people find it useful other than me.
 
 As always, this not being a final release, bugs may exist.  I test each
@@ -72,5 +71,5 @@ Order or features for the future:
 
 
 ===========================================================================
-http://www.nutty.cx/fastjar/
-burnsbr@ucs.orst.edu
+http://fastjar.sourceforge.net
+toast@users.sourceforge.net

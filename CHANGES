@@ -1,3 +1,5 @@
+0.90            12/06/1999      Fixed recursive archival bug.
+
 0.86            10/12/1999      Applied patch to fix leading "./" problem.
 
 0.85            5/10/1999       The -t and -x flags now work.  Hooray!  Those
