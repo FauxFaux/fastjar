@@ -5,12 +5,12 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 BINARY = @bindir@/fastjar
 
-all: fastjar grepjar
+all: fastjar jargrep
 
 fastjar: jartool.o dostime.o compress.o pushback.o
 	$(CC) -o $@ jartool.o dostime.o compress.o pushback.o @LIBS@
 
-grepjar: jargrep.o dostime.o compress.o pushback.o
+jargrep: jargrep.o dostime.o compress.o pushback.o
 	$(CC) -o $@ jargrep.o dostime.o compress.o pushback.o @LIBS@
 
 install: fastjar

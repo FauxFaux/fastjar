@@ -1,4 +1,4 @@
-/* $Id: compress.c,v 1.5 2000-09-11 21:59:59 cory Exp $
+/* $Id: compress.c,v 1.6 2000-09-12 22:29:36 cory Exp $
 
    $Log: not supported by cvs2svn $
    Revision 1.1.1.1  1999/12/06 03:09:16  toast
@@ -67,7 +67,7 @@
 
 extern int seekable;
 
-static char rcsid[] = "$Id: compress.c,v 1.5 2000-09-11 21:59:59 cory Exp $";
+static char rcsid[] = "$Id: compress.c,v 1.6 2000-09-12 22:29:36 cory Exp $";
 
 static z_stream zs;
 
@@ -320,6 +320,13 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
   return 0;
 }
 
+/*
+Function name: report_str_error
+args:	val	Error code returned from zlib.
+purpose: Put out an error message corresponding to error code returned from zlib.
+Be suitably cryptic seeing I don't really know exactly what these errors mean.
+*/
+
 void report_str_error(int val)
 {
 	switch(val) {
@@ -327,26 +334,36 @@ void report_str_error(int val)
 		break;
 	case Z_NEED_DICT:
 		fprintf(stderr, "Need a dictionary?\n");
-		exit(10);
+		exit(1);
 	case Z_DATA_ERROR:
 		fprintf(stderr, "Z_DATA_ERROR\n");
-		exit(11);
+		exit(1);
 	case Z_STREAM_ERROR:
 		fprintf(stderr, "Z_STREAM_ERROR\n");
-		exit(12);
+		exit(1);
 	case Z_MEM_ERROR:
 		fprintf(stderr, "Z_MEM_ERROR\n");
-		exit(13);
+		exit(1);
 	case Z_BUF_ERROR:
 		fprintf(stderr, "Z_BUF_ERROR\n");
-		exit(14);
+		exit(1);
 	case Z_OK:
 		break;
 	default:
 		fprintf(stderr, "Unknown behavior from inflate\n");
-		exit(16);
+		exit(1);
 	}
 }
+
+/*
+Function name: ez_inflate_str
+args:	pbf		Pointer to pushback handle for file.
+		csize	Compressed size of embedded file.
+		usize	Uncompressed size of embedded file.
+purpose: Read in and decompress the contents of an embedded file and store it in a
+byte array.
+returns: Byte array of uncompressed embedded file.
+*/
 
 static Bytef *ez_inflate_str(pb_file *pbf, ub4 csize, ub4 usize)
 {
@@ -369,26 +386,37 @@ ub4 crc = 0;
 				fprintf(stderr, "Tried to read %u but read %u instead.\n", csize, rdamt);
 				free(in_buff);
 				free(out_buff);
-				exit(17);
+				exit(1);
 			}
 		}
 		else {
 			fprintf(stderr, "Malloc of out_buff failed.\n");
 			fprintf(stderr, "Error: %s\n", strerror(errno));
 			free(in_buff);
-			exit(18);
+			exit(1);
 		}
 	}
 	else {
 		fprintf(stderr, "Malloc of in_buff failed.\n");
 		fprintf(stderr, "Error: %s\n", strerror(errno));
-		exit(15);
+		exit(1);
 	}
 
 	return out_buff;
 }
 
-Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize)
+/*
+Function name: hrd_inflate_str
+args:	pbf		Pointer to pushback handle for file.
+		csize	Pointer to compressed size of embedded file.
+		usize	Pointer to uncompressed size of embedded file.
+purpose: Read and decompress an embedded file into a string.  Set csize and usize
+accordingly.  This function does the reading for us in the case there is not size
+information in the header for the embedded file.
+returns: Byte array of the contents of the embedded file.
+*/
+
+static Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize)
 {
 Bytef *out_buff, *tmp, in_buff[RDSZ];
 unsigned int rdamt;
@@ -426,9 +454,19 @@ ub4 crc = 0;
 
 	inflateReset(&zs);
 
-
 	return out_buff;
 }
+
+/*
+Function name: inflate_string
+args:	pbf		Pointer to pushback handle for file.
+		csize	Pointer to compressed size of embedded file.  May be 0 if not set.
+		usize	Pointer to uncompressed size of embedded file. May be 0 if not set.
+purpose: Decide the easiest (in computer terms) methos of decompressing this embedded
+file to a string.
+returns: Pointer to a string containing the decompressed contents of the embedded file.
+If csize and usize are not set set them to correct numbers.
+*/
 
 Bytef *inflate_string(pb_file *pbf, ub4 *csize, ub4 *usize)
 {
