@@ -179,7 +179,7 @@ char *retstr;
 
 	for(*b = begin; *b >= 0 && !iscntrl(stream[*b]); (*b)--);
 	(*b)++;
-	for(e = end; !iscntrl(stream[e]); e++);
+	for(e = end; stream[e] == '\t' || !iscntrl(stream[e]); e++);
 	length = e - *b;
 	if(retstr = (char *) malloc(length + 1)) {
 		strncpy(retstr, &(stream[*b]), length);
@@ -209,10 +209,42 @@ char *str;
 	}
 }
 
+void check_crc(pb_file *pbf, char *stream, ub4 usize)
+{
+ub4 crc, lcrc;
+ub1 scratch[16];
+
+	crc = crc32(crc, NULL, 0);
+	crc = crc32(crc, stream, usize);
+	if(pb_read(pbf, scratch, 16) != 16) {
+		perror("read");
+        exit(1);
+	}
+	if(UNPACK_UB4(scratch, 0) != 0x08074b50) {
+		fprintf(stderr, "Error! Missing data descriptor!\n");
+		exit(1);
+	}
+	lcrc = UNPACK_UB4(scratch, 4);
+	if(crc != lcrc){
+    	fprintf(stderr, "Error! CRCs do not match! Got %x, expected %x\n",
+              crc, lcrc);
+      	exit(1);
+    }
+}
+
+void mk_ascii(char *stream, int usize)
+{
+int i;
+
+	for(i = 0; i < usize; i++) 
+		if(stream[i] != '\t' && (iscntrl(stream[i]) || (unsigned char) stream[i] >= 128))
+			stream[i] = '\n';
+}
+
 int cont_grep(regex_t *exp, int fd, char *jarfile, ub4 *signature, ub1 *scratch, pb_file *pbf)
 {
 int rdamt, retflag = TRUE, regflag, i;
-ub4 csize, usize, crc;
+ub4 csize, usize, crc, lcrc;
 ub2 fnlen, eflen, flags, method;
 ub1 file_header[30];
 char *filename, *str_stream;
@@ -225,13 +257,13 @@ regmatch_t match, *match_array, *tmp;
 	else {
 		decd_siz(&csize, &usize, &fnlen, &eflen, &flags, &method, &crc, file_header);
 		filename = new_filename(pbf, fnlen);
-		if(filename[fnlen - 1] == '/') {
-			lseek(fd, eflen, SEEK_CUR);
-		}
-		else {
-			lseek(fd, eflen, SEEK_CUR);
+		lseek(fd, eflen, SEEK_CUR);
+		if(filename[fnlen - 1] != '/') {
 			str_stream = (method == 8 || (flags & 0x0008)) ? 
-				(char *) inflate_string(pbf, csize, usize) : read_string(pbf, csize);
+				(char *) inflate_string(pbf, &csize, &usize) : 
+					read_string(pbf, csize);
+			if(flags & 0x008) check_crc(pbf, str_stream, usize);
+			mk_ascii(str_stream, usize);
 			match_array = NULL;
 			for(i = 0, regflag = regexec(exp, str_stream, 1, &match, 0); !regflag; 
 				regflag =  regexec(exp, &(str_stream[match.rm_eo]), 1, &match, 0), i++)
@@ -251,7 +283,6 @@ regmatch_t match, *match_array, *tmp;
 				}
 			} 
 			if(i) prnt_mtchs(filename, str_stream, match_array, i);
-			else printf("%s:no match\n", filename);
 			free(str_stream);
 			if(match_array) free(match_array);
 		}

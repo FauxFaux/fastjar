@@ -1,4 +1,4 @@
-/* $Id: compress.c,v 1.4 2000-09-08 22:46:22 cory Exp $
+/* $Id: compress.c,v 1.5 2000-09-11 21:59:59 cory Exp $
 
    $Log: not supported by cvs2svn $
    Revision 1.1.1.1  1999/12/06 03:09:16  toast
@@ -67,7 +67,7 @@
 
 extern int seekable;
 
-static char rcsid[] = "$Id: compress.c,v 1.4 2000-09-08 22:46:22 cory Exp $";
+static char rcsid[] = "$Id: compress.c,v 1.5 2000-09-11 21:59:59 cory Exp $";
 
 static z_stream zs;
 
@@ -348,13 +348,11 @@ void report_str_error(int val)
 	}
 }
 
-Bytef *inflate_string(pb_file *pbf, int csize, int usize)
+static Bytef *ez_inflate_str(pb_file *pbf, ub4 csize, ub4 usize)
 {
 Bytef *out_buff, *in_buff;
 unsigned int rdamt;
 ub4 crc = 0;
-
-	crc = crc32(crc, NULL, 0); /* initialize crc */
 
 	if(zs.next_in = in_buff = (Bytef *) malloc(csize)) {
 		if(zs.next_out = out_buff = (Bytef *) malloc(usize + 1)) { 
@@ -365,8 +363,6 @@ ub4 crc = 0;
 				free(in_buff);
 				inflateReset(&zs);
 				out_buff[usize] = '\0';
-				
-       		 	crc = crc32(crc, out_buff, usize);
 			}
 			else {
 				fprintf(stderr, "Read failed on input file.\n");
@@ -390,4 +386,56 @@ ub4 crc = 0;
 	}
 
 	return out_buff;
+}
+
+Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize)
+{
+Bytef *out_buff, *tmp, in_buff[RDSZ];
+unsigned int rdamt;
+int i, zret;
+ub4 crc = 0;
+
+	i = 1; 
+	out_buff = NULL;
+	zret = Z_OK;
+	while(zret != Z_STREAM_END && (rdamt = pb_read(pbf, in_buff, RDSZ)))
+	{
+		zs.avail_in = rdamt;
+		zs.avail_out = 0;
+		zs.next_in = in_buff;
+		do {
+			if(tmp = (Bytef *) realloc(out_buff, (RDSZ * i) + 1)) {
+				out_buff = tmp;
+				zs.next_out = &(out_buff[(RDSZ * (i - 1)) - zs.avail_out]);
+				zs.avail_out += RDSZ;
+				i++;
+			}
+			else {
+				fprintf(stderr, "Realloc of out_buff failed.\n");
+				fprintf(stderr, "Error: %s\n", strerror(errno));
+				exit(1);
+			}
+		} while((zret = inflate(&zs, 0)) == Z_OK);
+		report_str_error(zret);
+	}
+	pb_push(pbf, zs.next_in, zs.avail_in);
+
+	out_buff[(RDSZ * (i - 1)) - zs.avail_out] = '\0';
+	*usize = zs.total_out;
+	*csize = zs.total_in;
+
+	inflateReset(&zs);
+
+
+	return out_buff;
+}
+
+Bytef *inflate_string(pb_file *pbf, ub4 *csize, ub4 *usize)
+{
+Bytef *ret_buf;
+
+	if(*csize && *usize) ret_buf = ez_inflate_str(pbf, *csize, *usize);
+	else ret_buf = hrd_inflate_str(pbf, csize, usize);
+
+	return ret_buf;
 }
