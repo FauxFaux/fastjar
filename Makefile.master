@@ -1,0 +1,28 @@
+EXFILES = compress.c dostime.c jartool.c compress.h dostime.h jartool.h \
+	zipfile.h CHANGES LICENSE README Makefile.in config.h.in configure \
+	install-sh install-defs.sh.in INSTALL pushback.c pushback.h
+
+all: configure Makefile config.h fastjar
+
+configure: configure.in 
+	autoconf
+
+configure.in: jartool.h
+
+Makefile config.h: configure Makefile.in config.h.in
+	configure
+
+fastjar: Makefile config.h
+	make -f Makefile
+
+export: $(EXFILES)
+	mkdir -p /tmp/fastjar-export
+	rm -f /tmp/fastjar-export/*
+	cp $(EXFILES) /tmp/fastjar-export
+	chmod 644 /tmp/fastjar-export/*
+	chmod 755 /tmp/fastjar-export/configure
+	chmod 755 /tmp/fastjar-export/install-sh
+
+clean: Makefile
+	make -f Makefile clean
+	rm -f configure config.cache config.log config.status config.h Makefile install-defs.sh
