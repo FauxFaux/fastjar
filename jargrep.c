@@ -152,21 +152,26 @@ char *filename;
 
 int cont_grep(regex_t *exp, int fd, char *jarfile, ub4 *signature, ub1 *scratch, pb_file *pbf)
 {
-int rdamt, retflag = TRUE;
+int rdamt, retflag = TRUE, slen;
 ub4 csize, crc;
 ub2 fnlen, eflen, flags, method;
 ub1 file_header[30];
 char *filename;
+zipentry ze;
 
-	if((rdamt = pb_read(pbf, (file_header + 4), 26)) != 26) {
-		perror("read");
-		retflag = FALSE;
-    }
-	else {
-		decd_siz(&csize, &fnlen, &eflen, &flags, &method, &crc, file_header);
-		filename = new_filename(pbf, fnlen);
-
-		free(filename);
+	do { 
+		if((rdamt = pb_read(pbf, (file_header + 4), 26)) != 26) {
+			perror("read");
+			retflag = FALSE;
+    	}
+		else {
+			decd_siz(&csize, &fnlen, &eflen, &flags, &method, &crc, file_header);
+			filename = new_filename(pbf, fnlen);
+			if(filename[strlen(filename) - 1] != '/') {
+				inflate_string(pbf, &slen);
+				free(filename);
+			}
+		}
 	}
 
 	return retflag;
@@ -186,7 +191,7 @@ ub1 scratch[16];
 		pb_init(&pbf, fd);	
 		
 		do {
-			if((rdamt - pb_read(&pbf, scratch, 4)) != 4) {
+			if((rdamt = pb_read(&pbf, scratch, 4)) != 4) {
 				perror("read");
 				floop = FALSE;
 			}
