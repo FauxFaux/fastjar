@@ -20,9 +20,14 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: dostime.c,v 1.1.1.1 1999-12-06 03:09:12 toast Exp $
+/* $Id: dostime.c,v 1.2 2000-12-14 23:21:06 toast Exp $
 
    $Log: not supported by cvs2svn $
+   Revision 1.1.1.1  1999/12/06 03:09:12  toast
+   initial checkin..
+
+
+
    Revision 1.6  1999/05/10 08:32:26  burnsbr
    added dos2unixtime
 
@@ -49,8 +54,6 @@
 #endif
 
 #include "dostime.h"
-
-static char rcsid[] = "$Id: dostime.c,v 1.1.1.1 1999-12-06 03:09:12 toast Exp $";
 
 /*
 
