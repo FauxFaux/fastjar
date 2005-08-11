@@ -10,6 +10,10 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 /* #undef TM_IN_SYS_TIME */
 
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+/* #undef WORDS_BIGENDIAN */
+
 /* The number of bytes in a char.  */
 #define SIZEOF_CHAR 1
 
@@ -40,11 +44,18 @@
 /* Define if you have the <sys/ndir.h> header file.  */
 /* #undef HAVE_SYS_NDIR_H */
 
+/* Define if you have the <sys/param.h> header file.  */
+#define HAVE_SYS_PARAM_H 1
+
 /* Define if you have the <unistd.h> header file.  */
 #define HAVE_UNISTD_H 1
 
 /* Define if you have the z library (-lz).  */
 #define HAVE_LIBZ 1
 
-/* Define if platform is big endian. */
-/* #undef WORDS_BIGENDIAN */
+/* Name of package */
+#define PACKAGE "fastar"
+
+/* Version number of package */
+#define VERSION "0.92"
+

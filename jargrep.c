@@ -21,9 +21,12 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* $Id: jargrep.c,v 1.9 2000-12-14 23:23:40 toast Exp $
+/* $Id: jargrep.c,v 1.10 2005-08-11 19:38:53 tomcopeland Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/12/14 23:23:40  toast
+added patches from gcc team
+
 Revision 1.8  2000/09/13 14:02:02  cory
 Reformatted some of the code to more closly match the layout of the orriginal
 fastjar utility.
@@ -569,7 +572,7 @@ static void jargrep(regex_t *exp, regex_t *nl_exp, const char *jarfile, int opti
 					floop = FALSE;
 					break;
 				case 2:
-					/* fall through continue */
+          continue; /* fall through continue */
 				}
 			}
 		} while(floop);

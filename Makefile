@@ -42,9 +42,9 @@ pkgincludedir = $(includedir)/fastar
 
 top_builddir = .
 
-ACLOCAL = /cygdrive/d/fastjar/src/missing aclocal
+ACLOCAL = aclocal
 AUTOCONF = autoconf
-AUTOMAKE = /cygdrive/d/fastjar/src/missing automake
+AUTOMAKE = automake
 AUTOHEADER = autoheader
 
 INSTALL = /usr/bin/install -c

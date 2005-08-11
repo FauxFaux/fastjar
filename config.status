@@ -2,7 +2,7 @@
 # Generated automatically by configure.
 # Run this file to recreate the current configuration.
 # This directory was configured as follows,
-# on host KILLBOT:
+# on host hal:
 #
 # ./configure 
 #
@@ -63,9 +63,9 @@ s%@INSTALL_SCRIPT@%${INSTALL_PROGRAM}%g
 s%@INSTALL_DATA@%${INSTALL} -m 644%g
 s%@PACKAGE@%fastar%g
 s%@VERSION@%0.92%g
-s%@ACLOCAL@%/cygdrive/d/fastjar/src/missing aclocal%g
+s%@ACLOCAL@%aclocal%g
 s%@AUTOCONF@%autoconf%g
-s%@AUTOMAKE@%/cygdrive/d/fastjar/src/missing automake%g
+s%@AUTOMAKE@%automake%g
 s%@AUTOHEADER@%autoheader%g
 s%@MAKEINFO@%makeinfo%g
 s%@SET_MAKE@%%g
