@@ -18,9 +18,7 @@ AM_CFLAGS = @fastjar_warn_cflags@
 
 info_TEXINFOS = fastjar.texi
 fastjar_TEXINFOS = \
-	gcc-common.texi \
-	fdl.texi \
-	gcc-vers.texi
+	fdl.texi
 man_MANS = fastjar.1 grepjar.1
 EXTRA_DIST = $(man_MANS) fastjar.texi texi2pod.pl
 
@@ -40,11 +38,4 @@ fastjar.pod: $(srcdir)/fastjar.texi
 
 grepjar.pod: $(srcdir)/fastjar.texi
 	-$(TEXI2POD) -D grepjar $< > $@
-
-
-# gcc-vers.texi is generated from the version files.
-gcc-vers.texi:
-	(echo "@set version-GCC 0.92"; \
-	 echo "@clear DEVELOPMENT"; ) > $@T
-	mv -f $@T $@
 

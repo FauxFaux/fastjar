@@ -10,7 +10,7 @@
 @c When this manual is copyrighted.
 @set copyrights-fastjar 2002
 
-@include gcc-vers.texi
+@set version-GCC 4.1
 
 @c Common macros to support generating man pages:
 

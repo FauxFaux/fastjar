@@ -1,5 +1,11 @@
 2006-05-27  Richard Guenther  <rguenther@suse.de>
 
+	* fastjar.texi: Don't use gcc-vers.texi.
+	* Makefile.am: Don't generate it.
+	* Makefile.in: Re-generate.
+
+2006-05-27  Richard Guenther  <rguenther@suse.de>
+
 	* fastjar.texi: Pull in the only macro we need from
 	gcc-common.texi.
 
