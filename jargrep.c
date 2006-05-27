@@ -1,6 +1,7 @@
 /*
   jargrep.c - main functions for jargrep utility
-  Copyright (C) 1999 Bryan Burns
+  Copyright (C) 2002, 2003, 2006 Free Software Foundation
+  Copyright (C) 1999, 2000 Bryan Burns
   Copyright (C) 2000 Cory Hollingsworth 
  
   Parts of this program are base on Bryan Burns work with fastjar 
@@ -18,14 +19,77 @@
   
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-/* $Id: jargrep.c,v 1.10 2005-08-11 19:38:53 tomcopeland Exp $
+/* Id: jargrep.c,v 1.5 2002/01/03 04:57:56 rodrigc Exp
 
-$Log: not supported by cvs2svn $
-Revision 1.9  2000/12/14 23:23:40  toast
-added patches from gcc team
+Log: jargrep.c,v 
+Revision 1.5  2002/01/03 04:57:56  rodrigc
+2001-01-02  Craig Rodrigues  <rodrigc@gcc.gnu.org>
+
+        PR bootstrap/5117
+        * configure.in (AC_CHECK_HEADERS): Check for stdlib.h.
+        * Makefile.am: Move grepjar to bin_PROGRAMS.
+        * config.h.in: Regenerated.
+        * Makefile.in: Regenerated.
+        * aclocal.m4: Regenerated.
+        * jargrep.c: Eliminate some signed/unsigned and default
+        uninitialized warnings. Use HAVE_STDLIB_H instead of
+        STDC_HEADERS macro.
+        * jartool.c: Likewise.
+        * compress.c: Likewise.
+
+Revision 1.4  2000/12/15 18:45:09  tromey
+	* jargrep.c: Include getopt.h if it exists.
+	(optind): Declare.
+	* configure, config.h: Rebuilt.
+	* configure.in: Check for getopt.h.
+
+Revision 1.3  2000/12/14 18:45:35  ghazi
+Warning fixes:
+
+	* compress.c: Include stdlib.h and compress.h.
+	(rcsid): Delete.
+	(report_str_error): Make static.
+	(ez_inflate_str): Delete unused variable.  Add parens in if-stmt.
+	(hrd_inflate_str): Likewise.
+
+	* compress.h (init_compression, end_compression, init_inflation,
+	end_inflation): Prototype void arguments.
+
+	* dostime.c (rcsid): Delete.
+
+	* jargrep.c: Include ctype.h, stdlib.h, zlib.h and compress.h.
+	Make functions static.  Cast ctype function argument to `unsigned
+	char'.  Add parens in if-stmts.  Constify.
+	(Usage): Change into a macro.
+	(jargrep): Remove unused parameter.
+
+	* jartool.c: Constify.  Add parens in if-stmts.  Align
+	signed/unsigned char pointers in functions calls using casts.
+	(rcsid): Delete.
+	(list_jar): Fix printf format specifier.
+	(usage): Chop long string into bits.  Reformat.
+
+	* pushback.c (rcsid): Delete.
+
+Revision 1.2  2000/12/11 02:59:55  apbianco
+2000-12-10  Robert Lipe <robertlipe@usa.net>
+
+	* jargrep.c (jargrep): Added null statement after case.
+
+2000-12-10  Alexandre Petit-Bianco  <apbianco@cygnus.com>
+
+	* Makefile: Removed.
+	* Makefile.in: Rebuilt with `-i' and `--enable-foreign'.
+
+(http://gcc.gnu.org/ml/gcc/2000-12/msg00294.html)
+
+Revision 1.1  2000/12/09 03:08:23  apbianco
+2000-12-08  Alexandre Petit-Bianco  <apbianco@cygnus.com>
+
+        * fastjar: Imported.
 
 Revision 1.8  2000/09/13 14:02:02  cory
 Reformatted some of the code to more closly match the layout of the orriginal
@@ -41,26 +105,30 @@ will test some other platforms later.
 #include "config.h"
 #include <stdio.h>
 #include <unistd.h>
-#include <regex.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <ctype.h>
-#ifdef STDC_HEADERS
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
+
+#include "xregex.h"
+
 #include "jargrep.h"
 #include "jartool.h"
 #include "pushback.h"
 #include "zipfile.h"
 #include "zlib.h"
 #include "compress.h"
+#include <getopt.h>
 
-#define Usage "Usage: %s [-bcinsw] <-e regexp | regexp> file(s)\n"
+void version(void);
+void help(const char *name);
 
-extern char *optarg;
+#define Usage "Usage: %s [-bcinsVw] [--version|--help] <-e PATTERN | PATTERN> FILE ...\n"
 
 /*
 Function name: opt_valid
@@ -307,7 +375,6 @@ returns: TRUE if it is a word, FALSE of it is a substring.
 
 static int chk_wrd(regex_t *exp, const char *str) {
 	int wrd_fnd = FALSE;
-	int regflag;
 	int frnt_ok;
 	int bck_ok;
 	const char *str2;
@@ -315,7 +382,7 @@ static int chk_wrd(regex_t *exp, const char *str) {
 
 	str2 = str;
 	frnt_ok = bck_ok = FALSE;
-	while(!wrd_fnd && !(regflag = regexec(exp, str2, 1, &match, 0))) {
+	while(!wrd_fnd && !regexec(exp, str2, 1, &match, 0)) {
 		if(!match.rm_so && (str2 == str)) frnt_ok = TRUE;
 		else if(!isalnum((unsigned char)str2[match.rm_so - 1])
 			&& str2[match.rm_so - 1] != '_')
@@ -394,7 +461,7 @@ purpose:	Verify the CRC matches that as what is stored in the jar file.
 */
 
 static void check_crc(pb_file *pbf, const char *stream, ub4 usize) {
-	ub4 crc;
+	ub4 crc=0;
 	ub4 lcrc;
 	ub1 scratch[16];
 
@@ -504,7 +571,7 @@ static int cont_grep(regex_t *exp, regex_t *nl_exp, int fd, pb_file *pbf, int op
 	char *filename;
 	char *str_stream;
 	regmatch_t *match_array;
-	regmatch_t *nl_offsets;
+	regmatch_t *nl_offsets=0;
 
 	if(pb_read(pbf, (file_header + 4), 26) != 26) {
 		perror("read");
@@ -572,12 +639,25 @@ static void jargrep(regex_t *exp, regex_t *nl_exp, const char *jarfile, int opti
 					floop = FALSE;
 					break;
 				case 2:
-          continue; /* fall through continue */
+					/* fall through continue */
+					;
 				}
 			}
 		} while(floop);
 	}
 }
+
+/* This is used to mark options with no short value.  */
+#define LONG_OPT(Num)  ((Num) + 128)
+
+#define OPT_HELP     LONG_OPT (0)
+
+static const struct option option_vec[] =
+{
+  { "help", no_argument, NULL, OPT_HELP },
+  { "version", no_argument, NULL, 'V' },
+  { NULL, no_argument, NULL, 0 }
+};
 
 /*
 Funtion Name: main
@@ -597,7 +677,8 @@ int main(int argc, char **argv) {
 	regex_t *nl_exp = NULL;
 	char *regexpstr = NULL;
 
-	while((c = getopt(argc, argv, "bce:insVw")) != -1) {
+	while((c = getopt_long(argc, argv, "bce:insVw",
+			       option_vec, NULL)) != -1) {
 		switch(c) {
 			case 'b':
 				options |= JG_PRINT_BYTEOFFSET;
@@ -626,13 +707,15 @@ int main(int argc, char **argv) {
 				options |= JG_INVERT;
 				break;
 			case 'V':
-				printf("%s\n", GVERSION);
-				exit(0);
+				version ();
+				break;
 			case 'w':
 				options |= JG_WORD_EXPRESSIONS;
 				break;
+			case OPT_HELP:
+				help(argv[0]);
+				break;
 			default:
-				fprintf(stderr, "Unknown option -%c\n", c);
 				fprintf(stderr, Usage, argv[0]);
 				exit(1);
 		}
@@ -672,4 +755,37 @@ int main(int argc, char **argv) {
 	}
 
 	return retval;
+}
+
+void help(const char *filename)
+{
+  printf (Usage, filename);
+  printf ("\
+\n\
+Search files in a jar file for a pattern.\n\
+\n\
+   -b                print byte offset of match\n\
+   -c                print number of matches\n\
+   -i                compare case-insensitively\n\
+   -n                print line number of each match\n\
+   -s                suppress error messages\n\
+   -w                force PATTERN to match only whole words\n\
+   -e PATTERN        use PATTERN as regular expression\n\
+   -V|--version      print version number and exit\n\
+   --help            print help\n\
+");
+
+  exit (0);
+}
+
+void version ()
+{
+  printf("grepjar (%s) %s\n\n", PACKAGE, VERSION);
+  printf("Copyright 1999, 2000, 2001  Bryan Burns\n");
+  printf("Copyright 2000 Cory Hollingsworth\n");
+  printf("Copyright 2006 Free Software Foundation\n");
+  printf("\
+This is free software; see the source for copying conditions.  There is NO\n\
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
+  exit (0);
 }

@@ -2,7 +2,7 @@
 				Now works on Solaris, AIX, True 64, and HP-UX.
 				Hopefully resolved all big endian problems.
 				Fixed bug in update which caused it to skip
-				opening update file
+				openning update file
 
 0.90            12/06/1999      Fixed recursive archival bug.
 

@@ -1,6 +1,14 @@
-/* $Id: compress.h,v 1.2 2000-12-14 23:23:40 toast Exp $
+/* $Id: compress.h,v 1.1 2006/04/17 18:44:35 tromey Exp $
 
-   $Log: not supported by cvs2svn $
+   $Log: compress.h,v $
+   Revision 1.1  2006/04/17 18:44:35  tromey
+   Initial revision
+
+   Revision 1.1  2000/12/09 03:08:23  apbianco
+   2000-12-08  Alexandre Petit-Bianco  <apbianco@cygnus.com>
+
+           * fastjar: Imported.
+
    Revision 1.1.1.1  1999/12/06 03:09:12  toast
    initial checkin..
 
@@ -34,14 +42,14 @@
   
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 /* Initializes the compression data structure(s) */
 void init_compression(void);
 
 /* Compresses the file specified by in_fd and appends it to out_fd */
-int compress_file(int in_fd, int out_fd, struct zipentry *ze);
+int compress_file(int, int, struct zipentry *, struct zipentry *);
 
 /* Frees memory used by compression function */
 void end_compression(void);

@@ -1,6 +1,42 @@
-/* $Id: compress.c,v 1.8 2000-12-14 23:22:22 toast Exp $
+/* $Id: compress.c,v 1.1 2006/04/17 18:44:35 tromey Exp $
 
-   $Log: not supported by cvs2svn $
+   $Log: compress.c,v $
+   Revision 1.1  2006/04/17 18:44:35  tromey
+   Initial revision
+
+   Revision 1.2  2000/12/14 18:45:35  ghazi
+   Warning fixes:
+
+   	* compress.c: Include stdlib.h and compress.h.
+   	(rcsid): Delete.
+   	(report_str_error): Make static.
+   	(ez_inflate_str): Delete unused variable.  Add parens in if-stmt.
+   	(hrd_inflate_str): Likewise.
+
+   	* compress.h (init_compression, end_compression, init_inflation,
+   	end_inflation): Prototype void arguments.
+
+   	* dostime.c (rcsid): Delete.
+
+   	* jargrep.c: Include ctype.h, stdlib.h, zlib.h and compress.h.
+   	Make functions static.  Cast ctype function argument to `unsigned
+   	char'.  Add parens in if-stmts.  Constify.
+   	(Usage): Change into a macro.
+   	(jargrep): Remove unused parameter.
+
+   	* jartool.c: Constify.  Add parens in if-stmts.  Align
+   	signed/unsigned char pointers in functions calls using casts.
+   	(rcsid): Delete.
+   	(list_jar): Fix printf format specifier.
+   	(usage): Chop long string into bits.  Reformat.
+
+   	* pushback.c (rcsid): Delete.
+
+   Revision 1.1  2000/12/09 03:08:23  apbianco
+   2000-12-08  Alexandre Petit-Bianco  <apbianco@cygnus.com>
+
+           * fastjar: Imported.
+
    Revision 1.7  2000/09/13 14:02:02  cory
    Reformatted some of the code to more closly match the layout of the orriginal
    fastjar utility.
@@ -41,6 +77,7 @@
 /*
   compress.c - code for handling deflation
   Copyright (C) 1999  Bryan Burns
+  Copyright (C) 2004  Free Software Foundation, Inc.
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -54,7 +91,7 @@
   
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include "config.h"
@@ -76,8 +113,12 @@
 #include "jartool.h"
 #include "pushback.h"
 #include "compress.h"
+#include "shift.h"
+
+int write_data (int, void *, size_t, struct zipentry *);
 
 extern int seekable;
+extern off_t end_of_entries;
 
 static z_stream zs;
 
@@ -100,11 +141,42 @@ void init_compression(){
   }
 }
 
-int compress_file(int in_fd, int out_fd, struct zipentry *ze){
+int
+write_data (int fd, void *buf, size_t len,
+	    struct zipentry *ze __attribute__((unused)))
+{
+#ifdef WITH_SHIFT_DOWN
+  struct zipentry *next = NULL;
+  off_t here = lseek (fd, 0, SEEK_CUR);
+  /*
+   * If we are updating and there is not enough space before the next
+   * entry, expand the file.
+   */
+  if (ze)
+    {
+      next = ze->next_entry;
+      if (next && here + len >= next->offset)
+	{
+	  if (shift_down (fd, next->offset, (here + len) - next->offset, next))
+	    {
+	      perror ("can't expand file");
+	      exit (1);
+	    }
+	}
+    }
+#endif /* WITH_SHIFT_DOWN */
+
+  return write (fd, buf, len);
+}
+
+int compress_file(int in_fd, int out_fd, struct zipentry *ze,
+		  struct zipentry *existing)
+{
   Bytef in_buff[RDSZ];
   Bytef out_buff[RDSZ];
   unsigned int rdamt, wramt;
   unsigned long tr = 0;
+  int rtval;
 
   rdamt = 0;
 
@@ -120,14 +192,16 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze){
     
     /* If deflate is out of input, fill the input buffer for it */
     if(zs.avail_in == 0 && zs.avail_out > 0){
-      if((rdamt = read(in_fd, in_buff, RDSZ)) == 0)
+      if((rtval = read(in_fd, in_buff, RDSZ)) == 0)
         break;
 
-      if(rdamt == -1){
+      if(rtval == -1){
         perror("read");
         exit(1);
       }
-      
+
+      rdamt = rtval;
+
       /* compute the CRC while we're at it */
       ze->crc = crc32(ze->crc, in_buff, rdamt); 
 
@@ -147,10 +221,11 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze){
     /* If the output buffer is full, dump it to disk */
     if(zs.avail_out == 0){
 
-      if(write(out_fd, out_buff, RDSZ) != RDSZ){
-        perror("write");
-        exit(1);
-      }
+      if (write_data (out_fd, out_buff, RDSZ, existing) != RDSZ)
+	{
+	  perror("write");
+	  exit(1);
+	}
 
       /* clear the output buffer */
       zs.next_out = out_buff;
@@ -165,10 +240,11 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze){
 
     wramt = RDSZ - zs.avail_out;
 
-    if(write(out_fd, out_buff, wramt) != wramt){
-      perror("write");
-      exit(1);
-    }
+    if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
+      {
+	perror("write");
+	exit(1);
+      }
     /* clear the output buffer */
     zs.next_out = out_buff;
     zs.avail_out = (uInt)RDSZ;
@@ -179,10 +255,11 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze){
   while(deflate(&zs, Z_FINISH) == Z_OK){
     wramt = RDSZ - zs.avail_out;
 
-    if(write(out_fd, out_buff, wramt) != wramt){
-      perror("write");
-      exit(1);
-    }
+    if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
+      {
+	perror("write");
+	exit(1);
+      }
 
     zs.next_out = out_buff;
     zs.avail_out = (uInt)RDSZ;
@@ -192,10 +269,11 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze){
   if(zs.avail_out != RDSZ){
     wramt = RDSZ - zs.avail_out;
 
-    if(write(out_fd, out_buff, wramt) != wramt){
-      perror("write");
-      exit(1);
-    }
+    if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
+      {
+	perror("write");
+	exit(1);
+      }
   }
 
   /* update fastjar's entry information */
@@ -256,7 +334,7 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
     if(zs.avail_in == 0){
       if((rdamt = pb_read(pbf, in_buff, RDSZ)) == 0)
         break;
-      else if(rdamt < 0){
+      else if((int)rdamt < 0){
         perror("read");
         exit(1);
       }
@@ -282,7 +360,7 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
 
           if(out_fd >= 0)
             if(write(out_fd, out_buff, (RDSZ - zs.avail_out)) != 
-               (RDSZ - zs.avail_out)){
+               (int)(RDSZ - zs.avail_out)){
               perror("write");
               exit(1);
             }
@@ -299,7 +377,7 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
 
         if(out_fd >= 0)
           if(write(out_fd, out_buff, (RDSZ - zs.avail_out)) != 
-             (RDSZ - zs.avail_out)){
+             (int)(RDSZ - zs.avail_out)){
             perror("write");
             exit(1);
           }

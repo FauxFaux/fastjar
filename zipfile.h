@@ -1,6 +1,14 @@
-/* $Id: zipfile.h,v 1.1.1.1 1999-12-06 03:09:11 toast Exp $
+/* $Id: zipfile.h,v 1.1 2006/04/17 18:44:35 tromey Exp $
 
-   $Log: not supported by cvs2svn $
+   $Log: zipfile.h,v $
+   Revision 1.1  2006/04/17 18:44:35  tromey
+   Initial revision
+
+   Revision 1.1.1.1  1999/12/06 03:09:11  toast
+   initial checkin..
+
+
+
    Revision 1.6  1999/05/10 08:33:08  burnsbr
    added UNPACK_UB4 and UNPACK_UB2
 
@@ -29,7 +37,7 @@
   
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #define LOC_EXTRA   6  /* extra bytes */
@@ -42,6 +50,7 @@
 #define LOC_FNLEN   26 /* filename length */
 #define LOC_EFLEN   28 /* extra-field length */
 
+#define CEN_FLAGS    8
 #define CEN_COMP    10 /* compression method */
 #define CEN_MODTIME 12
 #define CEN_MODDATE 14

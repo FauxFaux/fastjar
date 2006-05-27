@@ -1,6 +1,9 @@
-/* $Id: jartool.h,v 1.5 2000-12-14 23:23:40 toast Exp $
+/* $Id: jartool.h,v 1.1 2006/04/17 18:44:37 tromey Exp $
 
-   $Log: not supported by cvs2svn $
+   $Log: jartool.h,v $
+   Revision 1.1  2006/04/17 18:44:37  tromey
+   Initial revision
+
    Revision 1.4  2000/08/24 15:23:35  cory
    Set version number since I think we can let this one out.
 
@@ -35,7 +38,7 @@
 
 /*
   jartool.h - generic defines, struct defs etc.
-  Copyright (C) 1999  Bryan Burns
+  Copyright (C) 1999, 2005  Bryan Burns
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -49,9 +52,13 @@
   
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef __FASTJAR_JARTOOL_H__
+#define __FASTJAR_JARTOOL_H__
+
+#include <sys/types.h>
 #include "config.h"
 
 #define ACTION_NONE 0
@@ -59,6 +66,7 @@
 #define ACTION_EXTRACT 2
 #define ACTION_UPDATE 3
 #define ACTION_LIST 4
+#define ACTION_INDEX 5
 
 #define TRUE 1
 #define FALSE 0
@@ -90,7 +98,7 @@ typedef u_int16_t ub2;
 typedef unsigned int ub4;
 #elif SIZEOF_LONG == 4
 typedef unsigned long ub4;
-#elif SIZEOF_LONG_LONG == 4
+#elif defined(HAVE_LONG_LONG) && SIZEOF_LONG_LONG == 4
 typedef unsigned long long ub4;
 #else
 typedef u_int32_t ub4;
@@ -104,9 +112,16 @@ struct zipentry {
   ub4 usize;
   ub4 offset;
   ub1 compressed;
+  ub2 flags;
   char *filename;
   
   struct zipentry *next_entry;
 };
 
 typedef struct zipentry zipentry;
+
+#ifndef __GNUC__
+#define __attribute__()
+#endif
+
+#endif /* __FASTJAR_JARTOOL_H__ */
