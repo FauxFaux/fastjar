@@ -1,5 +1,10 @@
 2006-05-27  Richard Guenther  <rguenther@suse.de>
 
+	* jargrep.c: Include regex.h instead of xregex.h.  Removes
+	dependency on internal libiberty includes.
+
+2006-05-27  Richard Guenther  <rguenther@suse.de>
+
 	* fastjar.texi: Correct menu entry for the now GFDL license.
 
 2006-02-08  Thomas Fitzsimmons  <fitzsim@redhat.com>

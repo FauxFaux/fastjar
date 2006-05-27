@@ -115,7 +115,7 @@ will test some other platforms later.
 #include <stdlib.h>
 #endif
 
-#include "xregex.h"
+#include "regex.h"
 
 #include "jargrep.h"
 #include "jartool.h"
