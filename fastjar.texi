@@ -10,7 +10,13 @@
 @c When this manual is copyrighted.
 @set copyrights-fastjar 2002
 
-@include gcc-common.texi
+@include gcc-vers.texi
+
+@c Common macros to support generating man pages:
+
+@macro gcctabopt{body}
+@code{\body\}
+@end macro
 
 @c Versions
 @set which-gcj GCC-@value{version-GCC}

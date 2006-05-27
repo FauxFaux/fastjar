@@ -1,5 +1,10 @@
 2006-05-27  Richard Guenther  <rguenther@suse.de>
 
+	* fastjar.texi: Pull in the only macro we need from
+	gcc-common.texi.
+
+2006-05-27  Richard Guenther  <rguenther@suse.de>
+
 	* texi2pod.pl: Copy from gcc/contrib.
 
 2006-05-27  Richard Guenther  <rguenther@suse.de>
