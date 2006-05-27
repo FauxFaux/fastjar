@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.59)
 AC_INIT(jartool.h)
-AM_INIT_AUTOMAKE(fastjar, 0.92-gcc)
+AM_INIT_AUTOMAKE(fastjar, 0.92)
 AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs.
@@ -53,17 +53,11 @@ ZLIBS=
 ZDEPS=
 ZINCS=
 use_zlib=maybe
-if test "$with_system_zlib" = yes; then
-   AC_CHECK_LIB(z, deflate, ZLIBS=-lz, use_zlib=no)
-else
-   use_zlib=no
-fi
+AC_CHECK_LIB(z, deflate, ZLIBS=-lz, use_zlib=no)
 
 if test "$use_zlib" = no; then
    # Brain dead way to find tree's zlib.
-   ZDEPS='$(top_builddir)/../zlib/libz.a'
-   ZLIBS="$ZDEPS -L\$(here)/../zlib/$libsubdir"
-   ZINCS='-I$(top_srcdir)/../zlib'
+   AC_MSG_ERROR([Need zlib])
 fi
 AC_SUBST(ZLIBS)
 AC_SUBST(ZDEPS)

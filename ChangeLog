@@ -1,5 +1,15 @@
 2006-05-27  Richard Guenther  <rguenther@suse.de>
 
+	* configure.ac: Change version to 0.92 from 0.92-gcc.
+	Remove configury for using in-tree zlib, instead always
+	require an installed zlib for build.
+	* Makefile.am: Remove gcc specific parts.
+	* configure: Re-generated.
+	* Makefile.in: Likewise.
+	* aclocal.m4: Likewise.
+
+2006-05-27  Richard Guenther  <rguenther@suse.de>
+
 	* jargrep.c: Include regex.h instead of xregex.h.  Removes
 	dependency on internal libiberty includes.
 

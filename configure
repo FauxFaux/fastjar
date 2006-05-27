@@ -1613,7 +1613,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=fastjar
- VERSION=0.92-gcc
+ VERSION=0.92
 
 
 cat >>confdefs.h <<_ACEOF
@@ -6846,8 +6846,7 @@ ZLIBS=
 ZDEPS=
 ZINCS=
 use_zlib=maybe
-if test "$with_system_zlib" = yes; then
-   echo "$as_me:$LINENO: checking for deflate in -lz" >&5
+echo "$as_me:$LINENO: checking for deflate in -lz" >&5
 echo $ECHO_N "checking for deflate in -lz... $ECHO_C" >&6
 if test "${ac_cv_lib_z_deflate+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -6917,15 +6916,12 @@ else
   use_zlib=no
 fi
 
-else
-   use_zlib=no
-fi
 
 if test "$use_zlib" = no; then
    # Brain dead way to find tree's zlib.
-   ZDEPS='$(top_builddir)/../zlib/libz.a'
-   ZLIBS="$ZDEPS -L\$(here)/../zlib/$libsubdir"
-   ZINCS='-I$(top_srcdir)/../zlib'
+   { { echo "$as_me:$LINENO: error: Need zlib" >&5
+echo "$as_me: error: Need zlib" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
