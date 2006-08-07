@@ -1,3 +1,8 @@
+2006-08-07  Richard Guenther  <rguenther@suse.de>
+
+	* jartool.c (extract_jar): Fix directory traversal fix,
+	handle "." path components.
+
 2006-07-12  Richard Guenther  <rguenther@suse.de>
 
 	* jartool.c (extract_jar): Do not allow directory traversal

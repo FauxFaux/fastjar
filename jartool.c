@@ -1763,7 +1763,7 @@ int extract_jar(int fd, char **files, int file_num){
 	    fprintf(stderr, "Traversal to parent directories during unpacking!\n");
 	    exit(1);
 	  }
-	} else
+	} else if (strcmp(tmp_buff, ".") != 0)
 	  ++depth;
         if(stat(tmp_buff, &sbuf) < 0){
           if(errno != ENOENT){
