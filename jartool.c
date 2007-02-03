@@ -2035,14 +2035,14 @@ int list_jar(int fd, char **files, int file_num){
             if(verbose)
               printf("%6d %s %s\n", usize, ascii_date, filename);
             else
-              printf("%s\n", filename);
+              printf("%s\n", (const char *) filename);
             break;
           }
       } else {
         if(verbose)
           printf("%6d %s %s\n", usize, ascii_date, filename);
         else
-          printf("%s\n", filename);
+          printf("%s\n", (const char *) filename);
       }            
       
       size = eflen + clen;
@@ -2181,14 +2181,14 @@ int list_jar(int fd, char **files, int file_num){
             if(verbose)
               printf("%6d %s %s\n", usize, ascii_date, filename);
             else
-              printf("%s\n", filename);
+              printf("%s\n", (const char *) filename);
             break;
           }
       } else {
         if(verbose)
           printf("%6d %s %s\n", usize, ascii_date, filename);
         else
-          printf("%s\n", filename);
+          printf("%s\n", (const char *) filename);
       }        
     }
   }

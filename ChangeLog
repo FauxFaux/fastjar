@@ -1,3 +1,8 @@
+2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
+	* jartool.c (list_jar): Added missing casts to fix
+	compiler warnings on Debian Sarge.
+
 2006-08-07  Richard Guenther  <rguenther@suse.de>
 
 	* jartool.c (extract_jar): Fix directory traversal fix,
