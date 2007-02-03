@@ -1,5 +1,11 @@
 2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.h [__GNUC__]: Only define __attribute__
+	if it is not already defined. That fixes the build 
+	with tcc.
+
+2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (list_jar): Added missing casts to fix
 	compiler warnings on Debian Sarge.
 

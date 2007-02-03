@@ -1,8 +1,15 @@
-/* $Id: jartool.h,v 1.1 2006/04/17 18:44:37 tromey Exp $
+/* $Id: jartool.h,v 1.2 2007/02/03 17:07:55 robilad Exp $
 
    $Log: jartool.h,v $
-   Revision 1.1  2006/04/17 18:44:37  tromey
-   Initial revision
+   Revision 1.2  2007/02/03 17:07:55  robilad
+   2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
+   	* jartool.h [__GNUC__]: Only define __attribute__
+   	if it is not already defined. That fixes the build
+   	with tcc.
+
+   Revision 1.1.1.1  2006/04/17 18:44:37  tromey
+   Imported fastjar
 
    Revision 1.4  2000/08/24 15:23:35  cory
    Set version number since I think we can let this one out.
@@ -121,7 +128,9 @@ struct zipentry {
 typedef struct zipentry zipentry;
 
 #ifndef __GNUC__
+#ifndef __attribute__
 #define __attribute__()
+#endif
 #endif
 
 #endif /* __FASTJAR_JARTOOL_H__ */
