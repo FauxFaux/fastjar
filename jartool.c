@@ -2,6 +2,7 @@
   jartool.c - main functions for fastjar utility
   Copyright (C) 2002, 2004, 2005, 2006  Free Software Foundation
   Copyright (C) 1999, 2000, 2001  Bryan Burns
+  Copyright (C) 2007  Dalibor Topic
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -164,7 +165,7 @@ ub4 end_of_entries;
 #define OPT_HELP     LONG_OPT (0)
 
 /* This holds all options.  */
-#define OPTION_STRING "-ctxuvVf:m:C:0MiE@"
+#define OPTION_STRING "-ctxuvVf:m:C:0Mi:E@"
 
 /* Define the MANIFEST content here to have it easier with calculations
    below.  This is for the case we create an empty MANIFEST.MF.  */
@@ -252,6 +253,7 @@ int main(int argc, char **argv)
       break;
     case 'i':
       action = ACTION_INDEX;
+      jarfile = optarg;
       break;
 
     case OPT_HELP:
@@ -278,7 +280,7 @@ int main(int argc, char **argv)
   new_argv[new_argc] = NULL;
 
   if(action == ACTION_NONE){
-    fprintf(stderr, "%s: one of options -{ctxu} must be specified.\n",
+    fprintf(stderr, "%s: one of options -{ctxui} must be specified.\n",
 	    progname);
     usage(argv[0]);
   }
