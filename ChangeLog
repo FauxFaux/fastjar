@@ -1,5 +1,17 @@
 2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 
+	* config.h.in, configure: Regenerated.
+
+	* configure.ac: Removed checks for type-widths.
+	Added checks for fixed size types.
+
+	* jartool.h: Use fixed size types to define u1, 
+	u2 and u4. Include inttypes.h and stdint.h if 
+	necessary. Guard the config.h include. Don't
+	include sys/types.h.
+
+2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
 	* configure.ac: Use AC_CHECK_HEADERS_ONCE instead
 	of AC_CHECK_HEADERS. Use AC_CHECK_FUNCS_ONCE instead
 	of AC_CHECK_FUNCS.

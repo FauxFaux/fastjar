@@ -38,12 +38,10 @@ AC_STRUCT_TM
 # mkdir takes a single argument on some systems.
 gcc_AC_FUNC_MKDIR_TAKES_ONE_ARG
 
-dnl Check for type-widths
-AC_CHECK_SIZEOF(char)
-AC_CHECK_SIZEOF(short)
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long)
-AC_CHECK_TYPES([long long],[AC_CHECK_SIZEOF(long long)])
+# check for fixed size types.
+AC_TYPE_UINT8_T
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
 
 dnl Check byte order
 AC_C_BIGENDIAN

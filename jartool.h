@@ -1,6 +1,19 @@
-/* $Id: jartool.h,v 1.2 2007/02/03 17:07:55 robilad Exp $
+/* $Id: jartool.h,v 1.3 2007/02/04 02:06:48 robilad Exp $
 
    $Log: jartool.h,v $
+   Revision 1.3  2007/02/04 02:06:48  robilad
+   2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
+           * config.h.in, configure: Regenerated.
+
+           * configure.ac: Removed checks for type-widths.
+           Added checks for fixed size types.
+
+           * jartool.h: Use fixed size types to define u1,
+           u2 and u4. Include inttypes.h and stdint.h if
+           necessary. Guard the config.h include. Don't
+           include sys/types.h.
+
    Revision 1.2  2007/02/03 17:07:55  robilad
    2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 
@@ -65,8 +78,17 @@
 #ifndef __FASTJAR_JARTOOL_H__
 #define __FASTJAR_JARTOOL_H__
 
-#include <sys/types.h>
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#else
+# ifdef HAVE_STDINT_H
+#  include  <stdint.h>
+# endif
+#endif
 
 #define ACTION_NONE 0
 #define ACTION_CREATE 1
@@ -87,29 +109,9 @@
    ub2 == unsigned 2 byte word
    ub4 == unsigned 4 byte word
 */
-#if SIZEOF_CHAR == 1
-typedef unsigned char ub1;
-#else
-typedef u_int8_t ub1;
-#endif
-
-#if SIZEOF_SHORT == 2
-typedef unsigned short ub2;
-#elif SIZEOF_INT == 2
-typedef unsigned int ub2;
-#else
-typedef u_int16_t ub2;
-#endif
-
-#if SIZEOF_INT == 4
-typedef unsigned int ub4;
-#elif SIZEOF_LONG == 4
-typedef unsigned long ub4;
-#elif defined(HAVE_LONG_LONG) && SIZEOF_LONG_LONG == 4
-typedef unsigned long long ub4;
-#else
-typedef u_int32_t ub4;
-#endif
+typedef uint8_t ub1;
+typedef uint16_t ub2;
+typedef uint32_t ub4;
 
 struct zipentry {
   ub2 mod_time;
