@@ -1,26 +1,3 @@
-/* $Id: zipfile.h,v 1.1 2006/04/17 18:44:35 tromey Exp $
-
-   $Log: zipfile.h,v $
-   Revision 1.1  2006/04/17 18:44:35  tromey
-   Initial revision
-
-   Revision 1.1.1.1  1999/12/06 03:09:11  toast
-   initial checkin..
-
-
-
-   Revision 1.6  1999/05/10 08:33:08  burnsbr
-   added UNPACK_UB4 and UNPACK_UB2
-
-   Revision 1.5  1999/04/26 02:36:34  burnsbr
-   added LOC_EXTRA macro
-
-   Revision 1.4  1999/04/23 12:01:19  burnsbr
-   added more defines
-
-
-*/
-
 /*
   zipfile.h - defines for indexing zipfile headers
   Copyright (C) 1999  Bryan Burns

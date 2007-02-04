@@ -1,31 +1,3 @@
-/* $Id: compress.h,v 1.1 2006/04/17 18:44:35 tromey Exp $
-
-   $Log: compress.h,v $
-   Revision 1.1  2006/04/17 18:44:35  tromey
-   Initial revision
-
-   Revision 1.1  2000/12/09 03:08:23  apbianco
-   2000-12-08  Alexandre Petit-Bianco  <apbianco@cygnus.com>
-
-           * fastjar: Imported.
-
-   Revision 1.1.1.1  1999/12/06 03:09:12  toast
-   initial checkin..
-
-
-
-   Revision 1.3  1999/05/10 08:32:09  burnsbr
-   added new function protos.
-
-   Revision 1.2  1999/04/23 12:02:20  burnsbr
-   added licence
-
-   Revision 1.1  1999/04/23 11:59:37  burnsbr
-   Initial revision
-
-
-*/
-
 /*
   compress.h - header for compression
   Copyright (C) 1999  Bryan Burns

@@ -1,5 +1,11 @@
 2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 
+	* compress.c, compress.h, jargrep.c, 
+	jartool.c, jartool.h, pushback.c, 
+	zipfile.h: Removed Id and Log CVS tags.
+
+2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
 	* config.h.in, configure: Regenerated.
 
 	* configure.ac: Removed checks for type-widths.
