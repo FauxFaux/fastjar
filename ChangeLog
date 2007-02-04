@@ -1,6 +1,18 @@
 2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 
-	.cvsignore: Added new file.
+	* compile, texinfo.tex: Added new generated files.
+
+	* INSTALL, Makefile.in, aclocal.m4, config.h.in, 
+	configure, depcomp, install-sh, missing: Regenerated.
+
+	* acinclude.m4, configure.ac: Autoupdated with 
+	autoconf 2.61.
+
+	* autogen.sh: Use autoreconf.
+
+2007-02-03  Dalibor Topic  <robilad@kaffe.org>
+
+	* .cvsignore: Added new file.
 
 2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 

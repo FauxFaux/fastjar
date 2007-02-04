@@ -1,11 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.59)
-AC_INIT(jartool.h)
+AC_PREREQ(2.61)
+AC_INIT
+AC_CONFIG_SRCDIR([jartool.h])
 AM_INIT_AUTOMAKE(fastjar, 0.92)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 dnl Checks for programs.
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PATH_PROG(RM, rm, /bin/rm, $PATH:/bin:/usr/bin:/usr/local/bin)
 AC_PATH_PROG(CP, cp, /bin/cp, $PATH:/bin:/usr/bin:/usr/local/bin)
@@ -83,4 +85,5 @@ AC_MSG_CHECKING([whether to place generated files in the source directory])
 AC_MSG_RESULT($generated_files_in_srcdir)
 AM_CONDITIONAL(GENINSRC, test x$generated_files_in_srcdir = xyes)
 
-AC_OUTPUT(Makefile install-defs.sh)
+AC_CONFIG_FILES([Makefile install-defs.sh])
+AC_OUTPUT
