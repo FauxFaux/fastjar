@@ -577,6 +577,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="jartool.h"
+ac_header_list=
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -613,6 +614,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
+ac_func_list=
 ac_subst_vars='SHELL
 PATH_SEPARATOR
 PACKAGE_NAME
@@ -1662,6 +1664,13 @@ echo "$as_me: creating cache $cache_file" >&6;}
   >$cache_file
 fi
 
+ac_header_list="$ac_header_list fcntl.h"
+ac_header_list="$ac_header_list unistd.h"
+ac_header_list="$ac_header_list sys/param.h"
+ac_header_list="$ac_header_list stdlib.h"
+ac_header_list="$ac_header_list limits.h"
+ac_func_list="$ac_func_list ftruncate"
+ac_func_list="$ac_func_list _chsize"
 # Check that the precious variables saved in the cache have kept the same
 # value.
 ac_cache_corrupted=false
@@ -4657,8 +4666,7 @@ done
 
 
 
-
-for ac_header in fcntl.h unistd.h sys/param.h stdlib.h limits.h
+for ac_header in $ac_header_list
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
@@ -4800,7 +4808,33 @@ done
 
 
 
-for ac_func in ftruncate _chsize
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for ac_func in $ac_func_list
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -4892,6 +4926,18 @@ _ACEOF
 
 fi
 done
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 { echo "$as_me:$LINENO: checking for off_t" >&5
