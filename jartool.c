@@ -93,6 +93,14 @@ extern int errno;
 #define O_BINARY 0
 #endif
 
+struct ziplistentry
+  {
+  	char* filename; 
+    struct ziplistentry *next_entry;
+  };
+
+typedef struct ziplistentry ziplistentry;
+
 void usage(const char*);
 void help(const char *);
 void version(void);
@@ -105,6 +113,10 @@ int extract_jar(int, char**, int);
 int add_file_to_jar(int, int, const char*, struct stat*, int);
 int add_to_jar(int, const char*, int);
 int add_to_jar_with_dir(int, const char*, const char*, int);
+int add_array_to_jar(int, char*, int, const char *, const int);
+int build_index(int);
+char* get_index_entry(char* fname);
+void add_list_entry(ziplistentry*);
 int create_central_header(int);
 int make_manifest(int, const char*, int);
 int read_entries (int);
@@ -134,6 +146,9 @@ int read_names_from_stdin;
 
 zipentry *ziplist; /* linked list of entries */
 zipentry *ziptail; /* tail of the linked list */
+
+ziplistentry *ziplisthead;
+ziplistentry *ziplisttail;
 
 int number_of_entries; /* number of entries in the linked list */
 
@@ -255,12 +270,6 @@ int main(int argc, char **argv)
     }
   }
 
-  if(verbose && action == ACTION_INDEX)
-    fprintf(stderr, "Warning: '-i' option is currently a no-op\n");
-
-  /* FIXME: implement -i option. */
-  if(action == ACTION_INDEX)
-    exit(0);
 
   /* We might have seen `--'.  In this case we want to make sure that
      all following options are handled as file names.  */
@@ -332,7 +341,7 @@ int main(int argc, char **argv)
     }
   }
 
-  if (action == ACTION_UPDATE)
+  if (action == ACTION_UPDATE || action == ACTION_INDEX)
     {
       if (!jarfile)
 	{
@@ -432,6 +441,44 @@ int main(int argc, char **argv)
     list_jar(jarfd, &new_argv[0], new_argc);
   } else if(action == ACTION_EXTRACT){
     extract_jar(jarfd, &new_argv[0], new_argc);
+  } else if(action == ACTION_INDEX){
+    ziplisthead = NULL;
+    ziplisttail = NULL;
+  	
+    init_headers();
+
+    if(do_compress)
+      init_compression();
+
+    if (read_entries (jarfd))
+      exit (1);
+
+    build_index(jarfd);
+  	
+    /* de-initialize the compression DS */
+    if(do_compress)
+      end_compression();
+
+    lseek (jarfd, end_of_entries, SEEK_SET);
+    
+    create_central_header(jarfd);
+
+#if ! (HAVE_FTRUNCATE || HAVE__CHSIZE)
+#error neither ftruncate() or _chsize() available
+#endif
+
+#if HAVE_FTRUNCATE
+    ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR));
+#else
+    _chsize (jarfd, lseek (jarfd, 0, SEEK_CUR));
+#endif
+
+    if (jarfd != STDIN_FILENO && close(jarfd) != 0) {
+      fprintf(stderr, "%s: error closing jar archive: %s\n",
+	      progname, strerror (errno));
+      exit (1);
+    }
+  	
   }
   
   exit(0);
@@ -2190,4 +2237,286 @@ expand_options (int *argcp, char ***argvp)
       *argcp = new_argc;
       *argvp = new_argv;
     }
+}
+
+/* Find the index entry of the given name */
+static int
+find_index_entry(const char* fname)
+{
+  ziplistentry *zle;
+  for (zle = ziplisttail; zle; zle = zle->next_entry)
+    {
+      if (!strcmp (zle->filename, fname))
+	return TRUE;
+    }
+  return FALSE;
+	
+}
+
+/* Add a new index entry to the global linked list */
+void add_list_entry(ziplistentry *zle)
+{
+
+  if(ziplisthead == NULL){
+    ziplisthead = zle;
+    ziplisttail = ziplisthead;
+  } else {
+    ziplisthead->next_entry = zle;
+    ziplisthead = zle;
+  }  
+}
+
+/* Add an array to the zip stream, in uncompressed form */
+int add_array_to_jar(int jfd, char* content, int content_length, const char *fname, const int updating)
+{
+  unsigned short file_name_length;
+  unsigned long mod_time;
+  uLong crc = 0;
+  off_t offset = 0;
+  struct zipentry *ze;
+  struct zipentry *existing = NULL;
+  time_t current_time;
+
+  /* Assume do_compress == FALSE */
+
+  if (updating)
+    {
+      existing = find_entry (fname);
+      if (existing && looks_like_dir (fname))
+	{
+	  fprintf (stderr, "%s: %s is a directory in the archive\n",
+		   progname, fname);
+	  return 1;
+	}
+    }
+
+  current_time = time(NULL);
+  if(current_time == (time_t)-1){
+    perror("time");
+    exit(1);
+  }
+
+  mod_time = unix2dostime(&current_time);
+  file_name_length = strlen(fname);
+  
+  if(!seekable)
+    {
+      crc = crc32(0L, Z_NULL, 0); 
+      crc = crc32(crc, (const Bytef *)content, content_length);     
+    }
+  
+  /* data descriptor */
+  PACK_UB2(file_header, LOC_EXTRA, 0);
+  PACK_UB2(file_header, LOC_COMP, 0);
+    
+  PACK_UB4(file_header, LOC_MODTIME, mod_time);
+  PACK_UB2(file_header, LOC_FNLEN, file_name_length);
+  
+  
+  if(!seekable)
+    {
+      PACK_UB4(file_header, LOC_CRC, crc);
+      PACK_UB4(file_header, LOC_USIZE, content_length); 
+      PACK_UB4(file_header, LOC_CSIZE, content_length);
+    } else   
+      memset((file_header + LOC_CRC), '\0', 12);  /* clear crc/usize/csize */
+  
+  ze = (zipentry*)malloc(sizeof(zipentry));
+  if(ze == NULL){
+    perror("malloc");
+    exit(1);
+  }
+  
+  memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
+  ze->filename = (char*)malloc((file_name_length + 1) * sizeof(char));
+  strcpy(ze->filename, fname);
+
+  ze->mod_time = (ub2)(mod_time & 0x0000ffff);
+  ze->mod_date = (ub2)((mod_time & 0xffff0000) >> 16);
+
+  if(!seekable)
+    ze->crc = crc;
+
+  ze->csize = content_length;
+  ze->usize = ze->csize;
+
+  if (existing)
+    ze->offset = existing->offset;
+  else if (updating)
+    ze->offset = end_of_entries;
+  else
+    ze->offset = lseek(jfd, 0, SEEK_CUR);
+
+  ze->compressed = FALSE;
+
+  if (!existing)
+    add_entry(ze);
+  if (updating && lseek (jfd, ze->offset, SEEK_SET) < 0)
+    {
+      perror ("lseek");
+      return 1;
+    }
+
+  /* We can safely write the header here, since it will be the same size
+     as before */
+  
+  /* Write the local header */
+  write(jfd, file_header, 30);
+    
+  /* write the file name to the zip file */
+  write(jfd, fname, file_name_length);
+
+
+  if(verbose){
+    if (existing)
+      printf ("updating: %s ", fname);
+    else
+      printf("adding: %s ", fname);
+    fflush(stdout);
+  }
+ 
+	
+  /* If we are not writing the last entry, make space for it. */
+  if (existing && existing->next_entry)
+    {
+      if (ze->usize > existing->usize)
+	{
+	  if (shift_down (jfd, existing->next_entry->offset,
+			  ze->usize - existing->usize, existing->next_entry))
+	    {
+	      fprintf (stderr, "%s: %s\n", progname, strerror (errno));
+	      return 1;
+	    }
+	}
+    }
+
+  /* Write the contents of the file (uncompressed) to the zip file */
+  /* calculate the CRC as we go along */
+  ze->crc = crc32(0L, Z_NULL, 0); 
+      
+  ze->crc = crc32(ze->crc, (unsigned char*)content, content_length);
+  if (write(jfd, content, content_length) != content_length){
+    perror("write");
+    return 0;    	
+  }
+      
+  /* write out data descriptor */
+  PACK_UB4(data_descriptor, 4, ze->crc);
+  PACK_UB4(data_descriptor, 8, ze->csize);
+  PACK_UB4(data_descriptor, 12, ze->usize);
+
+  /* we need to seek back and fill the header */
+  if(seekable){
+    offset = (ze->csize + strlen(ze->filename) + 16);
+    
+    if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1){
+      perror("lseek");
+      exit(1);
+    }
+
+    if(write(jfd, (data_descriptor + 4), 12) != 12){
+      perror("write");
+      return 0;
+    }
+    
+    offset -= 12;
+
+    if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1){
+      perror("lseek");
+      exit(1);
+    }
+  } 
+  
+  if (existing)
+    {
+      int dd = (existing->flags & (1 << 3)) ? 12 : 0;
+      if (existing->next_entry && ze->csize < existing->csize + dd)
+	{
+	  if (shift_up (jfd, existing->next_entry->offset,
+			existing->csize + dd - ze->csize,
+			existing->next_entry))
+	    {
+	      perror (progname);
+	      return 1;
+	    }
+	}
+      /* Replace the existing entry data with this entry's. */
+      existing->csize = ze->csize;
+      existing->usize = ze->usize;
+      existing->crc = ze->crc;
+      existing->mod_time = ze->mod_time;
+      existing->mod_date = ze->mod_date;
+      free (ze->filename);
+      free (ze);
+    }
+  else if (updating)
+    end_of_entries = lseek (jfd, 0, SEEK_CUR);
+  
+  if(verbose)
+    printf("(in=%d) (out=%d) (%s %d%%)\n", 
+           (int)ze->usize, (int)ze->csize,
+           (do_compress ? "deflated" : "stored"),
+           (do_compress ? ((int)((1 - ze->csize/(float)ze->usize) * 100)) : 0));
+
+  return 0;
+}
+
+/* Convert the filename into an INDEX.LIST entry, i.e. 
+   a directory when the file is not at the root, else
+   the file when it's at the root. */
+char* get_index_entry(char* fname)
+{
+  if (strrchr(fname, '/'))
+    {
+      char * result = strdup(fname);
+      if (!result)
+	{
+	  perror("strdup");
+	  exit(1);
+	}
+      *strrchr(result, '/') = '\0';
+      return result;
+    }
+  return fname;
+}
+
+/* Create or update an INDEX.LIST entry in the zip stream. */
+int build_index(int jfd)
+{
+  struct zipentry * ze;
+  char * index_content;
+  int index_content_size;
+  char * short_jar_fname;
+  struct ziplistentry * zle;
+
+  if (strrchr(jarfile, '/'))
+    short_jar_fname = strrchr(jarfile, '/') + 1;
+  else
+    short_jar_fname = jarfile;
+
+  index_content_size = strlen("JarIndex-Version: 1.0\n\n\n") + strlen(short_jar_fname) + 1;
+  index_content = malloc(index_content_size);
+  sprintf(index_content, "JarIndex-Version: 1.0\n\n%s\n", short_jar_fname);
+	
+  for (ze = ziptail; ze; ze = ze->next_entry)
+    {
+      char * index_entry = get_index_entry(ze->filename);
+      if (find_index_entry(index_entry))
+	continue;
+    		
+      zle = (ziplistentry*) malloc(sizeof(ziplistentry));
+      zle->filename = strdup(index_entry);
+      zle->next_entry = NULL;
+      add_list_entry(zle);
+    		
+      index_content_size += strlen(index_entry) + 1;
+      index_content = realloc(index_content, index_content_size);
+      strcat(index_content, index_entry);
+      strcat(index_content, "\n");
+      index_content[index_content_size - 1] = '\0';
+    }
+    
+  add_array_to_jar(jfd, index_content, index_content_size, "META-INF/INDEX.LIST", TRUE);
+    
+  return 0;
 }

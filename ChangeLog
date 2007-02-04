@@ -1,5 +1,23 @@
 2007-02-04  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (build_index): Initialize 
+	a ziplistentry's next_element with NULL
+	before passing it to add_list_entry to
+	fix a crash. Don't re-assign filename
+	of a zip entry with the index name, as 
+	that turns directories into files, and 
+	breaks the zip files.
+
+2007-02-04  Olivier Jolly <olivier.jolly@pcedev.com>
+
+	* jartool.c: Enable fastjar to update an 
+	existing .jar with an META-INF/INDEX.LIST 
+	aka -i support. Still, it doesn't process 
+	the MANIFEST.MF to index files coming from 
+	dependant archives.
+
+2007-02-04  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.h (__attribute__): Explicitely
 	define it as a macro with one parameter.
 	That allows splint to be used for checking 
@@ -11,6 +29,7 @@
 
 	* configure.ac: Updated AC_INIT and 
 	AM_INIT_AUTOMAKE to use the modern form.
+
 
 2007-02-03  Dalibor Topic  <robilad@kaffe.org>
 
