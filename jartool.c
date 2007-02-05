@@ -2515,9 +2515,10 @@ int build_index(int jfd)
       index_content = realloc(index_content, index_content_size);
       strcat(index_content, index_entry);
       strcat(index_content, "\n");
-      index_content[index_content_size - 1] = '\0';
     }
-    
+
+  index_content[index_content_size - 1] = '\n';
+
   add_array_to_jar(jfd, index_content, index_content_size, "META-INF/INDEX.LIST", TRUE);
     
   return 0;

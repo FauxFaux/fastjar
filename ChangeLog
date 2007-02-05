@@ -1,5 +1,12 @@
 2007-02-04  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (build_index): Replace '\0'
+	character with '\n' before adding the 
+	index to the jar file to avoid having
+	a zero byte at the end of the index file.
+
+2007-02-04  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c: Added 2007 to copyright years,
 	and claimed my changes.
 	(OPTION_STRING) -i takes an argument.
