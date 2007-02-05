@@ -2505,7 +2505,10 @@ int build_index(int jfd)
       char * index_entry = get_index_entry(ze->filename);
       if (find_index_entry(index_entry))
 	continue;
-    		
+      /* Do not index the META-INF/ directory */
+      else if (strstr(ze->filename, "META-INF/") == ze->filename)
+        continue;
+
       zle = (ziplistentry*) malloc(sizeof(ziplistentry));
       zle->filename = strdup(index_entry);
       zle->next_entry = NULL;
@@ -2517,6 +2520,8 @@ int build_index(int jfd)
       strcat(index_content, "\n");
     }
 
+  /* Replace the last byte of the index_content string, '\0', with '\n', 
+     in order to avoid having binary garbage at end of the index file. */
   index_content[index_content_size - 1] = '\n';
 
   add_array_to_jar(jfd, index_content, index_content_size, "META-INF/INDEX.LIST", TRUE);

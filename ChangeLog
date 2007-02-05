@@ -1,5 +1,12 @@
 2007-02-04  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (build_index): Added comment
+	for previous patch. Added check to ensure
+	that the META-INF directory is not being
+	indexed.
+
+2007-02-04  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (build_index): Replace '\0'
 	character with '\n' before adding the 
 	index to the jar file to avoid having
