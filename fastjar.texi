@@ -157,8 +157,7 @@ in the GCC version.
 Do not create a manifest file for the entries.
 
 @item -i
-Generate an index of the packages in this jar and its Class-Path
-(currently a no-op for jar command-line compatibility).
+Generate an index of the packages in this jar and its Class-Path.
 
 @item -0
 Store only; use no ZIP compression.
