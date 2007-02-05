@@ -1,3 +1,14 @@
+New in release 0.94 (UNRELEASED)
+--------------------------------
+
+* Fix for directory traversal security issue CVE-2006-3619.
+
+* Support for JAR file indexing and updating.
+
+* Updated to use autoconf 2.61 and automake 1.10.
+
+* Many bug fixes and cleanups.
+
 Noteworthy changes in fastjar, 11/2000
 --------------------------------------
 
