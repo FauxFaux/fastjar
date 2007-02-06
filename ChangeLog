@@ -1,5 +1,9 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+	* dostime.c: Updated copyright information.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
 	* compress.c, dostime.c, jargrep.c, jartool.c
 	(HAVE_CONFIG_H): Added guards for include.
 

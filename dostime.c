@@ -1,6 +1,7 @@
 /* dostime.c - convert dos time to/from time_t.
 
    Copyright (C) 2002 Free Software Foundation
+   Copyright (C) 2007 Dalibor Topic
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
