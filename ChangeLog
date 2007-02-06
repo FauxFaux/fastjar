@@ -1,5 +1,9 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+	* TODO: New file.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
 	* compress.c (init_compression, write_data, 
 	compress_file, end_compression, init_inflation,
 	inflate_file, report_str_error, ez_inflate_str,

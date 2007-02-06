@@ -1,0 +1,24 @@
+TODOs for FastJar
+-----------------
+
+* indexing should also work with several jars.
+
+* create libfastjar.so for fastjar & grepjar to links against.
+
+* use gnulib for getopt substitution (solaris9).
+
+* use gnulib for regex substitution (mingw32).
+
+* merge in patches from gcc bugzilla from fastjar issue marked as WONTFIX.
+
+* merge in patches from distributions.
+
+* add pscan, rats, flawfinder & splint support to makefile & distcheck.
+
+* add many more gcc warnings to build.
+
+* test building with Sun CC on solaris.
+
+* add autotest based testsuite for cxtui operations & the CVE issue.
+
+* eventually: use autogen for option parsing? use glib? use zzlib? use libjar from firefox?
