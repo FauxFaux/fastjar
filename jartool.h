@@ -71,10 +71,4 @@ struct zipentry {
 
 typedef struct zipentry zipentry;
 
-#ifndef __GNUC__
-#ifndef __attribute__
-#define __attribute__(X) /**/
-#endif
-#endif
-
 #endif /* __FASTJAR_JARTOOL_H__ */
