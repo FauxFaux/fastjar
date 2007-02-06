@@ -305,7 +305,7 @@ int main(int argc, char **argv)
       if(jarfd < 0){
         fprintf(stderr, "%s: error opening %s for writing: %s\n", progname,
 		jarfile, strerror (errno));
-        exit(1);
+        exit(EXIT_FAILURE);
       }
       
       /* We assume that the file is seekable */
@@ -330,7 +330,7 @@ int main(int argc, char **argv)
       if(jarfd < 0){
         fprintf(stderr, "%s: error opening %s for reading: %s\n", progname,
 		jarfile, strerror (errno));
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
       seekable = TRUE;
@@ -348,21 +348,21 @@ int main(int argc, char **argv)
 	{
 	  fprintf (stderr, "%s: `-u' mode requires a file name\n",
 		   argv[0]);
-	  exit (1);
+	  exit(EXIT_FAILURE);
 	}
 
       if ((jarfd = open (jarfile, O_RDWR | O_BINARY)) < 0)
 	{
 	  fprintf (stderr, "Error opening %s for reading!\n", jarfile);
 	  perror (jarfile);
-	  exit (1);
+	  exit(EXIT_FAILURE);
 	}
 
       /* Assert that jarfd is seekable. */
       if (lseek (jarfd, 0, SEEK_CUR) == -1)
 	{
 	  fprintf (stderr, "%s: %s is not seekable\n", argv[0], jarfile);
-	  exit (1);
+	  exit(EXIT_FAILURE);
 	}
 
       seekable = TRUE;
@@ -378,7 +378,7 @@ int main(int argc, char **argv)
     if (action == ACTION_UPDATE)
       {
 	if (read_entries (jarfd))
-	  exit (1);
+	  exit(EXIT_FAILURE);
       }
 
     /* Add the META-INF/ directory and the manifest */
@@ -396,7 +396,7 @@ int main(int argc, char **argv)
 	const char *file_to_add = get_next_arg ();
         if (!dir_to_change || !file_to_add) {
           fprintf(stderr, "%s: error: missing argument for -C.\n", progname);
-          exit(1);
+          exit(EXIT_FAILURE);
         }
 	if (add_to_jar_with_dir(jarfd, dir_to_change, file_to_add,
 				action == ACTION_UPDATE))
@@ -404,12 +404,12 @@ int main(int argc, char **argv)
 	    fprintf(stderr,
 		    "Error adding %s (in directory %s) to jar archive!\n",
 		    file_to_add, dir_to_change);
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	  }
       } else {
         if(add_to_jar(jarfd, arg, action == ACTION_UPDATE)){
           fprintf(stderr, "Error adding %s to jar archive!\n", arg);
-          exit(1);
+          exit(EXIT_FAILURE);
         }
       }
     }
@@ -436,7 +436,7 @@ int main(int argc, char **argv)
     if (jarfd != STDIN_FILENO && close(jarfd) != 0) {
       fprintf(stderr, "%s: error closing jar archive: %s\n",
 	      progname, strerror (errno));
-      exit (1);
+      exit(EXIT_FAILURE);
     }
   } else if(action == ACTION_LIST){
     list_jar(jarfd, &new_argv[0], new_argc);
@@ -452,7 +452,7 @@ int main(int argc, char **argv)
       init_compression();
 
     if (read_entries (jarfd))
-      exit (1);
+      exit(EXIT_FAILURE);
 
     build_index(jarfd);
   	
@@ -477,12 +477,12 @@ int main(int argc, char **argv)
     if (jarfd != STDIN_FILENO && close(jarfd) != 0) {
       fprintf(stderr, "%s: error closing jar archive: %s\n",
 	      progname, strerror (errno));
-      exit (1);
+      exit(EXIT_FAILURE);
     }
   	
   }
   
-  exit(0);
+  exit(EXIT_SUCCESS);
 }
 
 static int args_current_g;
@@ -807,7 +807,7 @@ int make_manifest(int jfd, const char *mf_name, int updating)
   current_time = time(NULL);
   if(current_time == (time_t)-1){
     perror("time");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   mod_time = unix2dostime(&current_time);
@@ -823,7 +823,7 @@ int make_manifest(int jfd, const char *mf_name, int updating)
   ze = (zipentry*)malloc(sizeof(zipentry));
   if(ze == NULL){
     perror("malloc");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
@@ -873,7 +873,7 @@ int make_manifest(int jfd, const char *mf_name, int updating)
     ze = (zipentry*)malloc(sizeof(zipentry));
     if(ze == NULL){
       perror("malloc");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
     
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
@@ -898,7 +898,7 @@ int make_manifest(int jfd, const char *mf_name, int updating)
     }
     else {
 	printf("malloc errror\n");
-	exit(-1);
+	exit(EXIT_FAILURE);
     }
   } else {
     int mfd;
@@ -908,19 +908,19 @@ int make_manifest(int jfd, const char *mf_name, int updating)
 
     if(!S_ISREG(statbuf.st_mode)){
       fprintf(stderr, "Invalid manifest file specified.\n");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   
     mfd = open(mf_name, O_RDONLY | O_BINARY);
 
     if(mfd < 0){
       fprintf(stderr, "Error opening %s.\n", mf_name);
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     if(add_file_to_jar(jfd, mfd, "META-INF/MANIFEST.MF", &statbuf, updating)){
       perror("error writing to jar");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
   }
@@ -1035,7 +1035,7 @@ add_to_jar (int fd, const char *file, const int updating)
     ze = (zipentry*)malloc(sizeof(zipentry));
     if(ze == NULL){
       perror("malloc");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
@@ -1181,7 +1181,7 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
   ze = (zipentry*)malloc(sizeof(zipentry));
   if(ze == NULL){
     perror("malloc");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
@@ -1278,7 +1278,7 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
     
     if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1){
       perror("lseek");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     if(write(jfd, (data_descriptor + 4), 12) != 12){
@@ -1290,7 +1290,7 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
 
     if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1){
       perror("lseek");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   } else if(do_compress){
     /* Sun's jar tool will only allow a data descriptor if the entry is
@@ -1637,14 +1637,14 @@ int extract_jar(int fd, const char **files, int file_num){
 	  --depth;
 	  if (depth < 0){
 	    fprintf(stderr, "Traversal to parent directories during unpacking!\n");
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	  }
 	} else if (strcmp(tmp_buff, ".") != 0)
 	  ++depth;
         if(stat(tmp_buff, &sbuf) < 0){
           if(errno != ENOENT){
             perror("stat");
-            exit(1);
+            exit(EXIT_FAILURE);
           }
 
         } else if(S_ISDIR(sbuf.st_mode)){
@@ -1655,7 +1655,7 @@ int extract_jar(int fd, const char **files, int file_num){
         }else {
           fprintf(stderr, "Hmmm.. %s exists but isn't a directory!\n",
                   tmp_buff);
-          exit(1);
+          exit(EXIT_FAILURE);
         }
         
 #ifdef DEBUG    
@@ -1663,7 +1663,7 @@ int extract_jar(int fd, const char **files, int file_num){
 #endif
         if(mkdir(tmp_buff, 0755) < 0){
           perror("mkdir");
-          exit(1);
+          exit(EXIT_FAILURE);
         }
         if(verbose && handle)
           printf("%10s: %s/\n", "created", tmp_buff);
@@ -1692,13 +1692,13 @@ int extract_jar(int fd, const char **files, int file_num){
       if(f_fd < 0){
         fprintf(stderr, "Error extracting JAR archive!\n");
         perror((const char *)filename);
-        exit(1);
+        exit(EXIT_FAILURE);
       }
     }
 
     if(method != 8 && flags & 0x0008){
       fprintf(stderr, "Error in JAR file! (not compressed but data desc.)\n");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     if (eflen > 0)
@@ -1722,7 +1722,7 @@ int extract_jar(int fd, const char **files, int file_num){
         rdamt = (in_a > RDSZ ? RDSZ : in_a);
         if(pb_read(&pbf, rd_buff, rdamt) != rdamt){
           perror("read");
-          exit(1);
+          exit(EXIT_FAILURE);
         }
         
         ze.crc = crc32(ze.crc, (Bytef*)rd_buff, rdamt);
@@ -1744,14 +1744,14 @@ int extract_jar(int fd, const char **files, int file_num){
 
       if(pb_read(&pbf, scratch, 16) != 16){
         perror("read");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
       signature = UNPACK_UB4(scratch, 0);
 
       if(signature != 0x08074b50){
         fprintf(stderr, "Error! Missing data descriptor!\n");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
       crc = UNPACK_UB4(scratch, 4);
@@ -1761,7 +1761,7 @@ int extract_jar(int fd, const char **files, int file_num){
     if(crc != ze.crc){
       fprintf(stderr, "Error! CRCs do not match! Got %x, expected %x\n",
               ze.crc, crc);
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     close(f_fd);
@@ -1806,12 +1806,12 @@ int list_jar(int fd, const char **files, int file_num){
   if(seekable){
     if(lseek(fd, -22, SEEK_END) == (off_t)-1){
       perror("lseek");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
     
     if(read(fd, &tmp, sizeof(ub4)) != 4){
       perror("read");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
 #ifdef WORDS_BIGENDIAN
@@ -1828,17 +1828,17 @@ int list_jar(int fd, const char **files, int file_num){
       seekable = FALSE;
       if(lseek(fd, 0, SEEK_SET) == (off_t)-1){
         perror("lseek");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
     } else {
       if(lseek(fd, 6, SEEK_CUR) == (off_t)-1){
         perror("lseek");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
   
       if(read(fd, &cen_size, 2) != 2){
         perror("read");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
 #ifdef WORDS_BIGENDIAN
@@ -1849,12 +1849,12 @@ int list_jar(int fd, const char **files, int file_num){
 
       if(lseek(fd, 4, SEEK_CUR) == (off_t)-1){
         perror("lseek");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
       if(read(fd, &tmp, 4) != 4){
         perror("read");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
 #ifdef WORDS_BIGENDIAN
@@ -1865,7 +1865,7 @@ int list_jar(int fd, const char **files, int file_num){
 
       if(lseek(fd, tmp, SEEK_SET) != (int)tmp){
         perror("lseek");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
       /* Loop through the entries in the central header */
@@ -1873,13 +1873,13 @@ int list_jar(int fd, const char **files, int file_num){
     
         if(read(fd, &cen_header, 46) != 46){
           perror("read");
-          exit(1);
+          exit(EXIT_FAILURE);
         }
 
         signature = UNPACK_UB4(cen_header, 0);
         if(signature != 0x02014b50){
           fprintf(stderr, "Error in JAR file! Cannot locate central header!\n");
-          exit(1);
+          exit(EXIT_FAILURE);
         }
 
         usize = UNPACK_UB4(cen_header, CEN_USIZE);
@@ -1907,7 +1907,7 @@ int list_jar(int fd, const char **files, int file_num){
     
         if(read(fd, filename, fnlen) != fnlen){
           perror("read");
-          exit(1);
+          exit(EXIT_FAILURE);
         }
         filename[fnlen] = '\0';
     
@@ -1933,7 +1933,7 @@ int list_jar(int fd, const char **files, int file_num){
         if(size > 0){
           if(lseek(fd, size, SEEK_CUR) == (off_t)-1){
             perror("lseek");
-            exit(1);
+            exit(EXIT_FAILURE);
           }
 	}
       }
@@ -1976,7 +1976,7 @@ int list_jar(int fd, const char **files, int file_num){
         printf("Ick! %#x\n", signature);
 #endif
         fprintf(stderr, "Error in JAR file format\n");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
       
       if(pb_read(&pbf, (file_header + 4), 26) != 26){
@@ -2117,7 +2117,7 @@ int consume(pb_file *pbf, int amt){
 
 void usage(const char *filename){
   fprintf(stderr, "Try `%s --help' for more information.\n", filename);
-  exit (1);
+  exit(EXIT_FAILURE);
 }
 
 void version (void)
@@ -2128,7 +2128,7 @@ void version (void)
   printf("\
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
-  exit (0);
+  exit(EXIT_SUCCESS);
 }
 
 void help(const char *filename)
@@ -2172,7 +2172,7 @@ Example 2: use an existing manifest file 'mymanifest' and archive all the\n\
      jar cvfm classes.jar mymanifest -C foo/ .\n\
 ");
 
-  exit(0);
+  exit(EXIT_SUCCESS);
 }
 
 static char *
@@ -2306,7 +2306,7 @@ int add_array_to_jar(int jfd, char* content, int content_length, const char *fna
   current_time = time(NULL);
   if(current_time == (time_t)-1){
     perror("time");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   mod_time = unix2dostime(&current_time);
@@ -2337,7 +2337,7 @@ int add_array_to_jar(int jfd, char* content, int content_length, const char *fna
   ze = (zipentry*)malloc(sizeof(zipentry));
   if(ze == NULL){
     perror("malloc");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
@@ -2424,7 +2424,7 @@ int add_array_to_jar(int jfd, char* content, int content_length, const char *fna
     
     if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1){
       perror("lseek");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     if(write(jfd, (data_descriptor + 4), 12) != 12){
@@ -2436,7 +2436,7 @@ int add_array_to_jar(int jfd, char* content, int content_length, const char *fna
 
     if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1){
       perror("lseek");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   } 
   
@@ -2485,7 +2485,7 @@ char* get_index_entry(char* fname)
       if (!result)
 	{
 	  perror("strdup");
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
       *strrchr(result, '/') = '\0';
       return result;

@@ -61,7 +61,7 @@ void init_compression(void){
                   9, Z_DEFAULT_STRATEGY) != Z_OK){
     
     fprintf(stderr, "Error initializing deflation!\n");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -83,7 +83,7 @@ write_data (int fd, void *buf, size_t len,
 	  if (shift_down (fd, next->offset, (here + len) - next->offset, next))
 	    {
 	      perror ("can't expand file");
-	      exit (1);
+	      exit(EXIT_FAILURE);
 	    }
 	}
     }
@@ -119,7 +119,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
 
       if(rtval == -1){
         perror("read");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
       rdamt = rtval;
@@ -137,7 +137,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
     /* deflate the data */
     if(deflate(&zs, 0) != Z_OK){
       fprintf(stderr, "Error deflating! %s:%d\n", __FILE__, __LINE__);
-      exit(1);
+      exit(EXIT_FAILURE);
     }
     
     /* If the output buffer is full, dump it to disk */
@@ -146,7 +146,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
       if (write_data (out_fd, out_buff, RDSZ, existing) != RDSZ)
 	{
 	  perror("write");
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 
       /* clear the output buffer */
@@ -165,7 +165,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
     if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
       {
 	perror("write");
-	exit(1);
+	exit(EXIT_FAILURE);
       }
     /* clear the output buffer */
     zs.next_out = out_buff;
@@ -180,7 +180,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
     if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
       {
 	perror("write");
-	exit(1);
+	exit(EXIT_FAILURE);
       }
 
     zs.next_out = out_buff;
@@ -194,7 +194,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
     if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
       {
 	perror("write");
-	exit(1);
+	exit(EXIT_FAILURE);
       }
   }
 
@@ -205,7 +205,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
   /* Reset the deflation for the next time around */
   if(deflateReset(&zs) != Z_OK){
     fprintf(stderr, "Error resetting deflation\n");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   
   return 0;
@@ -219,7 +219,7 @@ void end_compression(void){
   if((rtval = deflateEnd(&zs)) != Z_OK && rtval != Z_DATA_ERROR){
     fprintf(stderr, "Error calling deflateEnd\n");
     fprintf(stderr, "error: (%d) %s\n", rtval, zs.msg);
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -234,7 +234,7 @@ void init_inflation(void){
   
   if(inflateInit2(&zs, -15) != Z_OK){
     fprintf(stderr, "Error initializing deflation!\n");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
 }
@@ -258,7 +258,7 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
         break;
       else if((int)rdamt < 0){
         perror("read");
-        exit(1);
+        exit(EXIT_FAILURE);
       }
 
 #ifdef DEBUG
@@ -284,14 +284,14 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
             if(write(out_fd, out_buff, (RDSZ - zs.avail_out)) != 
                (int)(RDSZ - zs.avail_out)){
               perror("write");
-              exit(1);
+              exit(EXIT_FAILURE);
             }
         }
         
         break;
       } else {
         fprintf(stderr, "Error inflating file! (%d)\n", rtval);
-        exit(1);
+        exit(EXIT_FAILURE);
       }
     } else {
       if(zs.avail_out != RDSZ){
@@ -301,7 +301,7 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
           if(write(out_fd, out_buff, (RDSZ - zs.avail_out)) != 
              (int)(RDSZ - zs.avail_out)){
             perror("write");
-            exit(1);
+            exit(EXIT_FAILURE);
           }
         zs.next_out = out_buff;
         zs.avail_out = RDSZ;
@@ -343,24 +343,24 @@ static void report_str_error(int val) {
 		break;
 	case Z_NEED_DICT:
 		fprintf(stderr, "Need a dictionary?\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	case Z_DATA_ERROR:
 		fprintf(stderr, "Z_DATA_ERROR\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	case Z_STREAM_ERROR:
 		fprintf(stderr, "Z_STREAM_ERROR\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	case Z_MEM_ERROR:
 		fprintf(stderr, "Z_MEM_ERROR\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	case Z_BUF_ERROR:
 		fprintf(stderr, "Z_BUF_ERROR\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	case Z_OK:
 		break;
 	default:
 		fprintf(stderr, "Unknown behavior from inflate\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -394,20 +394,20 @@ static Bytef *ez_inflate_str(pb_file *pbf, ub4 csize, ub4 usize) {
 				fprintf(stderr, "Tried to read %u but read %u instead.\n", csize, rdamt);
 				free(in_buff);
 				free(out_buff);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 		}
 		else {
 			fprintf(stderr, "Malloc of out_buff failed.\n");
 			fprintf(stderr, "Error: %s\n", strerror(errno));
 			free(in_buff);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else {
 		fprintf(stderr, "Malloc of in_buff failed.\n");
 		fprintf(stderr, "Error: %s\n", strerror(errno));
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	return out_buff;
@@ -450,7 +450,7 @@ static Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize) {
 			else {
 				fprintf(stderr, "Realloc of out_buff failed.\n");
 				fprintf(stderr, "Error: %s\n", strerror(errno));
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 		} while((zret = inflate(&zs, 0)) == Z_OK);
 		report_str_error(zret);

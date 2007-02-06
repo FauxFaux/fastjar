@@ -101,20 +101,20 @@ static regex_t *create_regexp(const char *regstr, int options) {
 				fprintf(stderr, "Error: %s\n", errmsg);
 				free(exp);
 				free(errmsg);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			else {
 				fprintf(stderr, "Malloc of errmsg failed.\n");
 				fprintf(stderr, "Error: %s\n", strerror(errno));
 				free(exp);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 		}
 	}
 	else {
 		fprintf(stderr, "Malloc of regex failed,\n");
 		fprintf(stderr, "Error: %s\n", strerror(errno));
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	return exp; 
@@ -246,7 +246,7 @@ static char *read_string(pb_file *pbf, int size) {
 	else {
 		fprintf(stderr, "Malloc of page buffer failed.\n");
 		fprintf(stderr, "Error: %s\n", strerror(errno));
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	return page;
@@ -282,7 +282,7 @@ static char *extract_line(const char *stream, regoff_t begin, regoff_t end, int 
 	else {
 		fprintf(stderr, "Malloc failed of output string.\n");
 		fprintf(stderr, "Error: %s\n", strerror(errno));
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	return retstr;
@@ -393,17 +393,17 @@ static void check_crc(pb_file *pbf, const char *stream, ub4 usize) {
 	crc = crc32(crc, (const unsigned char *)stream, usize);
 	if(pb_read(pbf, scratch, 16) != 16) {
 		perror("read");
-        exit(1);
+        exit(EXIT_FAILURE);
 	}
 	if(UNPACK_UB4(scratch, 0) != 0x08074b50) {
 		fprintf(stderr, "Error! Missing data descriptor!\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	lcrc = UNPACK_UB4(scratch, 4);
 	if(crc != lcrc){
     	fprintf(stderr, "Error! CRCs do not match! Got %x, expected %x\n",
               crc, lcrc);
-      	exit(1);
+      	exit(EXIT_FAILURE);
     }
 }
 
@@ -460,7 +460,7 @@ static regmatch_t *fnd_match(regex_t *exp, const char *str_stream, int *i) {
 		else {
 			fprintf(stderr, "Realloc of match_array failed.\n");
 			fprintf(stderr, "Error: %s\n", strerror(errno));
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	} 
 
@@ -614,7 +614,7 @@ int main(int argc, char **argv) {
 				if(!(regexpstr = (char *) malloc(strlen(optarg) + 1))) {
 					fprintf(stderr, "Malloc failure.\n");
 					fprintf(stderr, "Error: %s\n", strerror(errno));
-					exit(1);
+					exit(EXIT_FAILURE);
 				}
 				strcpy(regexpstr, optarg);
 				break;
@@ -641,7 +641,7 @@ int main(int argc, char **argv) {
 				break;
 			default:
 				fprintf(stderr, Usage, argv[0]);
-				exit(1);
+				exit(EXIT_FAILURE);
 		}
 	}
 	if(!regexpstr){
@@ -652,7 +652,7 @@ int main(int argc, char **argv) {
 		else {
 			fprintf(stderr, "Invalid arguments.\n");
 			fprintf(stderr, Usage, argv[0]);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else if((argc - optind) == 1) {
@@ -661,7 +661,7 @@ int main(int argc, char **argv) {
 	else {
 		fprintf(stderr, "Invalid arguments.\n");
 		fprintf(stderr, Usage, argv[0]);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	if(opt_valid(options)) {
@@ -699,7 +699,7 @@ Search files in a jar file for a pattern.\n\
    --help            print help\n\
 ");
 
-  exit (0);
+  exit(EXIT_SUCCESS);
 }
 
 void version (void)
@@ -711,5 +711,5 @@ void version (void)
   printf("\
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
-  exit (0);
+  exit(EXIT_SUCCESS);
 }

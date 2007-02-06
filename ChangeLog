@@ -1,5 +1,21 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+	* compress.c (init_compression, write_data, 
+	compress_file, end_compression, init_inflation,
+	inflate_file, report_str_error, ez_inflate_str,
+	hrd_inflate_str): Use EXIT_FAILURE.
+
+	* jargrep.c (create_regexp, read_string, 
+	extract_line, check_crc, fnd_match, main,
+	version): Use EXIT_FAILURE and EXIT_SUCCESS.
+
+	* jartool.c (main, make_manifest, add_to_jar,
+	add_file_to_jar, extract_jar, list_jar, 
+	consume, version, help, add_array_to_jar, 
+	get_index_entry): Use EXIT_FAILURE and EXIT_SUCCESS.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
 	* dostime.c: Updated copyright information.
 
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
