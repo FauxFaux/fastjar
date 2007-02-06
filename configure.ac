@@ -7,7 +7,6 @@ AC_CONFIG_HEADERS([config.h])
 
 dnl Checks for programs.
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PATH_PROG(RM, rm, /bin/rm, $PATH:/bin:/usr/bin:/usr/local/bin)
 AC_PATH_PROG(CP, cp, /bin/cp, $PATH:/bin:/usr/bin:/usr/local/bin)

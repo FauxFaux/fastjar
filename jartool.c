@@ -156,9 +156,6 @@ int number_of_entries; /* number of entries in the linked list */
 /* What we go by. */
 const char *progname;
 
-/* The offset of the end of the last zip entry. */
-ub4 end_of_entries;
-
 /* This is used to mark options with no short value.  */
 #define LONG_OPT(Num)  ((Num) + 128)
 

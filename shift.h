@@ -26,4 +26,5 @@ USA.  */
 int shift_down (int, off_t, off_t, struct zipentry *);
 int shift_up (int, off_t, off_t, struct zipentry *);
 
+extern ub4 end_of_entries;
 #endif /* __FASTJAR_SHIFT_H__ */

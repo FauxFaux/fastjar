@@ -54,13 +54,12 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" \
 	"$(DESTDIR)$(man1dir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_fastjar_OBJECTS = fastjar-jartool.$(OBJEXT) \
-	fastjar-dostime.$(OBJEXT) fastjar-compress.$(OBJEXT) \
-	fastjar-pushback.$(OBJEXT) fastjar-shift.$(OBJEXT)
+am_fastjar_OBJECTS = jartool.$(OBJEXT) dostime.$(OBJEXT) \
+	compress.$(OBJEXT) pushback.$(OBJEXT) shift.$(OBJEXT)
 fastjar_OBJECTS = $(am_fastjar_OBJECTS)
 am__DEPENDENCIES_1 =
 am_grepjar_OBJECTS = jargrep.$(OBJEXT) dostime.$(OBJEXT) \
-	compress.$(OBJEXT) pushback.$(OBJEXT)
+	compress.$(OBJEXT) pushback.$(OBJEXT) shift.$(OBJEXT)
 grepjar_OBJECTS = $(am_grepjar_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -203,9 +202,8 @@ zipfile.h dostime.h compress.h pushback.h shift.h
 
 fastjar_LDADD = $(ZLIBS)
 fastjar_DEPENDENCIES = $(ZDEPS)
-fastjar_CPPFLAGS = $(AM_CPPFLAGS) -DWITH_SHIFT_DOWN
-grepjar_SOURCES = jargrep.c dostime.c compress.c pushback.c jartool.h \
-zipfile.h dostime.h compress.h pushback.h jargrep.h
+grepjar_SOURCES = jargrep.c dostime.c compress.c pushback.c shift.c jartool.h \
+zipfile.h dostime.h compress.h pushback.h shift.h jargrep.h
 
 grepjar_LDADD = $(ZLIBS)
 grepjar_DEPENDENCIES = $(ZDEPS)
@@ -313,13 +311,10 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dostime.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastjar-compress.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastjar-dostime.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastjar-jartool.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastjar-pushback.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastjar-shift.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jargrep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jartool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pushback.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shift.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -334,76 +329,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-fastjar-jartool.o: jartool.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-jartool.o -MD -MP -MF $(DEPDIR)/fastjar-jartool.Tpo -c -o fastjar-jartool.o `test -f 'jartool.c' || echo '$(srcdir)/'`jartool.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-jartool.Tpo $(DEPDIR)/fastjar-jartool.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jartool.c' object='fastjar-jartool.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-jartool.o `test -f 'jartool.c' || echo '$(srcdir)/'`jartool.c
-
-fastjar-jartool.obj: jartool.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-jartool.obj -MD -MP -MF $(DEPDIR)/fastjar-jartool.Tpo -c -o fastjar-jartool.obj `if test -f 'jartool.c'; then $(CYGPATH_W) 'jartool.c'; else $(CYGPATH_W) '$(srcdir)/jartool.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-jartool.Tpo $(DEPDIR)/fastjar-jartool.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jartool.c' object='fastjar-jartool.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-jartool.obj `if test -f 'jartool.c'; then $(CYGPATH_W) 'jartool.c'; else $(CYGPATH_W) '$(srcdir)/jartool.c'; fi`
-
-fastjar-dostime.o: dostime.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-dostime.o -MD -MP -MF $(DEPDIR)/fastjar-dostime.Tpo -c -o fastjar-dostime.o `test -f 'dostime.c' || echo '$(srcdir)/'`dostime.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-dostime.Tpo $(DEPDIR)/fastjar-dostime.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dostime.c' object='fastjar-dostime.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-dostime.o `test -f 'dostime.c' || echo '$(srcdir)/'`dostime.c
-
-fastjar-dostime.obj: dostime.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-dostime.obj -MD -MP -MF $(DEPDIR)/fastjar-dostime.Tpo -c -o fastjar-dostime.obj `if test -f 'dostime.c'; then $(CYGPATH_W) 'dostime.c'; else $(CYGPATH_W) '$(srcdir)/dostime.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-dostime.Tpo $(DEPDIR)/fastjar-dostime.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dostime.c' object='fastjar-dostime.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-dostime.obj `if test -f 'dostime.c'; then $(CYGPATH_W) 'dostime.c'; else $(CYGPATH_W) '$(srcdir)/dostime.c'; fi`
-
-fastjar-compress.o: compress.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-compress.o -MD -MP -MF $(DEPDIR)/fastjar-compress.Tpo -c -o fastjar-compress.o `test -f 'compress.c' || echo '$(srcdir)/'`compress.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-compress.Tpo $(DEPDIR)/fastjar-compress.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='compress.c' object='fastjar-compress.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-compress.o `test -f 'compress.c' || echo '$(srcdir)/'`compress.c
-
-fastjar-compress.obj: compress.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-compress.obj -MD -MP -MF $(DEPDIR)/fastjar-compress.Tpo -c -o fastjar-compress.obj `if test -f 'compress.c'; then $(CYGPATH_W) 'compress.c'; else $(CYGPATH_W) '$(srcdir)/compress.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-compress.Tpo $(DEPDIR)/fastjar-compress.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='compress.c' object='fastjar-compress.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-compress.obj `if test -f 'compress.c'; then $(CYGPATH_W) 'compress.c'; else $(CYGPATH_W) '$(srcdir)/compress.c'; fi`
-
-fastjar-pushback.o: pushback.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-pushback.o -MD -MP -MF $(DEPDIR)/fastjar-pushback.Tpo -c -o fastjar-pushback.o `test -f 'pushback.c' || echo '$(srcdir)/'`pushback.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-pushback.Tpo $(DEPDIR)/fastjar-pushback.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pushback.c' object='fastjar-pushback.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-pushback.o `test -f 'pushback.c' || echo '$(srcdir)/'`pushback.c
-
-fastjar-pushback.obj: pushback.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-pushback.obj -MD -MP -MF $(DEPDIR)/fastjar-pushback.Tpo -c -o fastjar-pushback.obj `if test -f 'pushback.c'; then $(CYGPATH_W) 'pushback.c'; else $(CYGPATH_W) '$(srcdir)/pushback.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-pushback.Tpo $(DEPDIR)/fastjar-pushback.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pushback.c' object='fastjar-pushback.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-pushback.obj `if test -f 'pushback.c'; then $(CYGPATH_W) 'pushback.c'; else $(CYGPATH_W) '$(srcdir)/pushback.c'; fi`
-
-fastjar-shift.o: shift.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-shift.o -MD -MP -MF $(DEPDIR)/fastjar-shift.Tpo -c -o fastjar-shift.o `test -f 'shift.c' || echo '$(srcdir)/'`shift.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-shift.Tpo $(DEPDIR)/fastjar-shift.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shift.c' object='fastjar-shift.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-shift.o `test -f 'shift.c' || echo '$(srcdir)/'`shift.c
-
-fastjar-shift.obj: shift.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fastjar-shift.obj -MD -MP -MF $(DEPDIR)/fastjar-shift.Tpo -c -o fastjar-shift.obj `if test -f 'shift.c'; then $(CYGPATH_W) 'shift.c'; else $(CYGPATH_W) '$(srcdir)/shift.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fastjar-shift.Tpo $(DEPDIR)/fastjar-shift.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shift.c' object='fastjar-shift.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(fastjar_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fastjar-shift.obj `if test -f 'shift.c'; then $(CYGPATH_W) 'shift.c'; else $(CYGPATH_W) '$(srcdir)/shift.c'; fi`
 
 .texi.info:
 	restore=: && backupdir="$(am__leading_dot)am$$$$" && \

@@ -41,9 +41,6 @@
 
 int write_data (int, void *, size_t, struct zipentry *);
 
-extern int seekable;
-extern off_t end_of_entries;
-
 static z_stream zs;
 
 void init_compression(){
@@ -67,9 +64,8 @@ void init_compression(){
 
 int
 write_data (int fd, void *buf, size_t len,
-	    struct zipentry *ze __attribute__((unused)))
+	    struct zipentry *ze)
 {
-#ifdef WITH_SHIFT_DOWN
   struct zipentry *next = NULL;
   off_t here = lseek (fd, 0, SEEK_CUR);
   /*
@@ -88,7 +84,6 @@ write_data (int fd, void *buf, size_t len,
 	    }
 	}
     }
-#endif /* WITH_SHIFT_DOWN */
 
   return write (fd, buf, len);
 }

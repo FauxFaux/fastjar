@@ -7,10 +7,9 @@ fastjar_SOURCES = jartool.c dostime.c compress.c pushback.c shift.c jartool.h \
 zipfile.h dostime.h compress.h pushback.h shift.h
 fastjar_LDADD = $(ZLIBS)
 fastjar_DEPENDENCIES = $(ZDEPS)
-fastjar_CPPFLAGS = $(AM_CPPFLAGS) -DWITH_SHIFT_DOWN
 
-grepjar_SOURCES = jargrep.c dostime.c compress.c pushback.c jartool.h \
-zipfile.h dostime.h compress.h pushback.h jargrep.h
+grepjar_SOURCES = jargrep.c dostime.c compress.c pushback.c shift.c jartool.h \
+zipfile.h dostime.h compress.h pushback.h shift.h jargrep.h
 grepjar_LDADD = $(ZLIBS)
 grepjar_DEPENDENCIES = $(ZDEPS)
 
