@@ -1,5 +1,10 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+	* dostime.c (unix2dostime): Renamed parameter to
+	unix_time.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (list_jar, extract_jar, init_args, 
 	get_next_arg): Added const qualifier to char ** 
 	parameter and return types.
