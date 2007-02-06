@@ -109,8 +109,8 @@ void add_entry(struct zipentry *);
 void init_headers(void);
 
 int consume(pb_file *, int);
-int list_jar(int, char**, int);
-int extract_jar(int, char**, int);
+int list_jar(int, const char**, int);
+int extract_jar(int, const char**, int);
 int add_file_to_jar(int, int, const char*, struct stat*, int);
 int add_to_jar(int, const char*, int);
 int add_to_jar_with_dir(int, const char*, const char*, int);
@@ -121,8 +121,8 @@ void add_list_entry(ziplistentry*);
 int create_central_header(int);
 int make_manifest(int, const char*, int);
 int read_entries (int);
-static void init_args(char **, int);
-static char *get_next_arg (void);
+static void init_args(const char **, int);
+static const char *get_next_arg (void);
 static char *jt_strdup (char*);
 static void expand_options (int *argcp, char ***argvp);
 static struct zipentry *find_entry (const char *);
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
   /* These are used to collect file names and `-C' options for the
      second pass through the command line.  */
   int new_argc;
-  char **new_argv;
+  const char **new_argv;
 
   progname = argv[0];
 
@@ -205,14 +205,14 @@ int main(int argc, char **argv)
     usage(argv[0]);
   
   new_argc = 0;
-  new_argv = (char **) malloc (argc * sizeof (char *));
+  new_argv = (const char **) malloc (argc * sizeof (char *));
 
   expand_options (&argc, &argv);
   while ((opt = getopt_long (argc, argv, OPTION_STRING,
 			     options, NULL)) != -1) {
     switch(opt){
     case 'C':
-      new_argv[new_argc++] = (char *) "-C";
+      new_argv[new_argc++] = (const char *) "-C";
       /* ... fall through ... */
     case 1:
       /* File name or unparsed option, due to RETURN_IN_ORDER.  */
@@ -484,10 +484,10 @@ int main(int argc, char **argv)
 }
 
 static int args_current_g;
-static char **args_g;
+static const char **args_g;
 
 static void 
-init_args(char **args, int current)
+init_args(const char **args, int current)
 {
   if(!read_names_from_stdin)
     {
@@ -496,7 +496,7 @@ init_args(char **args, int current)
     }
 }
 
-static char *
+static const char *
 get_next_arg (void)
 {
   static int reached_end = 0;
@@ -1477,7 +1477,7 @@ int create_central_header(int fd){
   return 0;
 }
 
-int extract_jar(int fd, char **files, int file_num){
+int extract_jar(int fd, const char **files, int file_num){
   int rdamt;
   int out_a, in_a;
   ub4 signature;
@@ -1773,7 +1773,7 @@ int extract_jar(int fd, char **files, int file_num){
   return 0;
 }
 
-int list_jar(int fd, char **files, int file_num){
+int list_jar(int fd, const char **files, int file_num){
   ub4 signature;
   ub4 csize;
   ub4 usize;
