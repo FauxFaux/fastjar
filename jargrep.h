@@ -2,6 +2,7 @@
   jargrep.h - header file for jargrep utility
   Copyright (C) 2002 Free Software Foundation
   Copyright (C) 2000 Cory Hollingsworth
+  Copyright (C) 2007 Dalibor Topic
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -18,6 +19,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#ifndef __FASTJAR_JARGREP_H__
+#define __FASTJAR_JARGREP_H__
+
 #define JG_PRINT_BYTEOFFSET		0x00000001
 #define JG_PRINT_COUNT			0x00000002
 #define JG_IGNORE_CASE			0x00000004
@@ -25,3 +29,5 @@
 #define JG_SUPRESS_ERROR		0x00000010
 #define JG_INVERT				0x00000020
 #define JG_WORD_EXPRESSIONS		0x00000040
+
+#endif /* __FASTJAR_JARGREP_H__ */

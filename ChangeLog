@@ -1,5 +1,10 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+        * jargrep.h:
+        Added #ifndef __FASTJAR_JARGREP_H__.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
         * dostime.h:
         Added #ifndef __FASTJAR_DOSTIME_H__.
 
