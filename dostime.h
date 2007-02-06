@@ -1,6 +1,7 @@
 /*
   dostime.h - function prototypes
   Copyright (C) 1999, 2002  Bryan Burns
+  Copyright (C) 2007 Dalibor Topic
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -17,5 +18,10 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef __FASTJAR_DOSTIME_H__
+#define __FASTJAR_DOSTIME_H__
+
 time_t dos2unixtime(unsigned long dostime);
 unsigned long unix2dostime(time_t*);
+
+#endif /* __FASTJAR_DOSTIME_H__ */

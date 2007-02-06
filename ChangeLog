@@ -1,6 +1,11 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
-        * compress.h
+        * dostime.h:
+        Added #ifndef __FASTJAR_DOSTIME_H__.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
+        * compress.h:
         Added #ifndef __FASTJAR_COMPRESS_H__.
 
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
