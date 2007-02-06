@@ -17,6 +17,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef __FASTJAR_COMPRESS_H__
+#define __FASTJAR_COMPRESS_H__
+
 /* Initializes the compression data structure(s) */
 void init_compression(void);
 
@@ -30,3 +33,5 @@ void init_inflation(void);
 int inflate_file(pb_file *, int, struct zipentry *);
 void end_inflation(void);
 Bytef *inflate_string(pb_file *, ub4 *, ub4 *);
+
+#endif /* __FASTJAR_COMPRESS_H__ */
