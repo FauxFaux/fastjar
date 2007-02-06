@@ -43,7 +43,7 @@ int write_data (int, void *, size_t, struct zipentry *);
 
 static z_stream zs;
 
-void init_compression(){
+void init_compression(void){
 
   memset(&zs, 0, sizeof(z_stream));
 
@@ -208,7 +208,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
   return 0;
 }
 
-void end_compression(){
+void end_compression(void){
   int rtval;
 
   /* Oddly enough, zlib always returns Z_DATA_ERROR if you specify no
@@ -221,7 +221,7 @@ void end_compression(){
 }
 
 
-void init_inflation(){
+void init_inflation(void){
 
   memset(&zs, 0, sizeof(z_stream));
     

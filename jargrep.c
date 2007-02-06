@@ -698,7 +698,7 @@ Search files in a jar file for a pattern.\n\
   exit (0);
 }
 
-void version ()
+void version (void)
 {
   printf("grepjar (%s) %s\n\n", PACKAGE, VERSION);
   printf("Copyright 1999, 2000, 2001  Bryan Burns\n");
