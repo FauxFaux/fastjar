@@ -1,19 +1,30 @@
 # Process this with automake to create Makefile.in
 
 AM_CPPFLAGS = -I. -I$(top_srcdir) $(ZINCS)
+AM_CFLAGS = @fastjar_warn_cflags@
 
 bin_PROGRAMS = fastjar grepjar
-fastjar_SOURCES = jartool.c dostime.c compress.c pushback.c shift.c jartool.h \
-zipfile.h dostime.h compress.h pushback.h shift.h
-fastjar_LDADD = $(ZLIBS)
+
+lib_LTLIBRARIES = libfastjar.la
+
+libfastjar_la_SOURCES = \
+	compress.c \
+	compress.h \
+	dostime.c \
+	dostime.h \
+	pushback.c \
+	pushback.h \
+	shift.c \
+	shift.h \
+	zipfile.h
+
+fastjar_SOURCES = jartool.c jartool.h
+fastjar_LDADD = $(ZLIBS) libfastjar.la
 fastjar_DEPENDENCIES = $(ZDEPS)
 
-grepjar_SOURCES = jargrep.c dostime.c compress.c pushback.c shift.c jartool.h \
-zipfile.h dostime.h compress.h pushback.h shift.h jargrep.h
-grepjar_LDADD = $(ZLIBS)
+grepjar_SOURCES = jargrep.c jargrep.h
+grepjar_LDADD = $(ZLIBS) libfastjar.la
 grepjar_DEPENDENCIES = $(ZDEPS)
-
-AM_CFLAGS = @fastjar_warn_cflags@
 
 info_TEXINFOS = fastjar.texi
 fastjar_TEXINFOS = \
@@ -37,4 +48,7 @@ fastjar.pod: $(srcdir)/fastjar.texi
 
 grepjar.pod: $(srcdir)/fastjar.texi
 	-$(TEXI2POD) -D grepjar $< > $@
+
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
 
