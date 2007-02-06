@@ -235,7 +235,7 @@ int main(int argc, char **argv)
       break;
     case 'V':
       version();
-      exit(0);
+      break;
     case 'f':
       jarfile = optarg;
       break;
