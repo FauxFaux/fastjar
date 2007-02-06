@@ -1,3 +1,14 @@
+2007-02-06  Wil Mahan  <wmahan@users.sourceforge.net>
+
+	* jartool.c (list_jar): Fall back on 
+	the method used for non-seekable files when 
+	reading the central-header-end section does 
+	not work, i.e. in archives with a zipfile 
+	comment at the end.
+
+	Patch taken from fastjar.sourceforge.net
+	patch repository.
+
 2007-02-05  Dalibor Topic  <robilad@kaffe.org>
 
 	* configure.ac (AC_INIT): Changed version 

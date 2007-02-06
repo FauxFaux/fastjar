@@ -1820,118 +1820,129 @@ int list_jar(int fd, char **files, int file_num){
 #endif
 
     if(tmp != 0x06054b50){
-      fprintf(stderr, "Error in JAR file format. zip-style comment?\n");
-      exit(1);
-    }
-
-    if(lseek(fd, 6, SEEK_CUR) == (off_t)-1){
-      perror("lseek");
-      exit(1);
-    }
+      /* Normally, we seek to the end of the file, look at the
+         central-header-end section, and read the offset to the
+         central header section. But if there is a zipfile comment at
+         the end, the value we are looking for will not be in a fixed
+         position, so we have to fall back on the method used for
+         non-seekable files. */
+      seekable = FALSE;
+      if(lseek(fd, 0, SEEK_SET) == (off_t)-1){
+        perror("lseek");
+        exit(1);
+      }
+    } else {
+      if(lseek(fd, 6, SEEK_CUR) == (off_t)-1){
+        perror("lseek");
+        exit(1);
+      }
   
-    if(read(fd, &cen_size, 2) != 2){
-      perror("read");
-      exit(1);
-    }
-
-#ifdef WORDS_BIGENDIAN
-    cen_size = L2BS(cen_size);
-#endif
-
-    /*   printf("%hu entries in central header\n", cen_size); */
-
-    if(lseek(fd, 4, SEEK_CUR) == (off_t)-1){
-      perror("lseek");
-      exit(1);
-    }
-
-    if(read(fd, &tmp, 4) != 4){
-      perror("read");
-      exit(1);
-    }
-
-#ifdef WORDS_BIGENDIAN
-    tmp = L2BI(tmp);
-#endif
-
-    /*   printf("Central header offset = %d\n", tmp); */
-
-    if(lseek(fd, tmp, SEEK_SET) != (int)tmp){
-      perror("lseek");
-      exit(1);
-    }
-
-    /* Loop through the entries in the central header */
-    for(i = 0; i < cen_size; i++){
-    
-      if(read(fd, &cen_header, 46) != 46){
+      if(read(fd, &cen_size, 2) != 2){
         perror("read");
         exit(1);
       }
 
-      signature = UNPACK_UB4(cen_header, 0);
-      if(signature != 0x02014b50){
-        fprintf(stderr, "Error in JAR file! Cannot locate central header!\n");
+#ifdef WORDS_BIGENDIAN
+      cen_size = L2BS(cen_size);
+#endif
+
+      /*   printf("%hu entries in central header\n", cen_size); */
+
+      if(lseek(fd, 4, SEEK_CUR) == (off_t)-1){
+        perror("lseek");
         exit(1);
       }
 
-      usize = UNPACK_UB4(cen_header, CEN_USIZE);
-      fnlen = UNPACK_UB2(cen_header, CEN_FNLEN);
-      eflen = UNPACK_UB2(cen_header, CEN_EFLEN);
-      clen = UNPACK_UB2(cen_header, CEN_COMLEN);
-
-      /* If we're providing verbose output, we need to make an ASCII
-       * formatted version of the date. */
-      if(verbose){
-        mdate = UNPACK_UB4(cen_header, CEN_MODTIME);
-        tdate = dos2unixtime(mdate);
-        s_tm = localtime(&tdate);
-        strftime(ascii_date, 30, "%a %b %d %H:%M:%S %Z %Y", s_tm);
-        ascii_date[30] = '\0';
-      }
-
-      if(filename_len < fnlen + 1){
-        if(filename != NULL)
-          free(filename);
-      
-        filename = malloc(sizeof(ub1) * (fnlen + 1));
-        filename_len = fnlen + 1;
-      }
-    
-      if(read(fd, filename, fnlen) != fnlen){
+      if(read(fd, &tmp, 4) != 4){
         perror("read");
         exit(1);
       }
-      filename[fnlen] = '\0';
+
+#ifdef WORDS_BIGENDIAN
+      tmp = L2BI(tmp);
+#endif
+
+      /*   printf("Central header offset = %d\n", tmp); */
+
+      if(lseek(fd, tmp, SEEK_SET) != (int)tmp){
+        perror("lseek");
+        exit(1);
+      }
+
+      /* Loop through the entries in the central header */
+      for(i = 0; i < cen_size; i++){
     
-      /* if the user specified a list of files on the command line,
-         we'll only display those, otherwise we'll display everything */
-      if(file_num > 0){
-        for(j = 0; j < file_num; j++)
-          if(strcmp(files[j], (const char *)filename) == 0){
-            if(verbose)
-              printf("%6d %s %s\n", usize, ascii_date, filename);
-            else
-              printf("%s\n", (const char *) filename);
-            break;
-          }
-      } else {
-        if(verbose)
-          printf("%6d %s %s\n", usize, ascii_date, filename);
-        else
-          printf("%s\n", (const char *) filename);
-      }            
-      
-      size = eflen + clen;
-      if(size > 0){
-        if(lseek(fd, size, SEEK_CUR) == (off_t)-1){
-          perror("lseek");
+        if(read(fd, &cen_header, 46) != 46){
+          perror("read");
           exit(1);
         }
+
+        signature = UNPACK_UB4(cen_header, 0);
+        if(signature != 0x02014b50){
+          fprintf(stderr, "Error in JAR file! Cannot locate central header!\n");
+          exit(1);
+        }
+
+        usize = UNPACK_UB4(cen_header, CEN_USIZE);
+        fnlen = UNPACK_UB2(cen_header, CEN_FNLEN);
+        eflen = UNPACK_UB2(cen_header, CEN_EFLEN);
+        clen = UNPACK_UB2(cen_header, CEN_COMLEN);
+
+        /* If we're providing verbose output, we need to make an ASCII
+         * formatted version of the date. */
+        if(verbose){
+          mdate = UNPACK_UB4(cen_header, CEN_MODTIME);
+          tdate = dos2unixtime(mdate);
+          s_tm = localtime(&tdate);
+          strftime(ascii_date, 30, "%a %b %d %H:%M:%S %Z %Y", s_tm);
+          ascii_date[30] = '\0';
+        }
+
+        if(filename_len < fnlen + 1){
+          if(filename != NULL)
+            free(filename);
+      
+          filename = malloc(sizeof(ub1) * (fnlen + 1));
+          filename_len = fnlen + 1;
+        }
+    
+        if(read(fd, filename, fnlen) != fnlen){
+          perror("read");
+          exit(1);
+        }
+        filename[fnlen] = '\0';
+    
+        /* if the user specified a list of files on the command line,
+           we'll only display those, otherwise we'll display everything */
+        if(file_num > 0){
+          for(j = 0; j < file_num; j++)
+            if(strcmp(files[j], (const char *)filename) == 0){
+              if(verbose)
+                printf("%6d %s %s\n", usize, ascii_date, filename);
+              else
+                printf("%s\n", (const char *) filename);
+              break;
+            }
+        } else {
+          if(verbose)
+            printf("%6d %s %s\n", usize, ascii_date, filename);
+          else
+            printf("%s\n", (const char *) filename);
+        }            
+      
+        size = eflen + clen;
+        if(size > 0){
+          if(lseek(fd, size, SEEK_CUR) == (off_t)-1){
+            perror("lseek");
+            exit(1);
+          }
+	}
       }
     }
-  } else {
-    /* the file isn't seekable.. evil! */
+  }
+
+  if (!seekable) {
+    /* the file isn't seekable (or there is a zipfile comment).. evil! */
     pb_file pbf;
 
     pb_init(&pbf, fd);
@@ -1965,7 +1976,8 @@ int list_jar(int fd, char **files, int file_num){
 #ifdef DEBUG
         printf("Ick! %#x\n", signature);
 #endif
-        break;
+        fprintf(stderr, "Error in JAR file format\n");
+        exit(1);
       }
       
       if(pb_read(&pbf, (file_header + 4), 26) != 26){
