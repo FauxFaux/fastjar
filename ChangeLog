@@ -1,5 +1,10 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+        * zipfile.h:
+        Added #ifndef __FASTJAR_ZIPFILE_H__.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
         * pushback.h:
         Added #ifndef __FASTJAR_PUSHBACK_H__.
 

@@ -1,6 +1,7 @@
 /*
   zipfile.h - defines for indexing zipfile headers
   Copyright (C) 1999  Bryan Burns
+  Copyright (C) 2007  Dalibor Topic
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -17,6 +18,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef __FASTJAR_ZIPFILE_H__
+#define __FASTJAR_ZIPFILE_H__
+ 
 #define LOC_EXTRA   6  /* extra bytes */
 #define LOC_COMP    8  /* compression method */
 #define LOC_MODTIME 10 /* last modification time */
@@ -53,3 +57,5 @@
                          (((ub4)s[o + 2]) << 16) + (((ub4)s[o + 3]) << 24)
 
 #define UNPACK_UB2(s, o)  (ub2)s[o] + (((ub2)s[o + 1]) << 8)
+
+#endif /* __FASTJAR_ZIPFILE_H__ */
