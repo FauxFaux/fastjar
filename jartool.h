@@ -1,7 +1,8 @@
 /*
   jartool.h - generic defines, struct defs etc.
   Copyright (C) 1999, 2005  Bryan Burns
-  
+  Copyright (C) 2007  Dalibor Topic
+
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
   as published by the Free Software Foundation; either version 2

@@ -1,5 +1,6 @@
 /* shift.c -- utilities to move regions of data in a file.
    Copyright (C) 2004, 2005  Free Software Foundation, Inc.
+   Copyright (C) 2007 Dalibor Topic
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

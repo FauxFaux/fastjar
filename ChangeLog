@@ -1,5 +1,10 @@
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
+	* shift.c, jartool.h, jargrep.c, compress.c:
+	Updated copyright information.
+
+2007-02-06  Dalibor Topic  <robilad@kaffe.org>
+
 	* compress.h: Updated copyright information.
 
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>

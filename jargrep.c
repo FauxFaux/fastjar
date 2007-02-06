@@ -3,6 +3,7 @@
   Copyright (C) 2002, 2003, 2006 Free Software Foundation
   Copyright (C) 1999, 2000 Bryan Burns
   Copyright (C) 2000 Cory Hollingsworth 
+  Copyright (C) 2007 Dalibor Topic
  
   Parts of this program are base on Bryan Burns work with fastjar 
   Copyright (C) 1999. 
