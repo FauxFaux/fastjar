@@ -1,6 +1,7 @@
 /*
   pushback.h - header for pushback.c
   Copyright (C) 1999  Bryan Burns
+  Copyright (C) 2007  Dalibor Topic
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -17,6 +18,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#ifndef __FASTJAR_PUSHBACK_H__
+#define __FASTJAR_PUSHBACK_H__
+
 struct pb_file {
   unsigned int buff_amt;
   ub1 pb_buff[RDSZ];
@@ -30,3 +34,5 @@ typedef struct pb_file pb_file;
 void pb_init(pb_file *, int);
 int pb_push(pb_file *, void *, int);
 int pb_read(pb_file *, void *, int);
+
+#endif /* __FASTJAR_PUSHBACK_H__ */
