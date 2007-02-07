@@ -11,8 +11,6 @@ TODOs for FastJar
 
 * add many more gcc warnings to build.
 
-* test building with Sun CC on solaris.
-
 * add autotest based testsuite for cxtui operations & the CVE issue.
 
 * eventually: use autogen for option parsing? use glib? use zzlib? use libjar from firefox?
