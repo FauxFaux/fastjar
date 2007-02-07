@@ -58,5 +58,5 @@ AC_SUBST(ZLIBS)
 
 gl_INIT
 
-AC_CONFIG_FILES([lib/Makefile Makefile install-defs.sh])
+AC_CONFIG_FILES([lib/Makefile Makefile])
 AC_OUTPUT
