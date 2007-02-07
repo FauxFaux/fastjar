@@ -27,7 +27,6 @@ AC_SUBST(fastjar_warn_cflags)
 dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_STRUCT_TM
 AC_CHECK_HEADERS_ONCE([fcntl.h unistd.h sys/param.h stdlib.h limits.h])
 
 AC_CHECK_FUNCS_ONCE([ftruncate _chsize])
