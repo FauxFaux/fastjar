@@ -1,5 +1,17 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.am (AM_LDFLAGS, LDADD, DEPENDECIES, 
+	libfastjar_la_LIBADD, libfastjar_la_LIBADD): Added
+	to support building with a shared library with no
+	undefined symbols.
+	(fastjar_LDADD, fastjar_DEPENDENCIES, grepjar_LDADD,
+	grepjar_DEPENDENCIES) Removed, replaced by LDADD and
+	DEPENDENCIES.
+
+	* Makefile.in: Regenerated.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* autogen.sh: Removed -Wall since libtool & automake
 	macros are not up to date with autoconf 2.61 and create
 	too much warning noise.

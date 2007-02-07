@@ -63,16 +63,19 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libfastjar_la_LIBADD =
+am__DEPENDENCIES_1 =
 am_libfastjar_la_OBJECTS = compress.lo dostime.lo pushback.lo shift.lo
 libfastjar_la_OBJECTS = $(am_libfastjar_la_OBJECTS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_fastjar_OBJECTS = jartool.$(OBJEXT)
 fastjar_OBJECTS = $(am_fastjar_OBJECTS)
-am__DEPENDENCIES_1 =
+fastjar_LDADD = $(LDADD)
+fastjar_DEPENDENCIES = $(am__DEPENDENCIES_1) libfastjar.la
 am_grepjar_OBJECTS = jargrep.$(OBJEXT)
 grepjar_OBJECTS = $(am_grepjar_OBJECTS)
+grepjar_LDADD = $(LDADD)
+grepjar_DEPENDENCIES = $(am__DEPENDENCIES_1) libfastjar.la
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -236,6 +239,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I. -I$(top_srcdir) $(ZINCS)
 AM_CFLAGS = @fastjar_warn_cflags@
+AM_LDFLAGS = -no-undefined
+LDADD = $(ZLIBS) libfastjar.la
+DEPENDENCIES = $(ZDEPS)
 lib_LTLIBRARIES = libfastjar.la
 libfastjar_la_SOURCES = \
 	compress.c \
@@ -248,12 +254,10 @@ libfastjar_la_SOURCES = \
 	shift.h \
 	zipfile.h
 
+libfastjar_la_LIBADD = $(ZLIBS)
+libfastjar_la_DEPENDENCIES = $(DEPENDENCIES)
 fastjar_SOURCES = jartool.c jartool.h
-fastjar_LDADD = $(ZLIBS) libfastjar.la
-fastjar_DEPENDENCIES = $(ZDEPS)
 grepjar_SOURCES = jargrep.c jargrep.h
-grepjar_LDADD = $(ZLIBS) libfastjar.la
-grepjar_DEPENDENCIES = $(ZDEPS)
 info_TEXINFOS = fastjar.texi
 fastjar_TEXINFOS = \
 	fdl.texi

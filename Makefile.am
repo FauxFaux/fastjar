@@ -2,6 +2,9 @@
 
 AM_CPPFLAGS = -I. -I$(top_srcdir) $(ZINCS)
 AM_CFLAGS = @fastjar_warn_cflags@
+AM_LDFLAGS = -no-undefined
+LDADD = $(ZLIBS) libfastjar.la
+DEPENDENCIES = $(ZDEPS)
 
 bin_PROGRAMS = fastjar grepjar
 
@@ -18,13 +21,11 @@ libfastjar_la_SOURCES = \
 	shift.h \
 	zipfile.h
 
-fastjar_SOURCES = jartool.c jartool.h
-fastjar_LDADD = $(ZLIBS) libfastjar.la
-fastjar_DEPENDENCIES = $(ZDEPS)
+libfastjar_la_LIBADD = $(ZLIBS)
+libfastjar_la_DEPENDENCIES = $(DEPENDENCIES)
 
+fastjar_SOURCES = jartool.c jartool.h
 grepjar_SOURCES = jargrep.c jargrep.h
-grepjar_LDADD = $(ZLIBS) libfastjar.la
-grepjar_DEPENDENCIES = $(ZDEPS)
 
 info_TEXINFOS = fastjar.texi
 fastjar_TEXINFOS = \
