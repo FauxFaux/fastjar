@@ -3,10 +3,6 @@ TODOs for FastJar
 
 * indexing should also work with several jars.
 
-* use gnulib for getopt substitution (solaris9).
-
-* use gnulib for regex substitution (mingw32).
-
 * merge in patches from gcc bugzilla from fastjar issue marked as WONTFIX.
 
 * merge in patches from distributions.
