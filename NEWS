@@ -1,4 +1,4 @@
-New in release 0.94 (UNRELEASED)
+New in release 0.95-pre (UNRELEASED)
 --------------------------------
 
 * Fix for directory traversal security issue CVE-2006-3619.
@@ -9,6 +9,8 @@ New in release 0.94 (UNRELEASED)
 
 * Shared code was factored out into internal fastjar library 
   for fastjar & grepjar to links against.
+
+* Merged in the patches from 0.94 release on SourceForge.
 
 * Many bug fixes and cleanups.
 
