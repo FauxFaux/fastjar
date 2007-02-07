@@ -9,9 +9,6 @@ dnl Checks for programs.
 AC_PROG_CC
 gl_EARLY
 AC_PROG_INSTALL
-AC_PATH_PROG(CP, cp, /bin/cp, $PATH:/bin:/usr/bin:/usr/local/bin)
-AC_PATH_PROG(STRIP, strip, /usr/bin/strip, $PATH:/bin:/usr/bin:/usr/local/bin)
-AC_PATH_PROG(CHMOD, chmod, /bin/chmod, $PATH:/bin:/usr/bin:/usr/local/bin)
 AC_EXEEXT
 
 AC_DISABLE_STATIC

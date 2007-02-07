@@ -1,5 +1,12 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* configure.ac (AC_PATH_PROG): Don't look for cp, strip 
+	and chmod.
+
+	* Makefile.in, configure, lib/Makefile.in: Regenerated.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* configure.ac (AC_PATH_PROG): Don't look for rm.
 
 	* Makefile.in, configure, lib/Makefile.in: Regenerated.
