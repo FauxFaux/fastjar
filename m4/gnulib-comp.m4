@@ -44,12 +44,14 @@ LTALLOCA=`echo "$ALLOCA" | sed 's/\.[^.]* /.lo /g;s/\.[^.]*$/.lo/'`
 changequote([, ])dnl
 AC_SUBST([LTALLOCA])
   gl_FUNC_ALLOCA
+  gl_GETOPT
   AC_FUNC_MALLOC
   gl_REGEX
   gt_TYPE_SSIZE_T
   gl_STDINT_H
   gl_STRCASE
   gl_HEADER_STRING_H
+  gl_HEADER_UNISTD
   gl_WCHAR_H
   gl_WCTYPE_H
   m4_popdef([AC_LIBSOURCES])
@@ -92,6 +94,10 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/alloca.c
   lib/alloca_.h
   lib/dummy.c
+  lib/getopt.c
+  lib/getopt1.c
+  lib/getopt_.h
+  lib/getopt_int.h
   lib/gettext.h
   lib/malloc.c
   lib/regcomp.c
@@ -104,12 +110,14 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strcasecmp.c
   lib/string_.h
   lib/strncasecmp.c
+  lib/unistd_.h
   lib/wchar_.h
   lib/wctype_.h
   m4/absolute-header.m4
   m4/alloca.m4
   m4/codeset.m4
   m4/extensions.m4
+  m4/getopt.m4
   m4/gnulib-common.m4
   m4/longlong.m4
   m4/regex.m4
@@ -118,6 +126,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/strcase.m4
   m4/string_h.m4
   m4/ulonglong.m4
+  m4/unistd_h.m4
   m4/wchar.m4
   m4/wctype.m4
   m4/wint_t.m4

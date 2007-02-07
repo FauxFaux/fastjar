@@ -1,5 +1,24 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	PR 18972
+
+	* lib/getopt.c, lib/getopt1.c, lib/getopt_.h,
+	lib/getopt_int.h, lib/unistd_.h, m4/getopt.m4,
+	m4/unistd_h.m4: New files from gnulib to support 
+	platforms without a GNU getopt implementation. 
+
+	* jargrep.c: Moved inclusion of getopt.h before 
+	inclusion of regex.h.
+
+	* jartool.c: Include regex.h, as recommended by 
+	gnulib-tool for the gnulib getopt functionality.
+
+	* Makefile.in, aclocal.m4, config.h.in, configure,
+	lib/Makefile.am, lib/Makefile.in, m4/gnulib-cache.m4,
+	m4/gnulib-comp.m4: Regenerated.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* README: Added a 'platforms' section, and documented
 	flags for the MingW32 build on Cygwin.
 
@@ -11,7 +30,7 @@
 
 	* README, configure.ac: Updated version number to 0.95-pre.
 
-	*  configure: Regenerated.
+	* configure: Regenerated.
 
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 

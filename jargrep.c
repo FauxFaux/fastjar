@@ -39,6 +39,8 @@
 #include <stdlib.h>
 #endif
 
+#include <getopt.h>
+
 #include "regex.h"
 
 #include "jargrep.h"
@@ -47,7 +49,6 @@
 #include "zipfile.h"
 #include "zlib.h"
 #include "compress.h"
-#include <getopt.h>
 
 void version(void);
 void help(const char *name);

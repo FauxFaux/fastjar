@@ -46,11 +46,12 @@ DIST_COMMON = README $(am__configure_deps) $(fastjar_TEXINFOS) \
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/absolute-header.m4 \
 	$(top_srcdir)/m4/alloca.m4 $(top_srcdir)/m4/codeset.m4 \
-	$(top_srcdir)/m4/extensions.m4 $(top_srcdir)/m4/gnulib-comp.m4 \
-	$(top_srcdir)/m4/longlong.m4 $(top_srcdir)/m4/regex.m4 \
-	$(top_srcdir)/m4/ssize_t.m4 $(top_srcdir)/m4/stdint.m4 \
-	$(top_srcdir)/m4/strcase.m4 $(top_srcdir)/m4/string_h.m4 \
-	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/m4/wchar.m4 \
+	$(top_srcdir)/m4/extensions.m4 $(top_srcdir)/m4/getopt.m4 \
+	$(top_srcdir)/m4/gnulib-comp.m4 $(top_srcdir)/m4/longlong.m4 \
+	$(top_srcdir)/m4/regex.m4 $(top_srcdir)/m4/ssize_t.m4 \
+	$(top_srcdir)/m4/stdint.m4 $(top_srcdir)/m4/strcase.m4 \
+	$(top_srcdir)/m4/string_h.m4 $(top_srcdir)/m4/ulonglong.m4 \
+	$(top_srcdir)/m4/unistd_h.m4 $(top_srcdir)/m4/wchar.m4 \
 	$(top_srcdir)/m4/wctype.m4 $(top_srcdir)/m4/wint_t.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -141,6 +142,7 @@ distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ABSOLUTE_STDINT_H = @ABSOLUTE_STDINT_H@
 ABSOLUTE_STRING_H = @ABSOLUTE_STRING_H@
+ABSOLUTE_UNISTD_H = @ABSOLUTE_UNISTD_H@
 ABSOLUTE_WCHAR_H = @ABSOLUTE_WCHAR_H@
 ABSOLUTE_WCTYPE_H = @ABSOLUTE_WCTYPE_H@
 ACLOCAL = @ACLOCAL@
@@ -181,6 +183,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+GETOPT_H = @GETOPT_H@
 GNULIB_MBSCASECMP = @GNULIB_MBSCASECMP@
 GNULIB_MBSCASESTR = @GNULIB_MBSCASESTR@
 GNULIB_MBSCHR = @GNULIB_MBSCHR@
@@ -267,6 +270,7 @@ SIG_ATOMIC_T_SUFFIX = @SIG_ATOMIC_T_SUFFIX@
 SIZE_T_SUFFIX = @SIZE_T_SUFFIX@
 STDINT_H = @STDINT_H@
 STRIP = @STRIP@
+UNISTD_H = @UNISTD_H@
 VERSION = @VERSION@
 WCHAR_H = @WCHAR_H@
 WCHAR_T_SUFFIX = @WCHAR_T_SUFFIX@

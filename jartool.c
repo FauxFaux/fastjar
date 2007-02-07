@@ -63,6 +63,7 @@
 #endif
 
 #include <getopt.h>
+#include "regex.h"
 
 #include "jartool.h"
 #include "zipfile.h"
