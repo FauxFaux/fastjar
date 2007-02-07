@@ -3,11 +3,10 @@
 SUBDIRS = lib
 ACLOCAL_AMFLAGS = -I m4
 
-AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib $(ZINCS)
+AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib
 AM_CFLAGS = @fastjar_warn_cflags@
 AM_LDFLAGS = -no-undefined
 LDADD = $(ZLIBS) lib/libgnu.la libfastjar.la 
-DEPENDENCIES = $(ZDEPS)
 
 bin_PROGRAMS = fastjar grepjar
 

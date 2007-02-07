@@ -47,8 +47,6 @@ dnl Check byte order
 AC_C_BIGENDIAN
 
 ZLIBS=
-ZDEPS=
-ZINCS=
 use_zlib=maybe
 AC_CHECK_LIB(z, deflate, ZLIBS=-lz, use_zlib=no)
 
@@ -57,8 +55,6 @@ if test "$use_zlib" = no; then
    AC_MSG_ERROR([Need zlib])
 fi
 AC_SUBST(ZLIBS)
-AC_SUBST(ZDEPS)
-AC_SUBST(ZINCS)
 
 gl_INIT
 
