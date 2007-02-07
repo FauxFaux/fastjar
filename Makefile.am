@@ -37,7 +37,7 @@ EXTRA_DIST = $(man_MANS) fastjar.texi texi2pod.pl
 
 
 TEXI2POD = perl $(srcdir)/texi2pod.pl
-POD2MAN = pod2man --center="GNU" --release="0.92"
+POD2MAN = pod2man --center="GNU" --release=@VERSION@
 
 .pod.1:
 	-($(POD2MAN) --section=1 $< > $(@).T$$$$ && \
