@@ -1,9 +1,12 @@
 # Process this with automake to create Makefile.in
 
-AM_CPPFLAGS = -I. -I$(top_srcdir) $(ZINCS)
+SUBDIRS = lib
+ACLOCAL_AMFLAGS = -I m4
+
+AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib $(ZINCS)
 AM_CFLAGS = @fastjar_warn_cflags@
 AM_LDFLAGS = -no-undefined
-LDADD = $(ZLIBS) libfastjar.la
+LDADD = $(ZLIBS) lib/libgnu.la libfastjar.la 
 DEPENDENCIES = $(ZDEPS)
 
 bin_PROGRAMS = fastjar grepjar

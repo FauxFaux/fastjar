@@ -7,6 +7,7 @@ AC_CONFIG_HEADERS([config.h])
 
 dnl Checks for programs.
 AC_PROG_CC
+gl_EARLY
 AC_PROG_INSTALL
 AC_PATH_PROG(RM, rm, /bin/rm, $PATH:/bin:/usr/bin:/usr/local/bin)
 AC_PATH_PROG(CP, cp, /bin/cp, $PATH:/bin:/usr/bin:/usr/local/bin)
@@ -67,6 +68,8 @@ AC_SUBST(ZLIBS)
 AC_SUBST(ZDEPS)
 AC_SUBST(ZINCS)
 
+gl_INIT
+
 # GCC LOCAL CHANGE
 # We would like to our source tree to be readonly.  However when releases or
 # pre-releases are generated, the man pages need to be included as they are
@@ -87,5 +90,5 @@ AC_MSG_CHECKING([whether to place generated files in the source directory])
 AC_MSG_RESULT($generated_files_in_srcdir)
 AM_CONDITIONAL(GENINSRC, test x$generated_files_in_srcdir = xyes)
 
-AC_CONFIG_FILES([Makefile install-defs.sh])
+AC_CONFIG_FILES([lib/Makefile Makefile install-defs.sh])
 AC_OUTPUT
