@@ -1,3 +1,9 @@
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
+	* autogen.sh: Removed -Wall since libtool & automake
+	macros are not up to date with autoconf 2.61 and create
+	too much warning noise.
+
 2007-02-06  Dalibor Topic  <robilad@kaffe.org>
 
 	* Makefile.am (AM_CFLAGS): Shuffled upwards in the file.
