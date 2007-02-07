@@ -48,6 +48,7 @@ AC_SUBST([LTALLOCA])
   AC_FUNC_MALLOC
   gl_REGEX
   gt_TYPE_SSIZE_T
+  AM_STDBOOL_H
   gl_STDINT_H
   gl_STRCASE
   gl_HEADER_STRING_H
@@ -106,6 +107,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/regex_internal.c
   lib/regex_internal.h
   lib/regexec.c
+  lib/stdbool_.h
   lib/stdint_.h
   lib/strcasecmp.c
   lib/string_.h
@@ -122,6 +124,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/longlong.m4
   m4/regex.m4
   m4/ssize_t.m4
+  m4/stdbool.m4
   m4/stdint.m4
   m4/strcase.m4
   m4/string_h.m4
