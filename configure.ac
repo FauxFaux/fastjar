@@ -46,9 +46,6 @@ AC_TYPE_UINT32_T
 dnl Check byte order
 AC_C_BIGENDIAN
 
-AC_ARG_WITH(system-zlib,
-[  --with-system-zlib      use installed libz])
-
 ZLIBS=
 ZDEPS=
 ZINCS=
