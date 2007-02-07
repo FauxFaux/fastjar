@@ -1,5 +1,10 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* README: Added a 'platforms' section, and documented
+	flags for the MingW32 build on Cygwin.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* NEWS : Added merging status information for 
 	Bryan's 0.94 release on SourceForge. Updated version number
 	to 0.95-pre.

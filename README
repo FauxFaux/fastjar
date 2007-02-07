@@ -34,6 +34,20 @@ FastJar has been tested on Solaris and Linux 2.2.x systems and nothing else.
 It should compile/run without any problems on either system, provided you have
 zlib installed.  
 
+Platforms
+=========
+
+i586-pc-minw32
+--------------
+In order to build FastJar without a Cygwin DLL dependency from Cygwin's
+shell, please set the flags
+
+	CFLAGS=-mno-cygwin 
+	CPPFLAGS=-mno-cygwin 
+	CXXFLAGS=-mno-cygwin
+
+when calling the configure script.
+
 Bug Reports
 ===========
 
