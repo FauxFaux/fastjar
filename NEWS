@@ -7,6 +7,9 @@ New in release 0.94 (UNRELEASED)
 
 * Updated to use autoconf 2.61 and automake 1.10.
 
+* Shared code was factored out into internal fastjar library 
+  for fastjar & grepjar to links against.
+
 * Many bug fixes and cleanups.
 
 Noteworthy changes in fastjar, 11/2000

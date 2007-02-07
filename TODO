@@ -3,8 +3,6 @@ TODOs for FastJar
 
 * indexing should also work with several jars.
 
-* create libfastjar.so for fastjar & grepjar to links against.
-
 * use gnulib for getopt substitution (solaris9).
 
 * use gnulib for regex substitution (mingw32).

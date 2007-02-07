@@ -1,5 +1,11 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* TODO: Removed libfastjar item.
+
+	* NEWS: Added libfastjar information.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* Makefile.am (AM_LDFLAGS, LDADD, DEPENDECIES, 
 	libfastjar_la_LIBADD, libfastjar_la_LIBADD): Added
 	to support building with a shared library with no
