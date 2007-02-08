@@ -845,7 +845,7 @@ int make_manifest(int jfd, const char *mf_name, int updating)
   /* if the user didn't specify an external manifest file... */
   if(mf_name == NULL){
     
-    int mf_len = strlen(MANIFEST_STR) + strlen(VERSION) + strlen(MANIFEST_END);
+    size_t mf_len = strlen(MANIFEST_STR) + strlen(VERSION) + strlen(MANIFEST_END);
     char *mf;
 
     if((mf = (char *) malloc(mf_len + 1))) {
