@@ -21066,6 +21066,14 @@ done
 
 
 
+if test "$ac_cv_func_ftruncate" = no; then
+  if test "$ac_cv_func__chsize" = no; then
+    { { echo "$as_me:$LINENO: error: Need ftruncate or _chsize" >&5
+echo "$as_me: error: Need ftruncate or _chsize" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
+fi
+
 { echo "$as_me:$LINENO: checking for off_t" >&5
 echo $ECHO_N "checking for off_t... $ECHO_C" >&6; }
 if test "${ac_cv_type_off_t+set}" = set; then

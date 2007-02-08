@@ -32,6 +32,12 @@ AC_CHECK_HEADERS_ONCE([fcntl.h unistd.h sys/param.h stdlib.h limits.h])
 
 AC_CHECK_FUNCS_ONCE([ftruncate _chsize])
 
+if test "$ac_cv_func_ftruncate" = no; then
+  if test "$ac_cv_func__chsize" = no; then
+    AC_MSG_ERROR([Need ftruncate or _chsize])
+  fi
+fi
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_OFF_T
 AC_STRUCT_TM

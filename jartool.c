@@ -423,12 +423,9 @@ int main(int argc, char **argv)
     
     create_central_header(jarfd);
 
-#if ! (HAVE_FTRUNCATE || HAVE__CHSIZE)
-  #error neither ftruncate() or _chsize() available
-#endif
     /* Check if the file shrunk when we updated it. */
     if (action == ACTION_UPDATE)
-#if HAVE_FTRUNCATE
+#ifdef HAVE_FTRUNCATE
       ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR));
 #else
       _chsize (jarfd, lseek (jarfd, 0, SEEK_CUR));
@@ -465,11 +462,7 @@ int main(int argc, char **argv)
     
     create_central_header(jarfd);
 
-#if ! (HAVE_FTRUNCATE || HAVE__CHSIZE)
-#error neither ftruncate() or _chsize() available
-#endif
-
-#if HAVE_FTRUNCATE
+#ifdef HAVE_FTRUNCATE
     ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR));
 #else
     _chsize (jarfd, lseek (jarfd, 0, SEEK_CUR));
