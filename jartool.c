@@ -2499,7 +2499,7 @@ int build_index(int jfd)
 {
   struct zipentry * ze;
   char * index_content;
-  int index_content_size;
+  size_t index_content_size;
   char * short_jar_fname;
   struct ziplistentry * zle;
 
