@@ -797,7 +797,7 @@ int read_entries (int fd)
 int make_manifest(int jfd, const char *mf_name, int updating)
 {
   time_t current_time;
-  int nlen;   /* length of file name */
+  size_t nlen;   /* length of file name */
   int mod_time; /* file modification time */
   struct zipentry *ze;
   
@@ -993,7 +993,7 @@ add_to_jar (int fd, const char *file, const int updating)
   } else if(S_ISDIR(statbuf.st_mode)){
     char *fullname;
     char *t_ptr;
-    int nlen;
+    size_t nlen;
     unsigned long mod_time;
 
     dir = opendir(file);
