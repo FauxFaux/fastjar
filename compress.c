@@ -42,7 +42,7 @@
 #include "compress.h"
 #include "shift.h"
 
-int write_data (int, void *, size_t, struct zipentry *);
+static int write_data (int, void *, size_t, struct zipentry *);
 
 static z_stream zs;
 
@@ -65,7 +65,7 @@ void init_compression(void){
   }
 }
 
-int
+static int
 write_data (int fd, void *buf, size_t len,
 	    struct zipentry *ze)
 {

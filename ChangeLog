@@ -1,5 +1,9 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* compress.c (write_data): Made static.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* configure.ac (AC_PROG_STDC_CC): Use C99 if possible.
 
 	* configure: Regenerated.
