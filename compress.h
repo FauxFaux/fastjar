@@ -21,6 +21,11 @@
 #ifndef __FASTJAR_COMPRESS_H__
 #define __FASTJAR_COMPRESS_H__
 
+#include <zlib.h>
+
+#include "jartool.h"
+#include "pushback.h"
+
 /* Initializes the compression data structure(s) */
 void init_compression(void);
 
