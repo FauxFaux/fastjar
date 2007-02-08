@@ -21,6 +21,8 @@
 #ifndef __FASTJAR_PUSHBACK_H__
 #define __FASTJAR_PUSHBACK_H__
 
+#include "jartool.h"
+
 struct pb_file {
   unsigned int buff_amt;
   ub1 pb_buff[RDSZ];
