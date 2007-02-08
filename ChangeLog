@@ -1,5 +1,17 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* jargrep.c (help, version): Made static.
+
+	* jartool.c (add_array_to_jar, add_entry,
+	add_file_to_jar, add_list_entry, add_to_jar
+	add_to_jar_with_dir, build_index, consume
+	create_central_header, extract_jar,
+	get_index_entry, help, init_headers,
+	list_jar, make_manifest, read_entries, usage
+	version): Made static.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (data_descriptor, do_compress, file_header,
 	jarfile, number_of_entries, read_names_from_stdin, seekable,
 	use_explicit_list_only, verbose, ziplist, ziplisthead, 

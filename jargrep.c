@@ -50,8 +50,8 @@
 #include "zlib.h"
 #include "compress.h"
 
-void version(void);
-void help(const char *name);
+static void version(void);
+static void help(const char *name);
 
 #define Usage "Usage: %s [-bcinsVw] [--version|--help] <-e PATTERN | PATTERN> FILE ...\n"
 

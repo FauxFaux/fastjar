@@ -105,25 +105,25 @@ struct ziplistentry
 
 typedef struct ziplistentry ziplistentry;
 
-void usage(const char*);
-void help(const char *);
-void version(void);
-void add_entry(struct zipentry *);
-void init_headers(void);
+static void usage(const char*);
+static void help(const char *);
+static void version(void);
+static void add_entry(struct zipentry *);
+static void init_headers(void);
 
-int consume(pb_file *, int);
-int list_jar(int, const char**, int);
-int extract_jar(int, const char**, int);
-int add_file_to_jar(int, int, const char*, struct stat*, int);
-int add_to_jar(int, const char*, int);
-int add_to_jar_with_dir(int, const char*, const char*, int);
-int add_array_to_jar(int, char*, int, const char *, const int);
-int build_index(int);
-char* get_index_entry(char* fname);
-void add_list_entry(ziplistentry*);
-int create_central_header(int);
-int make_manifest(int, const char*, int);
-int read_entries (int);
+static int consume(pb_file *, int);
+static int list_jar(int, const char**, int);
+static int extract_jar(int, const char**, int);
+static int add_file_to_jar(int, int, const char*, struct stat*, int);
+static int add_to_jar(int, const char*, int);
+static int add_to_jar_with_dir(int, const char*, const char*, int);
+static int add_array_to_jar(int, char*, int, const char *, const int);
+static int build_index(int);
+static char* get_index_entry(char* fname);
+static void add_list_entry(ziplistentry*);
+static int create_central_header(int);
+static int make_manifest(int, const char*, int);
+static int read_entries (int);
 static void init_args(const char **, int);
 static const char *get_next_arg (void);
 static char *jt_strdup (char*);
