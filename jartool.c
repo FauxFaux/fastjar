@@ -1124,7 +1124,7 @@ add_to_jar (int fd, const char *file, const int updating)
 int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
 		    const int updating)
 {
-  unsigned short file_name_length;
+  size_t file_name_length;
   unsigned long mod_time;
   ub1 rd_buff[RDSZ];
   uLong crc = 0;
@@ -2283,7 +2283,7 @@ void add_list_entry(ziplistentry *zle)
 /* Add an array to the zip stream, in uncompressed form */
 int add_array_to_jar(int jfd, char* content, size_t content_length, const char *fname, const int updating)
 {
-  unsigned short file_name_length;
+  size_t file_name_length;
   unsigned long mod_time;
   uLong crc = 0;
   off_t offset = 0;
