@@ -1,5 +1,12 @@
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (data_descriptor, do_compress, file_header,
+	jarfile, number_of_entries, read_names_from_stdin, seekable,
+	use_explicit_list_only, verbose, ziplist, ziplisthead, 
+	ziplisttail, ziptail): Made static.
+
+2007-02-07  Dalibor Topic  <robilad@kaffe.org>
+
 	* compress.c (write_data): Made static.
 
 2007-02-07  Dalibor Topic  <robilad@kaffe.org>

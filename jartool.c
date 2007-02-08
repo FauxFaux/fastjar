@@ -132,32 +132,32 @@ static struct zipentry *find_entry (const char *);
 static int looks_like_dir (const char *);
 
 /* global variables */
-ub1 file_header[30];
-ub1 data_descriptor[16];
-int do_compress;
-int seekable;
-int verbose;
-char *jarfile;
+static ub1 file_header[30];
+static ub1 data_descriptor[16];
+static int do_compress;
+static int seekable;
+static int verbose;
+static char *jarfile;
 
 /* If non zero, then don't recurse in directory. Instead, add the
    directory entry and relie on an explicit list of files to populate
    the archive. This option isn't supported by the original jar tool. */
-int use_explicit_list_only;
+static int use_explicit_list_only;
 
 /* If non zero, then read the entry names from stdin. This option
    isn't supported by the original jar tool. */
-int read_names_from_stdin;
+static int read_names_from_stdin;
 
-zipentry *ziplist; /* linked list of entries */
-zipentry *ziptail; /* tail of the linked list */
+static zipentry *ziplist; /* linked list of entries */
+static zipentry *ziptail; /* tail of the linked list */
 
-ziplistentry *ziplisthead;
-ziplistentry *ziplisttail;
+static ziplistentry *ziplisthead;
+static ziplistentry *ziplisttail;
 
-int number_of_entries; /* number of entries in the linked list */
+static int number_of_entries; /* number of entries in the linked list */
 
 /* What we go by. */
-const char *progname;
+static const char *progname;
 
 /* This is used to mark options with no short value.  */
 #define LONG_OPT(Num)  ((Num) + 128)
