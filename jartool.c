@@ -2290,6 +2290,7 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
   struct zipentry *ze;
   struct zipentry *existing = NULL;
   time_t current_time;
+  ssize_t written = 0;
 
   /* Assume do_compress == FALSE */
 
@@ -2409,7 +2410,8 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
   ze->crc = crc32(0L, Z_NULL, 0); 
       
   ze->crc = crc32(ze->crc, (unsigned char*)content, content_length);
-  if (write(jfd, content, content_length) != content_length){
+  written = write(jfd, content, content_length);
+  if ((written == -1) || ((size_t) written != content_length)){
     perror("write");
     return 0;    	
   }
