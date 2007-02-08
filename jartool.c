@@ -117,7 +117,7 @@ static int extract_jar(int, const char**, int);
 static int add_file_to_jar(int, int, const char*, struct stat*, int);
 static int add_to_jar(int, const char*, int);
 static int add_to_jar_with_dir(int, const char*, const char*, int);
-static int add_array_to_jar(int, char*, int, const char *, const int);
+static int add_array_to_jar(int, char*, size_t, const char *, const int);
 static int build_index(int);
 static char* get_index_entry(char* fname);
 static void add_list_entry(ziplistentry*);
@@ -2281,7 +2281,7 @@ void add_list_entry(ziplistentry *zle)
 }
 
 /* Add an array to the zip stream, in uncompressed form */
-int add_array_to_jar(int jfd, char* content, int content_length, const char *fname, const int updating)
+int add_array_to_jar(int jfd, char* content, size_t content_length, const char *fname, const int updating)
 {
   unsigned short file_name_length;
   unsigned long mod_time;
