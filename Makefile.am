@@ -55,3 +55,19 @@ grepjar.pod: $(srcdir)/fastjar.texi
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+# Support for static checkers
+pscan:
+	$(PSCAN) $(SOURCES)
+
+flawfinder:
+	$(FLAWFINDER) $(SOURCES)
+
+rats:
+	$(RATS) $(SOURCES)
+
+SPLINT_FLAGS=-I . -DHAVE_CONFIG_H +posixlib +weak
+splint:
+	$(SPLINT) $(SPLINT_FLAGS) $(libfastjar_la_SOURCES)
+	$(SPLINT) $(SPLINT_FLAGS) $(fastjar_SOURCES)
+	$(SPLINT) $(SPLINT_FLAGS) $(grepjar_SOURCES)
+

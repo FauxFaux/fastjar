@@ -19,6 +19,11 @@ AC_SUBST(LIBTOOL_DEPS)
 
 AM_MAINTAINER_MODE
 
+AC_PATH_PROG([FLAWFINDER],[flawfinder])
+AC_PATH_PROG([PSCAN],[pscan])
+AC_PATH_PROG([RATS],[rats])
+AC_PATH_PROG([SPLINT],[splint])
+
 dnl Add warning flags if we are using gcc.
 if test "$GCC" = yes; then
   fastjar_warn_cflags='-W -Wall -pedantic -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings'

@@ -181,6 +181,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+FLAWFINDER = @FLAWFINDER@
 GETOPT_H = @GETOPT_H@
 GNULIB_MBSCASECMP = @GNULIB_MBSCASECMP@
 GNULIB_MBSCASESTR = @GNULIB_MBSCASESTR@
@@ -260,12 +261,15 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PSCAN = @PSCAN@
 PTRDIFF_T_SUFFIX = @PTRDIFF_T_SUFFIX@
 RANLIB = @RANLIB@
+RATS = @RATS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SIG_ATOMIC_T_SUFFIX = @SIG_ATOMIC_T_SUFFIX@
 SIZE_T_SUFFIX = @SIZE_T_SUFFIX@
+SPLINT = @SPLINT@
 STDBOOL_H = @STDBOOL_H@
 STDINT_H = @STDINT_H@
 STRIP = @STRIP@
@@ -360,6 +364,7 @@ man_MANS = fastjar.1 grepjar.1
 EXTRA_DIST = $(man_MANS) fastjar.texi texi2pod.pl
 TEXI2POD = perl $(srcdir)/texi2pod.pl
 POD2MAN = pod2man --center="GNU" --release=@VERSION@
+SPLINT_FLAGS = -I . -DHAVE_CONFIG_H +posixlib +weak
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -1200,6 +1205,20 @@ grepjar.pod: $(srcdir)/fastjar.texi
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# Support for static checkers
+pscan:
+	$(PSCAN) $(SOURCES)
+
+flawfinder:
+	$(FLAWFINDER) $(SOURCES)
+
+rats:
+	$(RATS) $(SOURCES)
+splint:
+	$(SPLINT) $(SPLINT_FLAGS) $(libfastjar_la_SOURCES)
+	$(SPLINT) $(SPLINT_FLAGS) $(fastjar_SOURCES)
+	$(SPLINT) $(SPLINT_FLAGS) $(grepjar_SOURCES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
