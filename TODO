@@ -7,7 +7,7 @@ TODOs for FastJar
 
 * merge in patches from distributions.
 
-* add pscan, rats, flawfinder & splint support to makefile & distcheck.
+* add pscan, rats, flawfinder & splint support to distcheck.
 
 * add many more gcc warnings to build.
 
