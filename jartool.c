@@ -41,10 +41,6 @@
 #include <sys/param.h>
 #endif
 
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 1024
-#endif
-
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
 #endif
@@ -515,8 +511,17 @@ get_next_arg (void)
 	 '\r'. Reading EOF indicates that we don't have anymore file
 	 names characters to read. */
 
-      char s [MAXPATHLEN];
+      char *s;
       int  pos = 0;
+      int len = 1024; /* Allocate more memory when we hit this
+			    limit.  */
+
+      s = (char *) malloc (len);
+      if (s == NULL)
+	{
+	  perror ("malloc");
+	  exit (1);
+	}
 
       /* Get rid of '\n' and '\r' first. */
       while (1)
@@ -540,7 +545,18 @@ get_next_arg (void)
              to read */
 	  if (c == '\n'|| c == '\r'|| c == EOF)
 	    break;
-	  s [pos++] = (char) c;
+	  s [pos] = (char) c;
+	  pos++;
+	  if (pos >= len)
+	    {
+	      len *= 2;
+	      s = (char *) realloc (s, len);
+	      if (s == NULL)
+		{
+		  perror ("realloc");
+		  exit (1);
+		}
+	    }
 	}
 
       if (pos)
@@ -935,11 +951,34 @@ add_to_jar_with_dir (int fd, const char* new_dir, const char* file,
 		     const int updating)
 {
   int retval;
-  char old_dir[MAXPATHLEN]; 
-  if (getcwd(old_dir, MAXPATHLEN) == NULL) {
-    perror("getcwd");
-    return 1;
-  }
+  char *old_dir; 
+  size_t old_dir_len = 1024;
+  
+  old_dir = (char *) malloc (old_dir_len);
+  if (old_dir == NULL)
+    {
+      perror ("malloc");
+      exit (1);
+    }
+
+  while (1)
+    {
+      if (getcwd (old_dir, old_dir_len) == old_dir)
+	break;
+      if (old_dir == NULL) 
+	{
+	  perror ("getcwd");
+	  return 1;
+	}
+      old_dir_len *= 2;
+      old_dir = (char *) realloc (old_dir, old_dir_len); 
+      if (old_dir == NULL)
+	{
+	  perror ("realloc");
+	  exit (1);
+	}
+    }
+
   if (chdir(new_dir) == -1) {
     perror(new_dir);
     return 1;

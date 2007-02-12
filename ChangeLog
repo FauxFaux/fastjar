@@ -1,3 +1,9 @@
+2007-02-12  Alfred M. Szmidt  <ams@gnu.org>
+
+	* jartool.c (MAXPATHLEN) [!MAXPATHLEN]: Removed macro.
+	(get_next_arg): Allocate memory dynamiclly for S.
+	(add_to_jar_with_dir): Allocate memory dynamiclly for OLD_DIR.
+
 2007-02-12  Matthias Klose  <doko@ubuntu.com>
 
 	* fastjar.texi: Set version to 0.95; remove references to the FDL.
