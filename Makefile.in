@@ -37,11 +37,11 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = fastjar$(EXEEXT) grepjar$(EXEEXT)
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(fastjar_TEXINFOS) \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/config.h.in $(top_srcdir)/configure AUTHORS COPYING \
-	ChangeLog INSTALL NEWS TODO compile config.guess \
-	config.sub depcomp install-sh ltmain.sh missing texinfo.tex
+DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
+	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
+	TODO compile config.guess config.sub depcomp install-sh \
+	ltmain.sh missing texinfo.tex
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/absolute-header.m4 \
 	$(top_srcdir)/m4/alloca.m4 $(top_srcdir)/m4/codeset.m4 \
@@ -357,9 +357,8 @@ libfastjar_la_DEPENDENCIES = $(DEPENDENCIES)
 fastjar_SOURCES = jartool.c jartool.h
 grepjar_SOURCES = jargrep.c jargrep.h
 info_TEXINFOS = fastjar.texi
-
 man_MANS = fastjar.1 grepjar.1
-EXTRA_DIST = $(man_MANS) fastjar.texi texi2pod.pl
+EXTRA_DIST = $(man_MANS) texi2pod.pl
 TEXI2POD = perl $(srcdir)/texi2pod.pl
 POD2MAN = pod2man --center="GNU" --release=@VERSION@
 SPLINT_FLAGS = -I . -DHAVE_CONFIG_H +posixlib +weak
@@ -570,10 +569,10 @@ distclean-libtool:
 	    rm -rf $(@:.html=); else rm -Rf $(@:.html=.htp) $@; fi; \
 	  exit 1; \
 	fi
-$(srcdir)/fastjar.info: fastjar.texi $(fastjar_TEXINFOS)
-fastjar.dvi: fastjar.texi $(fastjar_TEXINFOS)
-fastjar.pdf: fastjar.texi $(fastjar_TEXINFOS)
-fastjar.html: fastjar.texi $(fastjar_TEXINFOS)
+$(srcdir)/fastjar.info: fastjar.texi 
+fastjar.dvi: fastjar.texi 
+fastjar.pdf: fastjar.texi 
+fastjar.html: fastjar.texi 
 .dvi.ps:
 	TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	$(DVIPS) -o $@ $<

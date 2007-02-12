@@ -1,3 +1,8 @@
+2007-02-12  Dalibor Topic  <robilad@kaffe.org>
+
+	* Makefile.am (EXTRA_DIST): Removed fastjar.texi.
+	* Makefile.in: Regenerated.
+
 2007-02-12  Alfred M. Szmidt  <ams@gnu.org>
 
 	* jartool.c (MAXPATHLEN) [!MAXPATHLEN]: Removed macro.
