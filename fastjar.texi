@@ -236,6 +236,4 @@ Print version number, then exit.
 
 @c man end
 
-@include fdl.texi
-
 @bye

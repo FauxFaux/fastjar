@@ -1,3 +1,10 @@
+2007-02-12  Matthias Klose  <doko@ubuntu.com>
+
+	* fdl.texi, COPYING.DOC: Remove, all documentation is licensed
+	under the GPL.
+	* fastjar.texi: Don't include fdl.texi.
+	* AUTHORS: Add myself as documentation author.
+
 2007-02-09  Dalibor Topic  <robilad@kaffe.org>
 
 	* TODO: Updated.
