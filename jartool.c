@@ -520,7 +520,7 @@ get_next_arg (void)
       if (s == NULL)
 	{
 	  perror ("malloc");
-	  exit (1);
+	  exit(EXIT_FAILURE);
 	}
 
       /* Get rid of '\n' and '\r' first. */
@@ -554,7 +554,7 @@ get_next_arg (void)
 	      if (s == NULL)
 		{
 		  perror ("realloc");
-		  exit (1);
+		  exit(EXIT_FAILURE);
 		}
 	    }
 	}
@@ -958,7 +958,7 @@ add_to_jar_with_dir (int fd, const char* new_dir, const char* file,
   if (old_dir == NULL)
     {
       perror ("malloc");
-      exit (1);
+      exit(EXIT_FAILURE);
     }
 
   while (1)
@@ -975,7 +975,7 @@ add_to_jar_with_dir (int fd, const char* new_dir, const char* file,
       if (old_dir == NULL)
 	{
 	  perror ("realloc");
-	  exit (1);
+	  exit(EXIT_FAILURE);
 	}
     }
 

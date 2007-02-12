@@ -1,5 +1,10 @@
 2007-02-12  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (get_next_arg, add_to_jar_with_dir): Use
+	EXIT_FAILURE.
+
+2007-02-12  Dalibor Topic  <robilad@kaffe.org>
+
 	* Makefile.am (EXTRA_DIST): Removed fastjar.texi.
 	* Makefile.in: Regenerated.
 
