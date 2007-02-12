@@ -8,9 +8,9 @@
 @c the word ``Java'.
 
 @c When this manual is copyrighted.
-@set copyrights-fastjar 2002
+@set copyrights-fastjar 2002, 2007
 
-@set version-GCC 4.1
+@set version 0.95
 
 @c Common macros to support generating man pages:
 
@@ -19,7 +19,6 @@
 @end macro
 
 @c Versions
-@set which-gcj GCC-@value{version-GCC}
 
 @ifinfo
 @format
@@ -61,7 +60,7 @@ man page gfdl(7).
 @vskip 0pt plus 1filll
 Copyright @copyright{} @value{copyrights-gcj} Matthias Klose
 @sp 2
-For the @value{which-gcj} Version*
+For the @value{version} Version*
 @sp 1
 Published by the Free Software Foundation @*
 51 Franklin Street, Fifth Floor@*
@@ -85,7 +84,6 @@ This manual describes how to use @command{fastjar} and @command{grepjar}.
 @menu
 * Invoking fastjar::	Options supported by @command{fastjar}
 * Invoking grepjar::    Options supported by @command{grepjar}
-* GNU Free Documentation License::  The GNU Free Documentation License
 @end menu
 
 @node Invoking fastjar
