@@ -1,3 +1,8 @@
+2007-02-13  Matthias Klose  <doko@ubuntu.com>
+
+	* Makefile.am: Build the fastjar library as a convenience library.
+	* Makefile.in: Regenerate.
+
 2007-02-12  Dalibor Topic  <robilad@kaffe.org>
 
 	* jartool.c (get_next_arg, add_to_jar_with_dir): Use
@@ -16,9 +21,7 @@
 
 2007-02-12  Matthias Klose  <doko@ubuntu.com>
 
-	* fastjar.texi: Set version to 0.95; remove references to the FDL.
-	* Makefile.am: Remove references to fdl.texi.
-	* Makefile.in: Regenerate.
+	* fastjar.texi: Set version to 0.95.
 
 2007-02-12  Matthias Klose  <doko@ubuntu.com>
 

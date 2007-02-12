@@ -61,31 +61,29 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)"
-libLTLIBRARIES_INSTALL = $(INSTALL)
-LTLIBRARIES = $(lib_LTLIBRARIES)
-am__DEPENDENCIES_1 =
-am_libfastjar_la_OBJECTS = compress.lo dostime.lo pushback.lo shift.lo
-libfastjar_la_OBJECTS = $(am_libfastjar_la_OBJECTS)
+LTLIBRARIES = $(noinst_LTLIBRARIES)
+libfastjar_convenience_la_LIBADD =
+am_libfastjar_convenience_la_OBJECTS = compress.lo dostime.lo \
+	pushback.lo shift.lo
+nodist_libfastjar_convenience_la_OBJECTS =
+libfastjar_convenience_la_OBJECTS =  \
+	$(am_libfastjar_convenience_la_OBJECTS) \
+	$(nodist_libfastjar_convenience_la_OBJECTS)
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" \
+	"$(DESTDIR)$(man1dir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_fastjar_OBJECTS = jartool.$(OBJEXT)
 fastjar_OBJECTS = $(am_fastjar_OBJECTS)
 fastjar_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 fastjar_DEPENDENCIES = $(am__DEPENDENCIES_1) lib/libgnu.la \
-	libfastjar.la
+	libfastjar_convenience.la
 am_grepjar_OBJECTS = jargrep.$(OBJEXT)
 grepjar_OBJECTS = $(am_grepjar_OBJECTS)
 grepjar_LDADD = $(LDADD)
 grepjar_DEPENDENCIES = $(am__DEPENDENCIES_1) lib/libgnu.la \
-	libfastjar.la
+	libfastjar_convenience.la
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -98,9 +96,10 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libfastjar_la_SOURCES) $(fastjar_SOURCES) \
+SOURCES = $(libfastjar_convenience_la_SOURCES) \
+	$(nodist_libfastjar_convenience_la_SOURCES) $(fastjar_SOURCES) \
 	$(grepjar_SOURCES)
-DIST_SOURCES = $(libfastjar_la_SOURCES) $(fastjar_SOURCES) \
+DIST_SOURCES = $(libfastjar_convenience_la_SOURCES) $(fastjar_SOURCES) \
 	$(grepjar_SOURCES)
 INFO_DEPS = $(srcdir)/fastjar.info
 am__TEXINFO_TEX_DIR = $(srcdir)
@@ -121,6 +120,12 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-pdf-recursive install-ps-recursive install-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(man_MANS)
@@ -339,9 +344,9 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib
 AM_CFLAGS = @fastjar_warn_cflags@
 AM_LDFLAGS = -no-undefined
-LDADD = $(ZLIBS) lib/libgnu.la libfastjar.la 
-lib_LTLIBRARIES = libfastjar.la
-libfastjar_la_SOURCES = \
+LDADD = $(ZLIBS) lib/libgnu.la libfastjar_convenience.la 
+noinst_LTLIBRARIES = libfastjar_convenience.la
+libfastjar_convenience_la_SOURCES = \
 	compress.c \
 	compress.h \
 	dostime.c \
@@ -352,8 +357,7 @@ libfastjar_la_SOURCES = \
 	shift.h \
 	zipfile.h
 
-libfastjar_la_LIBADD = $(ZLIBS)
-libfastjar_la_DEPENDENCIES = $(DEPENDENCIES)
+nodist_libfastjar_convenience_la_SOURCES = $(nodist_libfastjar_la_SOURCES)
 fastjar_SOURCES = jartool.c jartool.h
 grepjar_SOURCES = jargrep.c jargrep.h
 info_TEXINFOS = fastjar.texi
@@ -417,35 +421,17 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
-	  else :; fi; \
-	done
 
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  p=$(am__strip_dir) \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$p'"; \
-	  $(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$p"; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test "$$dir" != "$$p" || dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libfastjar.la: $(libfastjar_la_OBJECTS) $(libfastjar_la_DEPENDENCIES) 
-	$(LINK) -rpath $(libdir) $(libfastjar_la_OBJECTS) $(libfastjar_la_LIBADD) $(LIBS)
+libfastjar_convenience.la: $(libfastjar_convenience_la_OBJECTS) $(libfastjar_convenience_la_DEPENDENCIES) 
+	$(LINK)  $(libfastjar_convenience_la_OBJECTS) $(libfastjar_convenience_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
@@ -988,11 +974,9 @@ check-am: all-am
 check: check-recursive
 all-am: Makefile $(INFO_DEPS) $(LTLIBRARIES) $(PROGRAMS) $(MANS) \
 		config.h
-install-binPROGRAMS: install-libLTLIBRARIES
-
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -1021,8 +1005,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -1056,7 +1040,7 @@ install-dvi-am: $(DVIS)
 	  echo " $(INSTALL_DATA) '$$d$$p' '$(DESTDIR)$(dvidir)/$$f'"; \
 	  $(INSTALL_DATA) "$$d$$p" "$(DESTDIR)$(dvidir)/$$f"; \
 	done
-install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS
 
 install-html: install-html-recursive
 
@@ -1156,8 +1140,8 @@ ps: ps-recursive
 ps-am: $(PSS)
 
 uninstall-am: uninstall-binPROGRAMS uninstall-dvi-am uninstall-html-am \
-	uninstall-info-am uninstall-libLTLIBRARIES uninstall-man \
-	uninstall-pdf-am uninstall-ps-am
+	uninstall-info-am uninstall-man uninstall-pdf-am \
+	uninstall-ps-am
 
 uninstall-man: uninstall-man1
 
@@ -1166,7 +1150,7 @@ uninstall-man: uninstall-man1
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am am--refresh check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
+	clean-generic clean-libtool clean-noinstLTLIBRARIES ctags \
 	ctags-recursive dist dist-all dist-bzip2 dist-gzip dist-info \
 	dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-compile distclean-generic distclean-hdr \
@@ -1175,16 +1159,16 @@ uninstall-man: uninstall-man1
 	install install-am install-binPROGRAMS install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-man \
-	install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-aminfo maintainer-clean-generic mostlyclean \
-	mostlyclean-aminfo mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-binPROGRAMS uninstall-dvi-am \
-	uninstall-html-am uninstall-info-am uninstall-libLTLIBRARIES \
-	uninstall-man uninstall-man1 uninstall-pdf-am uninstall-ps-am
+	install-info-am install-man install-man1 install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-aminfo \
+	maintainer-clean-generic mostlyclean mostlyclean-aminfo \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-dvi-am uninstall-html-am \
+	uninstall-info-am uninstall-man uninstall-man1 \
+	uninstall-pdf-am uninstall-ps-am
 
 
 .pod.1:

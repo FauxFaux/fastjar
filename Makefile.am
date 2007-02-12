@@ -6,13 +6,13 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib
 AM_CFLAGS = @fastjar_warn_cflags@
 AM_LDFLAGS = -no-undefined
-LDADD = $(ZLIBS) lib/libgnu.la libfastjar.la 
+LDADD = $(ZLIBS) lib/libgnu.la libfastjar_convenience.la 
 
 bin_PROGRAMS = fastjar grepjar
 
-lib_LTLIBRARIES = libfastjar.la
+noinst_LTLIBRARIES = libfastjar_convenience.la
 
-libfastjar_la_SOURCES = \
+libfastjar_convenience_la_SOURCES = \
 	compress.c \
 	compress.h \
 	dostime.c \
@@ -23,8 +23,7 @@ libfastjar_la_SOURCES = \
 	shift.h \
 	zipfile.h
 
-libfastjar_la_LIBADD = $(ZLIBS)
-libfastjar_la_DEPENDENCIES = $(DEPENDENCIES)
+nodist_libfastjar_convenience_la_SOURCES = $(nodist_libfastjar_la_SOURCES)
 
 fastjar_SOURCES = jartool.c jartool.h
 grepjar_SOURCES = jargrep.c jargrep.h
@@ -32,7 +31,6 @@ grepjar_SOURCES = jargrep.c jargrep.h
 info_TEXINFOS = fastjar.texi
 man_MANS = fastjar.1 grepjar.1
 EXTRA_DIST = $(man_MANS) texi2pod.pl
-
 
 TEXI2POD = perl $(srcdir)/texi2pod.pl
 POD2MAN = pod2man --center="GNU" --release=@VERSION@
