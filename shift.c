@@ -123,9 +123,9 @@ shift_up (int fd, off_t begin, off_t amount, struct zipentry *ze)
 int
 shift_down (int fd, off_t begin, off_t amount, struct zipentry *ze)
 {
-  int off, moved = 0;
+  int moved = 0;
   ub1 buffer[BUFFER_SIZE];
-  off_t where, save;
+  off_t where, save, off;
   size_t len;
 
   if (amount <= 0)
