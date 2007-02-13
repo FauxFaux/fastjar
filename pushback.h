@@ -21,10 +21,12 @@
 #ifndef __FASTJAR_PUSHBACK_H__
 #define __FASTJAR_PUSHBACK_H__
 
+#include <stdlib.h>
+
 #include "jartool.h"
 
 struct pb_file {
-  unsigned int buff_amt;
+  size_t buff_amt;
   ub1 pb_buff[RDSZ];
   int fd;
   ub1 *next;
@@ -34,7 +36,7 @@ typedef struct pb_file pb_file;
 
 
 void pb_init(pb_file *, int);
-int pb_push(pb_file *, void *, int);
-int pb_read(pb_file *, void *, int);
+size_t pb_push(pb_file *, void *, size_t);
+size_t pb_read(pb_file *, void *, size_t);
 
 #endif /* __FASTJAR_PUSHBACK_H__ */

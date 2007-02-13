@@ -30,16 +30,16 @@ void pb_init(pb_file *pbf, int fd){
   pbf->buff_amt = 0;
 }
 
-int pb_push(pb_file *pbf, void *buff, int amt){
-  int in_amt;
-  int wrap = 0;
+size_t pb_push(pb_file *pbf, void *buff, size_t amt){
+  size_t in_amt;
+  size_t wrap = 0;
 
 #ifdef DEBUG
   printf("%d bytes being pushed back to the buffer\n", amt);
 #endif
 
   /* determine how much we can take */
-  if((int)(RDSZ - pbf->buff_amt) < amt)
+  if((RDSZ - pbf->buff_amt) < amt)
     in_amt = RDSZ - pbf->buff_amt;
   else
     in_amt = amt;
@@ -48,7 +48,7 @@ int pb_push(pb_file *pbf, void *buff, int amt){
     return 0;
 
   /* figure out if we need to wrap around, and if so, by how much */
-  if(((pbf->pb_buff + RDSZ) - pbf->next) < in_amt)
+  if((size_t) ((pbf->pb_buff + RDSZ) - pbf->next) < in_amt)
     wrap = in_amt - ((pbf->pb_buff + RDSZ) - pbf->next);
 
   /* write everything up til the end of the buffer */
@@ -68,11 +68,11 @@ int pb_push(pb_file *pbf, void *buff, int amt){
 }
 
 
-int pb_read(pb_file *pbf, void *buff, int amt){
-  int out_amt = 0;
-  int wrap = 0;
+size_t pb_read(pb_file *pbf, void *buff, size_t amt){
+  size_t out_amt = 0;
+  size_t wrap = 0;
   void *bp = buff;
-  int tmp;
+  size_t tmp;
 
 #ifdef DEBUG
   printf("%d bytes requested from us\n", amt);
@@ -86,13 +86,13 @@ int pb_read(pb_file *pbf, void *buff, int amt){
 #endif
       
       /* calculate how much we can actually give the caller */
-      if( (amt - out_amt) < (int)pbf->buff_amt )
+      if( (amt - out_amt) < pbf->buff_amt )
         tmp = (amt - out_amt);
       else
         tmp = pbf->buff_amt;
       
       /* Determine if we're going to need to wrap around the buffer */
-      if(tmp > ((pbf->pb_buff + RDSZ) - pbf->next))
+      if(tmp > ((size_t) ((pbf->pb_buff + RDSZ) - pbf->next)))
         wrap = tmp - ((pbf->pb_buff + RDSZ) - pbf->next);
       
       memcpy(bp, pbf->next, (tmp - wrap));
@@ -120,16 +120,19 @@ int pb_read(pb_file *pbf, void *buff, int amt){
       out_amt += tmp;
 
     } else {
+      ssize_t num_read;
 #ifdef DEBUG
       printf("Reading from file..\n");
 #endif
       
       /* The pushback buffer was empty, so we just need to read from the file */
-      tmp = read(pbf->fd, bp, (amt - out_amt));
-      if(tmp == 0)
+      num_read = read(pbf->fd, bp, (amt - out_amt));
+      if(num_read == 0)
         break;
-      else
+      else {
+        tmp = (size_t) num_read;
         out_amt += tmp;
+      }
       
       bp = &(((char *)bp)[tmp]);
     }

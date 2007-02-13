@@ -1513,7 +1513,7 @@ int create_central_header(int fd){
 }
 
 int extract_jar(int fd, const char **files, int file_num){
-  int rdamt;
+  size_t rdamt;
   int out_a, in_a;
   ub4 signature;
   ub4 csize;
