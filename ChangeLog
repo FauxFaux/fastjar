@@ -1,3 +1,9 @@
+2007-02-14  Dalibor Topic  <robilad@kaffe.org>
+
+	* configure.ac, README, NEWS: Bump version number to 0.96-pre.
+	* Makefile.am (splint): Use libfastjar_convenience_la_SOURCES.
+        * configure, Makefile.in: Regenerated.
+
 2007-02-13  Dalibor Topic  <robilad@kaffe.org>
 
 	* configure.ac, README, NEWS: Bump version number to 0.95.

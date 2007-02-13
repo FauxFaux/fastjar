@@ -1197,7 +1197,7 @@ flawfinder:
 rats:
 	$(RATS) $(SOURCES)
 splint:
-	$(SPLINT) $(SPLINT_FLAGS) $(libfastjar_la_SOURCES)
+	$(SPLINT) $(SPLINT_FLAGS) $(libfastjar_convenience_la_SOURCES)
 	$(SPLINT) $(SPLINT_FLAGS) $(fastjar_SOURCES)
 	$(SPLINT) $(SPLINT_FLAGS) $(grepjar_SOURCES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
