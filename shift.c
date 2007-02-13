@@ -50,9 +50,10 @@ ub4 end_of_entries;
 int
 shift_up (int fd, off_t begin, off_t amount, struct zipentry *ze)
 {
-  int len, moved = 0;
+  int  moved = 0;
   ub1 buffer[BUFFER_SIZE];
   off_t where, end, save;
+  size_t len;
 
   if (amount <= 0)
     return 0;
@@ -68,14 +69,19 @@ shift_up (int fd, off_t begin, off_t amount, struct zipentry *ze)
 
   do
     {
+      ssize_t num_read;
+
       if (lseek (fd, where, SEEK_SET) < 0)
 	return 1;
-      if ((len = read (fd, buffer, BUFFER_SIZE)) < 0)
+      if ((num_read = read (fd, buffer, BUFFER_SIZE)) < 0)
 	return 1;
-      if (len == 0)
+      if (num_read == 0)
 	break;
       if (lseek (fd, where - amount, SEEK_SET) < 0)
 	return 1;
+
+      len = (size_t) num_read;
+
       if (write (fd, buffer, len) < 0)
 	return 1;
       where += len;
@@ -117,9 +123,10 @@ shift_up (int fd, off_t begin, off_t amount, struct zipentry *ze)
 int
 shift_down (int fd, off_t begin, off_t amount, struct zipentry *ze)
 {
-  int off, len, moved = 0;
+  int off, moved = 0;
   ub1 buffer[BUFFER_SIZE];
   off_t where, save;
+  size_t len;
 
   if (amount <= 0)
     return 0;
@@ -138,12 +145,17 @@ shift_down (int fd, off_t begin, off_t amount, struct zipentry *ze)
 
   do
     {
+      ssize_t num_read;
+
       if (lseek (fd, where, SEEK_SET) < 0)
 	return 1;
-      if ((len = read (fd, buffer, BUFFER_SIZE)) < 0)
+      if ((num_read = read (fd, buffer, BUFFER_SIZE)) < 0)
 	return 1;
       if (lseek (fd, where + amount, SEEK_SET) < 0)
 	return 1;
+
+      len = (size_t) num_read;
+
       if (write (fd, buffer, len) < 0)
 	return 1;
       where -= BUFFER_SIZE;
