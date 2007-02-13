@@ -1,5 +1,5 @@
-New in release 0.95-pre (UNRELEASED)
---------------------------------
+New in release 0.95
+-------------------
 
 * Fix for directory traversal security issue CVE-2006-3619.
 

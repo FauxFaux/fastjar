@@ -1,5 +1,5 @@
-FastJar 0.95-pre
-================
+FastJar 0.95
+============
 
 FastJar is an attempt at creating a feature-for-feature copy of Sun's JDK's
 'jar' command.  Sun's jar (or Blackdown's for that matter) is written entirely
