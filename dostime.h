@@ -21,7 +21,9 @@
 #ifndef __FASTJAR_DOSTIME_H__
 #define __FASTJAR_DOSTIME_H__
 
-time_t dos2unixtime(unsigned long dostime);
-unsigned long unix2dostime(time_t*);
+#include <jartool.h>
+
+time_t dos2unixtime(ub4 dostime);
+ub4 unix2dostime(time_t*);
 
 #endif /* __FASTJAR_DOSTIME_H__ */

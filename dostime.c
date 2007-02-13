@@ -45,7 +45,7 @@
  */
 
 time_t
-dos2unixtime (unsigned long dostime)
+dos2unixtime (ub4 dostime)
 {
   struct tm ltime;
   time_t now = time (NULL);
@@ -53,12 +53,12 @@ dos2unixtime (unsigned long dostime)
   /* Call localtime to initialize timezone in TIME.  */
   ltime = *localtime (&now);
 
-  ltime.tm_year = (dostime >> 25) + 80;
-  ltime.tm_mon = ((dostime >> 21) & 0x0f) - 1;
-  ltime.tm_mday = (dostime >> 16) & 0x1f;
-  ltime.tm_hour = (dostime >> 11) & 0x0f;
-  ltime.tm_min = (dostime >> 5) & 0x3f;
-  ltime.tm_sec = (dostime & 0x1f) << 1;
+  ltime.tm_year = (int) (dostime >> 25) + 80;
+  ltime.tm_mon = (int) ((dostime >> 21) & 0x0f) - 1;
+  ltime.tm_mday = (int) (dostime >> 16) & 0x1f;
+  ltime.tm_hour = (int) (dostime >> 11) & 0x0f;
+  ltime.tm_min = (int) (dostime >> 5) & 0x3f;
+  ltime.tm_sec = (int) (dostime & 0x1f) << 1;
 
   ltime.tm_wday = -1;
   ltime.tm_yday = -1;
@@ -67,7 +67,7 @@ dos2unixtime (unsigned long dostime)
   return mktime (&ltime);
 }
 
-unsigned long
+ub4
 unix2dostime (time_t *unix_time)
 {
   struct tm *ltime = localtime (unix_time);
@@ -75,10 +75,10 @@ unix2dostime (time_t *unix_time)
   if (year < 0)
     year = 0;
 
-  return (year << 25
-	  | (ltime->tm_mon + 1) << 21
-	  | ltime->tm_mday << 16
-	  | ltime->tm_hour << 11
-	  | ltime->tm_min << 5
-	  | ltime->tm_sec >> 1);
+  return ((ub4) year << 25
+	  | ((ub4) ltime->tm_mon + 1) << 21
+	  | (ub4) ltime->tm_mday << 16
+	  | (ub4) ltime->tm_hour << 11
+	  | (ub4) ltime->tm_min << 5
+	  | (ub4) ltime->tm_sec >> 1);
 }
