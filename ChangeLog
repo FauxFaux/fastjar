@@ -1,5 +1,10 @@
 2007-02-14  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.am (fastjar_SOURCES): Moved jartool.h ...
+	(libfastjar_convenience_la_SOURCES) ... to here.
+
+2007-02-14  Dalibor Topic  <robilad@kaffe.org>
+
 	* dostime.c (dos2unixtime): Added casts to int.
 	(unix2dostime) Added casts to ub4.
 	* dostime.h (dos2unixtime, unix2dostime): Changed

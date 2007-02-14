@@ -17,6 +17,7 @@ libfastjar_convenience_la_SOURCES = \
 	compress.h \
 	dostime.c \
 	dostime.h \
+	jartool.h \
 	pushback.c \
 	pushback.h \
 	shift.c \
@@ -25,7 +26,7 @@ libfastjar_convenience_la_SOURCES = \
 
 nodist_libfastjar_convenience_la_SOURCES = $(nodist_libfastjar_la_SOURCES)
 
-fastjar_SOURCES = jartool.c jartool.h
+fastjar_SOURCES = jartool.c
 grepjar_SOURCES = jargrep.c jargrep.h
 
 info_TEXINFOS = fastjar.texi
