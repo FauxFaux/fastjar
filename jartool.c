@@ -2399,10 +2399,18 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
      as before */
   
   /* Write the local header */
-  write(jfd, file_header, 30);
-    
+  written = write(jfd, file_header, 30);
+  if ((written == -1) || ((size_t) written != 30)){
+    perror("write");
+    exit(EXIT_FAILURE);
+  }
+
   /* write the file name to the zip file */
-  write(jfd, fname, file_name_length);
+  written = write(jfd, fname, file_name_length);
+  if ((written == -1) || ((size_t) written != file_name_length)){
+    perror("write");
+    exit(EXIT_FAILURE);
+  }
 
 
   if(verbose){
@@ -2436,7 +2444,7 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
   written = write(jfd, content, content_length);
   if ((written == -1) || ((size_t) written != content_length)){
     perror("write");
-    return 0;    	
+    exit(EXIT_FAILURE);
   }
       
   /* write out data descriptor */
