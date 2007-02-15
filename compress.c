@@ -42,7 +42,7 @@
 #include "compress.h"
 #include "shift.h"
 
-static int write_data (int, void *, size_t, struct zipentry *);
+static ssize_t write_data (int, void *, size_t, struct zipentry *);
 
 static z_stream zs;
 
@@ -50,8 +50,8 @@ void init_compression(void){
 
   memset(&zs, 0, sizeof(z_stream));
 
-  zs.zalloc = Z_NULL;
-  zs.zfree = Z_NULL;
+  zs.zalloc = NULL;
+  zs.zfree = NULL;
   zs.opaque = Z_NULL;
 
   /* Why -MAX_WBITS?  zlib has an undocumented feature, where if the windowbits
@@ -65,7 +65,7 @@ void init_compression(void){
   }
 }
 
-static int
+static ssize_t
 write_data (int fd, void *buf, size_t len,
 	    struct zipentry *ze)
 {
@@ -96,9 +96,11 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
 {
   Bytef in_buff[RDSZ];
   Bytef out_buff[RDSZ];
-  unsigned int rdamt, wramt;
+  size_t rdamt;
+  size_t wramt;
   unsigned long tr = 0;
-  int rtval;
+  ssize_t rtval;
+  ssize_t num_written;
 
   rdamt = 0;
 
@@ -122,7 +124,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
         exit(EXIT_FAILURE);
       }
 
-      rdamt = rtval;
+      rdamt = (size_t) rtval;
 
       /* compute the CRC while we're at it */
       ze->crc = crc32(ze->crc, in_buff, rdamt); 
@@ -131,7 +133,7 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
       tr += rdamt;
 
       zs.next_in = in_buff;
-      zs.avail_in = rdamt;
+      zs.avail_in = (uInt) rdamt;
     }
     
     /* deflate the data */
@@ -159,10 +161,10 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
   /* If we have any data waiting in the buffer after we're done with the file
      we can flush it */
   if(zs.avail_out < RDSZ){
+    wramt = (size_t) RDSZ - zs.avail_out;
+    num_written = write_data (out_fd, out_buff, wramt, existing);
 
-    wramt = RDSZ - zs.avail_out;
-
-    if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
+    if (num_written == -1 || num_written != (ssize_t)wramt)
       {
 	perror("write");
 	exit(EXIT_FAILURE);
@@ -175,9 +177,10 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
 
   /* finish deflation.  This purges zlib's internal data buffers */
   while(deflate(&zs, Z_FINISH) == Z_OK){
-    wramt = RDSZ - zs.avail_out;
+    wramt = (size_t) RDSZ - zs.avail_out;
+    num_written = write_data (out_fd, out_buff, wramt, existing);
 
-    if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
+    if (num_written == -1 || num_written != (ssize_t)wramt)
       {
 	perror("write");
 	exit(EXIT_FAILURE);
@@ -189,9 +192,10 @@ int compress_file(int in_fd, int out_fd, struct zipentry *ze,
 
   /* If there's any data left in the buffer, write it out */
   if(zs.avail_out != RDSZ){
-    wramt = RDSZ - zs.avail_out;
+    wramt = (size_t) RDSZ - zs.avail_out;
+    num_written = write_data (out_fd, out_buff, wramt, existing);
 
-    if (write_data (out_fd, out_buff, wramt, existing) != (int)wramt)
+    if (num_written == -1 || num_written != (ssize_t)wramt)
       {
 	perror("write");
 	exit(EXIT_FAILURE);
@@ -228,8 +232,8 @@ void init_inflation(void){
 
   memset(&zs, 0, sizeof(z_stream));
     
-  zs.zalloc = Z_NULL;
-  zs.zfree = Z_NULL;
+  zs.zalloc = NULL;
+  zs.zfree = NULL;
   zs.opaque = Z_NULL;
   
   if(inflateInit2(&zs, -15) != Z_OK){
@@ -242,7 +246,8 @@ void init_inflation(void){
 int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
   Bytef in_buff[RDSZ];
   Bytef out_buff[RDSZ];
-  unsigned int rdamt;
+  size_t rdamt;
+  size_t num_pushed;
   int rtval;
   ub4 crc = 0;
 
@@ -266,7 +271,7 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
 #endif
 
       zs.next_in = in_buff;
-      zs.avail_in = rdamt;
+      zs.avail_in = (uInt) rdamt;
     }
 
     zs.next_out = out_buff;
@@ -280,12 +285,14 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
         if(zs.avail_out != RDSZ){
           crc = crc32(crc, out_buff, (RDSZ - zs.avail_out));
 
-          if(out_fd >= 0)
-            if(write(out_fd, out_buff, (RDSZ - zs.avail_out)) != 
-               (int)(RDSZ - zs.avail_out)){
+          if(out_fd >= 0) {
+            const size_t num_to_write = (size_t) RDSZ - zs.avail_out;
+            const ssize_t num_written = write(out_fd, out_buff, num_to_write);
+            if(num_written == -1 || num_written != (ssize_t) num_to_write){
               perror("write");
               exit(EXIT_FAILURE);
             }
+          }
         }
         
         break;
@@ -297,12 +304,14 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
       if(zs.avail_out != RDSZ){
         crc = crc32(crc, out_buff, (RDSZ - zs.avail_out));
 
-        if(out_fd >= 0)
-          if(write(out_fd, out_buff, (RDSZ - zs.avail_out)) != 
-             (int)(RDSZ - zs.avail_out)){
+        if(out_fd >= 0) {
+          const size_t num_to_write = (size_t) RDSZ - zs.avail_out;
+          const ssize_t num_written = write(out_fd, out_buff, num_to_write);
+          if(num_written == -1 || num_written != (ssize_t) num_to_write){
             perror("write");
             exit(EXIT_FAILURE);
           }
+        }
         zs.next_out = out_buff;
         zs.avail_out = RDSZ;
       }
@@ -322,7 +331,11 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
 
   ze->crc = crc;
   
-  pb_push(pbf, zs.next_in, zs.avail_in);
+  num_pushed = pb_push(pbf, zs.next_in, zs.avail_in);
+  if (num_pushed != (size_t) zs.avail_in) {
+    fprintf(stderr, "Pushback failure.");
+    exit(EXIT_FAILURE);
+  }
 
   ze->usize = zs.total_out;
 
@@ -377,21 +390,21 @@ returns: Byte array of uncompressed embedded file.
 static Bytef *ez_inflate_str(pb_file *pbf, ub4 csize, ub4 usize) {
 	Bytef *out_buff;
 	Bytef *in_buff;
-	unsigned int rdamt;
+	size_t rdamt;
 
 	if((zs.next_in = in_buff = (Bytef *) malloc(csize))) {
 		if((zs.next_out = out_buff = (Bytef *) malloc(usize + 1))) { 
 			if((rdamt = pb_read(pbf, zs.next_in, csize)) == csize) {
-				zs.avail_in = csize;
-				zs.avail_out = usize;
+				zs.avail_in = (uInt) csize;
+				zs.avail_out = (uInt) usize;
 				report_str_error(inflate(&zs, 0));
 				free(in_buff);
 				inflateReset(&zs);
-				out_buff[usize] = '\0';
+				out_buff[usize] = (Bytef) '\0';
 			}
 			else {
 				fprintf(stderr, "Read failed on input file.\n");
-				fprintf(stderr, "Tried to read %u but read %u instead.\n", csize, rdamt);
+				fprintf(stderr, "Tried to read %lu but read %lu instead.\n", (unsigned long) csize, (unsigned long) rdamt);
 				free(in_buff);
 				free(out_buff);
 				exit(EXIT_FAILURE);
@@ -428,16 +441,17 @@ static Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize) {
 	Bytef *out_buff;
 	Bytef *tmp;
 	Bytef in_buff[RDSZ];
-	unsigned int rdamt;
-	int i;
+	size_t rdamt;
+	size_t i;
 	int zret;
+        size_t num_pushed;
 
 	i = 1; 
 	out_buff = NULL;
 	zret = Z_OK;
 	while(zret != Z_STREAM_END && (rdamt = pb_read(pbf, in_buff, RDSZ)))
 	{
-		zs.avail_in = rdamt;
+		zs.avail_in = (uInt) rdamt;
 		zs.avail_out = 0;
 		zs.next_in = in_buff;
 		do {
@@ -455,9 +469,13 @@ static Bytef *hrd_inflate_str(pb_file *pbf, ub4 *csize, ub4 *usize) {
 		} while((zret = inflate(&zs, 0)) == Z_OK);
 		report_str_error(zret);
 	}
-	pb_push(pbf, zs.next_in, zs.avail_in);
+	num_pushed = pb_push(pbf, zs.next_in, zs.avail_in);
+        if ((uInt) num_pushed != zs.avail_in) {
+		fprintf(stderr, "Pushback failed.\n");
+		exit(EXIT_FAILURE);
+        }
 
-	out_buff[(RDSZ * (i - 1)) - zs.avail_out] = '\0';
+	out_buff[(RDSZ * (i - 1)) - zs.avail_out] = (Bytef) '\0';
 	*usize = zs.total_out;
 	*csize = zs.total_in;
 
