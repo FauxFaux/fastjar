@@ -53,6 +53,9 @@ AC_SUBST([LTALLOCA])
   gt_TYPE_SSIZE_T
   AM_STDBOOL_H
   gl_STDINT_H
+  gl_FUNC_STRDUP
+  gl_STRING_MODULE_INDICATOR([strdup])
+  gl_HEADER_STRING_H
   gl_HEADER_UNISTD
   gl_FUNC_VASNPRINTF
   gl_WCHAR_H
@@ -124,6 +127,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/snprintf.h
   lib/stdbool_.h
   lib/stdint_.h
+  lib/strdup.c
+  lib/string_.h
   lib/unistd_.h
   lib/vasnprintf.c
   lib/vasnprintf.h
@@ -150,6 +155,8 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/stdbool.m4
   m4/stdint.m4
   m4/stdint_h.m4
+  m4/strdup.m4
+  m4/string_h.m4
   m4/ulonglong.m4
   m4/unistd_h.m4
   m4/vasnprintf.m4
