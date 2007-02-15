@@ -1,5 +1,10 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	*  lib/dummy.c, lib/strcasecmp.c, lib/string_.h, lib/strncasecmp.c,
+	m4/strcase.m4, m4/string_h.m4: Removed.
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* Makefile.in, aclocal.m4, config.h.in, configure,
 	lib/Makefile.am, lib/Makefile.in, lib/asnprintf.c,
 	lib/config.charset, lib/localcharset.c, lib/localcharset.h,
