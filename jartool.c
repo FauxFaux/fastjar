@@ -60,6 +60,7 @@
 
 #include <getopt.h>
 #include "regex.h"
+#include "snprintf.h"
 
 #include "jartool.h"
 #include "zipfile.h"

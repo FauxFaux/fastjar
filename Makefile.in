@@ -45,14 +45,20 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/absolute-header.m4 \
 	$(top_srcdir)/m4/alloca.m4 $(top_srcdir)/m4/codeset.m4 \
-	$(top_srcdir)/m4/extensions.m4 $(top_srcdir)/m4/getopt.m4 \
-	$(top_srcdir)/m4/gnulib-comp.m4 $(top_srcdir)/m4/longlong.m4 \
-	$(top_srcdir)/m4/regex.m4 $(top_srcdir)/m4/ssize_t.m4 \
+	$(top_srcdir)/m4/eoverflow.m4 $(top_srcdir)/m4/extensions.m4 \
+	$(top_srcdir)/m4/getopt.m4 $(top_srcdir)/m4/glibc21.m4 \
+	$(top_srcdir)/m4/gnulib-comp.m4 $(top_srcdir)/m4/intmax_t.m4 \
+	$(top_srcdir)/m4/inttypes_h.m4 \
+	$(top_srcdir)/m4/localcharset.m4 \
+	$(top_srcdir)/m4/longdouble.m4 $(top_srcdir)/m4/longlong.m4 \
+	$(top_srcdir)/m4/regex.m4 $(top_srcdir)/m4/size_max.m4 \
+	$(top_srcdir)/m4/snprintf.m4 $(top_srcdir)/m4/ssize_t.m4 \
 	$(top_srcdir)/m4/stdbool.m4 $(top_srcdir)/m4/stdint.m4 \
-	$(top_srcdir)/m4/strcase.m4 $(top_srcdir)/m4/string_h.m4 \
-	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/m4/unistd_h.m4 \
-	$(top_srcdir)/m4/wchar.m4 $(top_srcdir)/m4/wctype.m4 \
-	$(top_srcdir)/m4/wint_t.m4 $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/ulonglong.m4 \
+	$(top_srcdir)/m4/unistd_h.m4 $(top_srcdir)/m4/vasnprintf.m4 \
+	$(top_srcdir)/m4/wchar.m4 $(top_srcdir)/m4/wchar_t.m4 \
+	$(top_srcdir)/m4/wctype.m4 $(top_srcdir)/m4/wint_t.m4 \
+	$(top_srcdir)/m4/xsize.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -146,7 +152,6 @@ GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ABSOLUTE_STDINT_H = @ABSOLUTE_STDINT_H@
-ABSOLUTE_STRING_H = @ABSOLUTE_STRING_H@
 ABSOLUTE_UNISTD_H = @ABSOLUTE_UNISTD_H@
 ABSOLUTE_WCHAR_H = @ABSOLUTE_WCHAR_H@
 ABSOLUTE_WCTYPE_H = @ABSOLUTE_WCTYPE_H@
@@ -183,57 +188,20 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+EOVERFLOW = @EOVERFLOW@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 FLAWFINDER = @FLAWFINDER@
 GETOPT_H = @GETOPT_H@
-GNULIB_MBSCASECMP = @GNULIB_MBSCASECMP@
-GNULIB_MBSCASESTR = @GNULIB_MBSCASESTR@
-GNULIB_MBSCHR = @GNULIB_MBSCHR@
-GNULIB_MBSCSPN = @GNULIB_MBSCSPN@
-GNULIB_MBSPBRK = @GNULIB_MBSPBRK@
-GNULIB_MBSRCHR = @GNULIB_MBSRCHR@
-GNULIB_MBSSEP = @GNULIB_MBSSEP@
-GNULIB_MBSSPN = @GNULIB_MBSSPN@
-GNULIB_MBSSTR = @GNULIB_MBSSTR@
-GNULIB_MBSTOK_R = @GNULIB_MBSTOK_R@
-GNULIB_MEMMEM = @GNULIB_MEMMEM@
-GNULIB_MEMPCPY = @GNULIB_MEMPCPY@
-GNULIB_MEMRCHR = @GNULIB_MEMRCHR@
-GNULIB_STPCPY = @GNULIB_STPCPY@
-GNULIB_STPNCPY = @GNULIB_STPNCPY@
-GNULIB_STRCASESTR = @GNULIB_STRCASESTR@
-GNULIB_STRCHRNUL = @GNULIB_STRCHRNUL@
-GNULIB_STRDUP = @GNULIB_STRDUP@
-GNULIB_STRNDUP = @GNULIB_STRNDUP@
-GNULIB_STRNLEN = @GNULIB_STRNLEN@
-GNULIB_STRPBRK = @GNULIB_STRPBRK@
-GNULIB_STRSEP = @GNULIB_STRSEP@
-GNULIB_STRTOK_R = @GNULIB_STRTOK_R@
+GLIBC21 = @GLIBC21@
 GREP = @GREP@
-HAVE_DECL_MEMMEM = @HAVE_DECL_MEMMEM@
-HAVE_DECL_MEMRCHR = @HAVE_DECL_MEMRCHR@
-HAVE_DECL_STRDUP = @HAVE_DECL_STRDUP@
-HAVE_DECL_STRNCASECMP = @HAVE_DECL_STRNCASECMP@
-HAVE_DECL_STRNDUP = @HAVE_DECL_STRNDUP@
-HAVE_DECL_STRNLEN = @HAVE_DECL_STRNLEN@
-HAVE_DECL_STRTOK_R = @HAVE_DECL_STRTOK_R@
 HAVE_INTTYPES_H = @HAVE_INTTYPES_H@
 HAVE_LONG_LONG_INT = @HAVE_LONG_LONG_INT@
-HAVE_MEMPCPY = @HAVE_MEMPCPY@
 HAVE_SIGNED_SIG_ATOMIC_T = @HAVE_SIGNED_SIG_ATOMIC_T@
 HAVE_SIGNED_WCHAR_T = @HAVE_SIGNED_WCHAR_T@
 HAVE_SIGNED_WINT_T = @HAVE_SIGNED_WINT_T@
 HAVE_STDINT_H = @HAVE_STDINT_H@
-HAVE_STPCPY = @HAVE_STPCPY@
-HAVE_STPNCPY = @HAVE_STPNCPY@
-HAVE_STRCASECMP = @HAVE_STRCASECMP@
-HAVE_STRCASESTR = @HAVE_STRCASESTR@
-HAVE_STRCHRNUL = @HAVE_STRCHRNUL@
-HAVE_STRNDUP = @HAVE_STRNDUP@
-HAVE_STRPBRK = @HAVE_STRPBRK@
-HAVE_STRSEP = @HAVE_STRSEP@
 HAVE_SYS_BITYPES_H = @HAVE_SYS_BITYPES_H@
 HAVE_SYS_INTTYPES_H = @HAVE_SYS_INTTYPES_H@
 HAVE_SYS_TYPES_H = @HAVE_SYS_TYPES_H@

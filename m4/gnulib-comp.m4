@@ -45,16 +45,19 @@ changequote([, ])dnl
 AC_SUBST([LTALLOCA])
   gl_FUNC_ALLOCA
   gl_GETOPT
+  gl_LOCALCHARSET
   AC_FUNC_MALLOC
   gl_REGEX
+  gl_SIZE_MAX
+  gl_FUNC_SNPRINTF
   gt_TYPE_SSIZE_T
   AM_STDBOOL_H
   gl_STDINT_H
-  gl_STRCASE
-  gl_HEADER_STRING_H
   gl_HEADER_UNISTD
+  gl_FUNC_VASNPRINTF
   gl_WCHAR_H
   gl_WCTYPE_H
+  gl_XSIZE
   m4_popdef([AC_LIBSOURCES])
   m4_popdef([AC_REPLACE_FUNCS])
   m4_popdef([AC_LIBOBJ])
@@ -94,43 +97,65 @@ AC_DEFUN([gl_LIBSOURCES],
 AC_DEFUN([gl_FILE_LIST], [
   lib/alloca.c
   lib/alloca_.h
-  lib/dummy.c
+  lib/asnprintf.c
+  lib/config.charset
   lib/getopt.c
   lib/getopt1.c
   lib/getopt_.h
   lib/getopt_int.h
   lib/gettext.h
+  lib/localcharset.c
+  lib/localcharset.h
   lib/malloc.c
+  lib/printf-args.c
+  lib/printf-args.h
+  lib/printf-parse.c
+  lib/printf-parse.h
+  lib/ref-add.sin
+  lib/ref-del.sin
   lib/regcomp.c
   lib/regex.c
   lib/regex.h
   lib/regex_internal.c
   lib/regex_internal.h
   lib/regexec.c
+  lib/size_max.h
+  lib/snprintf.c
+  lib/snprintf.h
   lib/stdbool_.h
   lib/stdint_.h
-  lib/strcasecmp.c
-  lib/string_.h
-  lib/strncasecmp.c
   lib/unistd_.h
+  lib/vasnprintf.c
+  lib/vasnprintf.h
   lib/wchar_.h
   lib/wctype_.h
+  lib/xsize.h
   m4/absolute-header.m4
   m4/alloca.m4
   m4/codeset.m4
+  m4/eoverflow.m4
   m4/extensions.m4
   m4/getopt.m4
+  m4/glibc21.m4
   m4/gnulib-common.m4
+  m4/intmax_t.m4
+  m4/inttypes_h.m4
+  m4/localcharset.m4
+  m4/longdouble.m4
   m4/longlong.m4
   m4/regex.m4
+  m4/size_max.m4
+  m4/snprintf.m4
   m4/ssize_t.m4
   m4/stdbool.m4
   m4/stdint.m4
-  m4/strcase.m4
-  m4/string_h.m4
+  m4/stdint_h.m4
   m4/ulonglong.m4
   m4/unistd_h.m4
+  m4/vasnprintf.m4
   m4/wchar.m4
+  m4/wchar_t.m4
   m4/wctype.m4
   m4/wint_t.m4
+  m4/xsize.m4
 ])

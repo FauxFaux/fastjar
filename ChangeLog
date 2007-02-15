@@ -1,5 +1,24 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.in, aclocal.m4, config.h.in, configure,
+	lib/Makefile.am, lib/Makefile.in, lib/asnprintf.c,
+	lib/config.charset, lib/localcharset.c, lib/localcharset.h,
+	lib/printf-args.c. lib/printf-args.h, lib/printf-parse.c,
+	lib/printf-parse.h, lib/ref-add.sin, lib/ref-del.sin,
+	lib/regcomp.c, lib/regex_internal.h, lib/size_max.h,
+	lib/snprintf.c, lib/snprintf.h, lib/string.h,
+	lib/vasnprintf.c, lib/vasnprintf.h, lib/xsize.h,
+	m4/eoverflow.m4, m4/glibc21.m4, m4/gnulib-cache.m4,
+	m4/gnulib-comp.m4, m4/intmax_t.m4, m4/inttypes_h.m4,
+	m4/localcharset.m4, m4/longdouble.m4, m4/regex.m4,
+	m4/size_max.m4, m4/snprintf.m4, m4/stdint_h.m4,
+	m4/vasnprintf.m4, m4/wchar_t.m4, m4/xsize.m4: 
+	Import snprintf module from gnulib.
+
+	* jargrep.c, jartool.c: Include "snprintf.h".
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* jargrep.c (extract_line): Use snprintf.
 	* jartool.c (make_manifest, build_index): Use snprintf.
 
