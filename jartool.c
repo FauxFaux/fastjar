@@ -2121,7 +2121,7 @@ int list_jar(int fd, const char **files, int file_num){
 int consume(pb_file *pbf, int amt){
   int tc = 0; /* total amount consumed */
   ub1 buff[RDSZ];
-  int rdamt;
+  size_t rdamt;
 
 #ifdef DEBUG
   printf("Consuming %d bytes\n", amt);
@@ -2225,8 +2225,8 @@ expand_options (int *argcp, char ***argvp)
     {
       char buf[3];
       char **new_argv;
-      int new_argc;
-      int args_to_expand;
+      size_t new_argc;
+      size_t args_to_expand;
       char *p;
       char **in, **out;
 
@@ -2272,7 +2272,7 @@ expand_options (int *argcp, char ***argvp)
       while (in < argv + argc)
 	*out++ = *in++;
 
-      *argcp = new_argc;
+      *argcp = (int) new_argc;
       *argvp = new_argv;
     }
 }

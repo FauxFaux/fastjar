@@ -1,5 +1,11 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (list_jar): Changed rdamt to size_t.
+	(expand_options) Changed new_argc, args_to_expand to size_t.
+	Added corresponding cast.
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (add_array_to_jar): Exit if write fails.
 
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
