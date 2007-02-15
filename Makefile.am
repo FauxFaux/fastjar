@@ -62,7 +62,7 @@ flawfinder:
 rats:
 	$(RATS) $(SOURCES)
 
-SPLINT_FLAGS=-I . -DHAVE_CONFIG_H +posixlib +weak
+SPLINT_FLAGS=-I . -I $(srcdir)/lib -DHAVE_CONFIG_H +posixlib +weak
 splint:
 	$(SPLINT) $(SPLINT_FLAGS) $(libfastjar_convenience_la_SOURCES)
 	$(SPLINT) $(SPLINT_FLAGS) $(fastjar_SOURCES)

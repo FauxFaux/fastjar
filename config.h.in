@@ -3,6 +3,9 @@
 /* Define this to an absolute name of <stdint.h>. */
 #undef ABSOLUTE_STDINT_H
 
+/* Define this to an absolute name of <string.h>. */
+#undef ABSOLUTE_STRING_H
+
 /* Define this to an absolute name of <unistd.h>. */
 #undef ABSOLUTE_UNISTD_H
 
@@ -61,6 +64,10 @@
 /* Define to 1 if you have the declaration of `snprintf', and to 0 if you
    don't. */
 #undef HAVE_DECL_SNPRINTF
+
+/* Define to 1 if you have the declaration of `strdup', and to 0 if you don't.
+   */
+#undef HAVE_DECL_STRDUP
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
@@ -155,6 +162,9 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strdup' function. */
+#undef HAVE_STRDUP
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H

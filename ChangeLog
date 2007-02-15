@@ -1,5 +1,10 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.am (SPLINT_FLAGS): Include headers in lib directory.
+	* Makefile.in: Regenerated.
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* jargrep.c (main): Use strdup instead of strcpy.
 	* jartool.c (make_manifest, add_to_jar, add_file_to_jar,
 	add_array_to_jar): Use strdup and strncpy instead of strcpy.
