@@ -1,5 +1,11 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	* jargrep.c (main): Use strdup instead of strcpy.
+	* jartool.c (make_manifest, add_to_jar, add_file_to_jar,
+	add_array_to_jar): Use strdup and strncpy instead of strcpy.
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* lib/Makefile.am, lib/strdup.c, lib/string_.h
 	m4/gnulib-cache.m4, m4/gnulib-comp.m4, m4/strdup.m4
 	m4/string_h.m4: Imported strdup module from gnulib.

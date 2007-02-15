@@ -613,12 +613,11 @@ int main(int argc, char **argv) {
 				options |= JG_PRINT_COUNT;
 				break;
 			case 'e':
-				if(!(regexpstr = (char *) malloc(strlen(optarg) + 1))) {
-					fprintf(stderr, "Malloc failure.\n");
-					fprintf(stderr, "Error: %s\n", strerror(errno));
-					exit(EXIT_FAILURE);
-				}
-				strcpy(regexpstr, optarg);
+                                regexpstr = strdup(optarg);
+                                if(NULL == regexpstr) {
+                                   perror("strdup");
+                                   exit(EXIT_FAILURE);
+                                }
 				break;
 			case 'i':
 				options |= JG_IGNORE_CASE;

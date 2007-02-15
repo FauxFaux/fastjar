@@ -837,10 +837,12 @@ int make_manifest(int jfd, const char *mf_name, int updating)
   }
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
-  ze->filename = (char*)malloc((nlen + 1) * sizeof(char) + 1);
-  strcpy(ze->filename, "META-INF/");
-  ze->filename[nlen] = '\0';
-    
+  ze->filename = strdup("META-INF/");
+  if (NULL == ze->filename) {
+     perror("strdup");
+     exit(EXIT_FAILURE);
+  }
+
   ze->offset = lseek(jfd, 0, SEEK_CUR);
   ze->mod_time = (ub2)(mod_time & 0x0000ffff);
   ze->mod_date = (ub2)((mod_time & 0xffff0000) >> 16);
@@ -887,9 +889,11 @@ int make_manifest(int jfd, const char *mf_name, int updating)
     }
     
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
-    ze->filename = (char*)malloc((nlen + 1) * sizeof(char) + 1);
-    strcpy(ze->filename, "META-INF/MANIFEST.MF");
-    ze->filename[nlen] = '\0';
+    ze->filename = strdup("META-INF/MANIFEST.MF");
+    if (NULL == ze->filename) {
+      perror("strdup");
+      exit(EXIT_FAILURE);
+    }
     
     ze->offset = lseek(jfd, 0, SEEK_CUR);
     ze->mod_time = (ub2)(mod_time & 0x0000ffff);
@@ -1037,14 +1041,15 @@ add_to_jar (int fd, const char *file, const int updating)
     
     nlen = strlen(file) + 256;
     fullname = (char*)malloc(nlen * sizeof(char));
-    memset(fullname, 0, (nlen * sizeof(char)));
-    
+
     if(fullname == NULL){
       fprintf(stderr, "Filename is NULL!\n");
       return 1;
     }
 
-    strcpy(fullname, file);
+    memset(fullname, 0, (nlen * sizeof(char)));
+    strncpy(fullname, file, nlen - 1);
+
     nlen = strlen(file);
 
     if(fullname[nlen - 1] != '/'){
@@ -1072,9 +1077,7 @@ add_to_jar (int fd, const char *file, const int updating)
     }
 
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
-    ze->filename = (char*)malloc((nlen + 1) * sizeof(char) + 1);
-    strcpy(ze->filename, fullname);
-    ze->filename[nlen] = '\0';
+    ze->filename = strdup(fullname);
     
     ze->offset = lseek(fd, 0, SEEK_CUR);
     ze->mod_time = (ub2)(mod_time & 0x0000ffff);
@@ -1218,8 +1221,7 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
   }
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
-  ze->filename = (char*)malloc((file_name_length + 1) * sizeof(char));
-  strcpy(ze->filename, fname);
+  ze->filename = strdup(fname);
 
   ze->mod_time = (ub2)(mod_time & 0x0000ffff);
   ze->mod_date = (ub2)((mod_time & 0xffff0000) >> 16);
@@ -2365,8 +2367,7 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
   }
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
-  ze->filename = (char*)malloc((file_name_length + 1) * sizeof(char));
-  strcpy(ze->filename, fname);
+  ze->filename = strdup(fname);
 
   ze->mod_time = (ub2)(mod_time & 0x0000ffff);
   ze->mod_date = (ub2)((mod_time & 0xffff0000) >> 16);
