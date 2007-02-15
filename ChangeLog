@@ -1,5 +1,10 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	* jargrep.c (extract_line): Use snprintf.
+	* jartool.c (make_manifest, build_index): Use snprintf.
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* compress.c (write_data): Return ssize_t.
 	(init_compression) Init zs.zalloc and zs.zfree with NULL.
 	(compress_file) Changed rdamt, wramt to size_t. Changed 

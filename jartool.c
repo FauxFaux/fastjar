@@ -860,7 +860,7 @@ int make_manifest(int jfd, const char *mf_name, int updating)
     if((mf = (char *) malloc(mf_len + 1))) {
     uLong crc;
 
-    sprintf(mf, "%s%s%s", MANIFEST_STR, VERSION, MANIFEST_END);
+    snprintf(mf, mf_len + 1, "%s%s%s", MANIFEST_STR, VERSION, MANIFEST_END);
 
     crc = crc32(0L, Z_NULL, 0);
     
@@ -2544,7 +2544,7 @@ int build_index(int jfd)
 
   index_content_size = strlen("JarIndex-Version: 1.0\n\n\n") + strlen(short_jar_fname) + 1;
   index_content = malloc(index_content_size);
-  sprintf(index_content, "JarIndex-Version: 1.0\n\n%s\n", short_jar_fname);
+  snprintf(index_content, index_content_size, "JarIndex-Version: 1.0\n\n%s\n", short_jar_fname);
 	
   for (ze = ziptail; ze; ze = ze->next_entry)
     {
