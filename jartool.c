@@ -512,8 +512,8 @@ get_next_arg (void)
 	 names characters to read. */
 
       char *s;
-      int  pos = 0;
-      int len = 1024; /* Allocate more memory when we hit this
+      size_t  pos = 0;
+      size_t len = 1024; /* Allocate more memory when we hit this
 			    limit.  */
 
       s = (char *) malloc (len);
