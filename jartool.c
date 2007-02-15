@@ -123,7 +123,6 @@ static int make_manifest(int, const char*, int);
 static int read_entries (int);
 static void init_args(const char **, int);
 static const char *get_next_arg (void);
-static char *jt_strdup (char*);
 static void expand_options (int *argcp, char ***argvp);
 static struct zipentry *find_entry (const char *);
 static int looks_like_dir (const char *);
@@ -563,7 +562,7 @@ get_next_arg (void)
       if (pos)
 	{
 	  s [pos] = '\0';
-	  return jt_strdup (s);
+	  return strdup (s);
 	}
       else
 	return NULL;
@@ -2209,16 +2208,6 @@ Example 2: use an existing manifest file 'mymanifest' and archive all the\n\
   exit(EXIT_SUCCESS);
 }
 
-static char *
-jt_strdup(char *s)
-{
-  char *result = (char*)malloc(strlen(s) + 1);
-  if (result == (char*)0)
-    return (char*)0;
-  strcpy(result, s);
-  return result;
-}
-
 /* Convert "tar-style" first argument to a form expected by getopt.
    This idea and the code comes from GNU tar.  This can allocate a new
    argument vector.  This might leak some memory, but we don't care.  */
@@ -2259,7 +2248,7 @@ expand_options (int *argcp, char ***argvp)
 	{
 	  char *opt;
 	  buf[1] = *p;
-	  *out++ = jt_strdup (buf);
+	  *out++ = strdup (buf);
 	  /* If the option takes an argument, move the next argument
 	     to just after this option.  */
 	  opt = strchr (OPTION_STRING, *p);
