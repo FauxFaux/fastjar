@@ -1,5 +1,9 @@
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (consume): Exit if lseek fails.
+
+2007-02-15  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (consume): Changed amt and tc to size_t.
 
 2007-02-15  Dalibor Topic  <robilad@kaffe.org>

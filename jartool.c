@@ -2131,7 +2131,12 @@ int consume(pb_file *pbf, size_t amt){
     if (amt <= pbf->buff_amt)
       pb_read(pbf, buff, amt);
     else {
-      lseek(pbf->fd, amt - pbf->buff_amt, SEEK_CUR);
+      off_t location;
+      location = lseek(pbf->fd, amt - pbf->buff_amt, SEEK_CUR);
+      if (location == -1) {
+        perror("lseek");
+        exit(EXIT_FAILURE);
+      }
       pb_read(pbf, buff, pbf->buff_amt); /* clear pbf */
     }
   } else
