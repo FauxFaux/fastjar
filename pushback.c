@@ -127,6 +127,10 @@ size_t pb_read(pb_file *pbf, void *buff, size_t amt){
       
       /* The pushback buffer was empty, so we just need to read from the file */
       num_read = read(pbf->fd, bp, (amt - out_amt));
+      if(-1 == num_read) {
+        perror("read");
+        exit(EXIT_FAILURE);
+      }
       if(num_read == 0)
         break;
       else {
