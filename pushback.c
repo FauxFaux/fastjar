@@ -1,6 +1,7 @@
 /*
   pushback.c - code for a pushback buffer to handle file I/O
   Copyright (C) 1999  Bryan Burns
+  Copyright (C) 2007  Dalibor Topic
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -66,7 +67,6 @@ size_t pb_push(pb_file *pbf, void *buff, size_t amt){
 
   return in_amt;
 }
-
 
 size_t pb_read(pb_file *pbf, void *buff, size_t amt){
   size_t out_amt = 0;

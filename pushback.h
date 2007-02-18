@@ -37,6 +37,16 @@ typedef struct pb_file pb_file;
 
 void pb_init(pb_file *, int);
 size_t pb_push(pb_file *, void *, size_t);
-size_t pb_read(pb_file *, void *, size_t);
+
+/**
+ * Read from a pushback buffer.
+ *
+ * @param pb_file The pushback buffer to read from.
+ * @param buff The buffer to read into.
+ * @param amt The amount to read.
+ *
+ * @return The amount that was read.
+ */
+size_t pb_read(pb_file *pbf, void *buff, size_t amt);
 
 #endif /* __FASTJAR_PUSHBACK_H__ */
