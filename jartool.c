@@ -1828,7 +1828,8 @@ static int list_jar(int fd, const char **files, int file_num){
   int filename_len = 0;
   off_t size;
   off_t central_header_offset;
-  int i, j;
+  ub2 i;
+  int j;
   time_t tdate;
   struct tm *s_tm;
   char ascii_date[31];

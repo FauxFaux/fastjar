@@ -1,5 +1,9 @@
 2007-02-18  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (list_jar): Changed i to ub2.
+
+2007-02-18  Dalibor Topic  <robilad@kaffe.org>
+
 	* TODO: Updated.
 
 2007-02-18  Dalibor Topic  <robilad@kaffe.org>
