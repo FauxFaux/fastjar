@@ -1929,10 +1929,16 @@ static int list_jar(int fd, const char **files, int file_num){
         /* If we're providing verbose output, we need to make an ASCII
          * formatted version of the date. */
         if(verbose){
+	  size_t time_string_length;
+
           mdate = UNPACK_UB4(cen_header, CEN_MODTIME);
           tdate = dos2unixtime(mdate);
           s_tm = localtime(&tdate);
-          strftime(ascii_date, 30, "%a %b %d %H:%M:%S %Z %Y", s_tm);
+          time_string_length = strftime(ascii_date, 30, "%a %b %d %H:%M:%S %Z %Y", s_tm);
+	  if (0 == time_string_length) {
+	    perror("strftime");
+	    exit(EXIT_FAILURE);
+	  }
           ascii_date[30] = '\0';
         }
 
