@@ -1825,7 +1825,7 @@ static int list_jar(int fd, const char **files, int file_num){
   ub1 *filename = NULL;
   ub1 scratch[16];
   ub1 cen_header[46];
-  int filename_len = 0;
+  ub2 filename_len = 0;
   off_t size;
   off_t central_header_offset;
   ub2 i;
