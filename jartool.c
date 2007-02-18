@@ -1810,7 +1810,7 @@ int extract_jar(int fd, const char **files, int file_num){
   return 0;
 }
 
-int list_jar(int fd, const char **files, int file_num){
+static int list_jar(int fd, const char **files, int file_num){
   ub4 signature;
   ub4 csize;
   ub4 usize;
@@ -1827,6 +1827,7 @@ int list_jar(int fd, const char **files, int file_num){
   ub1 cen_header[46];
   int filename_len = 0;
   off_t size;
+  off_t central_header_offset;
   int i, j;
   time_t tdate;
   struct tm *s_tm;
@@ -1896,9 +1897,11 @@ int list_jar(int fd, const char **files, int file_num){
       tmp = L2BI(tmp);
 #endif
 
-      /*   printf("Central header offset = %d\n", tmp); */
+      central_header_offset = tmp;
 
-      if(lseek(fd, tmp, SEEK_SET) != (int)tmp){
+      /*   printf("Central header offset = %d\n", central_header_offset); */
+
+      if(lseek(fd, central_header_offset, SEEK_SET) != central_header_offset){
         perror("lseek");
         exit(EXIT_FAILURE);
       }
