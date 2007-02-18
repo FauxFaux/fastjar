@@ -1,5 +1,10 @@
 2007-02-18  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (list_jar): Cast usize to unsigned long before
+	printing it. Changed its format modifier accordingly.
+
+2007-02-18  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (list_jar): Added local read_amt variable.
 	Use read_amt to check if the read calls returned an error
 	or didn't read the desired number of bytes. Exit if 

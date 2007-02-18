@@ -1970,14 +1970,14 @@ static int list_jar(int fd, const char **files, int file_num){
           for(j = 0; j < file_num; j++)
             if(strcmp(files[j], (const char *)filename) == 0){
               if(verbose)
-                printf("%6d %s %s\n", usize, ascii_date, filename);
+                printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
               else
                 printf("%s\n", (const char *) filename);
               break;
             }
         } else {
           if(verbose)
-            printf("%6d %s %s\n", usize, ascii_date, filename);
+            printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
           else
             printf("%s\n", (const char *) filename);
         }            
@@ -2120,14 +2120,14 @@ static int list_jar(int fd, const char **files, int file_num){
         for(j = 0; j < file_num; j++)
           if(strcmp(files[j], (const char *)filename) == 0){
             if(verbose)
-              printf("%6d %s %s\n", usize, ascii_date, filename);
+              printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
             else
               printf("%s\n", (const char *) filename);
             break;
           }
       } else {
         if(verbose)
-          printf("%6d %s %s\n", usize, ascii_date, filename);
+          printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
         else
           printf("%s\n", (const char *) filename);
       }        
