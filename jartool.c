@@ -1909,8 +1909,11 @@ static int list_jar(int fd, const char **files, int file_num){
 
       /* Loop through the entries in the central header */
       for(i = 0; i < cen_size; i++){
+        ssize_t read_amt;
+
+        read_amt = read(fd, &cen_header, 46);
     
-        if(read(fd, &cen_header, 46) != 46){
+        if(read_amt == -1 || read_amt != 46){
           perror("read");
           exit(EXIT_FAILURE);
         }
@@ -1945,16 +1948,21 @@ static int list_jar(int fd, const char **files, int file_num){
         if(filename_len < fnlen + 1){
           if(filename != NULL)
             free(filename);
-      
+
           filename = malloc(sizeof(ub1) * (fnlen + 1));
+          if (NULL == filename) {
+            perror("malloc");
+            exit(EXIT_FAILURE);
+          }
           filename_len = fnlen + 1;
         }
     
-        if(read(fd, filename, fnlen) != fnlen){
+        read_amt = read(fd, filename, fnlen);
+        if(read_amt == -1 || read_amt != (ssize_t) fnlen){
           perror("read");
           exit(EXIT_FAILURE);
         }
-        filename[fnlen] = '\0';
+        filename[fnlen] = (ub1) '\0';
     
         /* if the user specified a list of files on the command line,
            we'll only display those, otherwise we'll display everything */
