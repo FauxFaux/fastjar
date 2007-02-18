@@ -1525,7 +1525,7 @@ int extract_jar(int fd, const char **files, int file_num){
   ub2 flags;
   ub2 method;
   ub1 *filename = NULL;
-  int filename_len = 0;
+  ub2 filename_len = 0;
   ub4 rd_buff[RDSZ];
   pb_file pbf;
   ub1 scratch[16];
