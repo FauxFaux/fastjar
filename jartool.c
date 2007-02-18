@@ -2126,10 +2126,10 @@ void consume(pb_file *pbf, size_t amt){
 #ifdef DEBUG
   printf("Consuming %d bytes\n", amt);
 #endif
-
+  
   if (seekable){
     if (amt <= pbf->buff_amt)
-      pb_read(pbf, buff, amt);
+      tc += pb_read(pbf, buff, amt);
     else {
       off_t location;
       location = lseek(pbf->fd, amt - pbf->buff_amt, SEEK_CUR);
@@ -2137,7 +2137,7 @@ void consume(pb_file *pbf, size_t amt){
         perror("lseek");
         exit(EXIT_FAILURE);
       }
-      pb_read(pbf, buff, pbf->buff_amt); /* clear pbf */
+      tc += pb_read(pbf, buff, pbf->buff_amt); /* clear pbf */
     }
   } else
   while(tc < amt){
@@ -2149,7 +2149,7 @@ void consume(pb_file *pbf, size_t amt){
   }
 
 #ifdef DEBUG
-  printf("%d bytes consumed\n", amt);
+  printf("%d bytes consumed\n", tc);
 #endif
 }
 
