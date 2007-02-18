@@ -2126,13 +2126,19 @@ int list_jar(int fd, const char **files, int file_num){
  */
 static void consume(pb_file *pbf, size_t amt){
   size_t tc = 0; /* total amount consumed */
-  ub1 buff[RDSZ];
+  ub1 *buff;
   size_t rdamt;
 
 #ifdef DEBUG
   printf("Consuming %d bytes\n", amt);
 #endif
   
+  buff = (ub1 *) malloc(RDSZ * sizeof(ub1));
+  if (NULL == buff) {
+    perror("malloc");
+    exit(EXIT_FAILURE);
+  }
+
   if (seekable){
     if (amt <= pbf->buff_amt)
       tc += pb_read(pbf, buff, amt);
@@ -2153,6 +2159,8 @@ static void consume(pb_file *pbf, size_t amt){
 #endif
     tc += rdamt;
   }
+
+  free(buff);
 
 #ifdef DEBUG
   printf("%d bytes consumed\n", tc);
