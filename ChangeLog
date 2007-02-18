@@ -1,5 +1,10 @@
 2007-02-18  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (extract_jar): Use consume instead of pb_read
+	to consume unneeded bytes.
+
+2007-02-18  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (consume): Changed to return void.
 	Removed unused return statement.
 

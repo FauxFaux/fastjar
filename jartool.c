@@ -1561,7 +1561,7 @@ int extract_jar(int fd, const char **files, int file_num){
 #ifdef DEBUG    
       printf("skipping data descriptor\n");
 #endif
-      pb_read(&pbf, scratch, 12);
+      consume(&pbf, 12);
       continue;
     } else if(signature == 0x02014b50){
 #ifdef DEBUG    
