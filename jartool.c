@@ -108,7 +108,7 @@ static void version(void);
 static void add_entry(struct zipentry *);
 static void init_headers(void);
 
-static int consume(pb_file *, size_t);
+static void consume(pb_file *, size_t);
 static int list_jar(int, const char**, int);
 static int extract_jar(int, const char**, int);
 static int add_file_to_jar(int, int, const char*, struct stat*, int);
@@ -2118,7 +2118,7 @@ int list_jar(int fd, const char **files, int file_num){
   return 0;
 }
 
-int consume(pb_file *pbf, size_t amt){
+void consume(pb_file *pbf, size_t amt){
   size_t tc = 0; /* total amount consumed */
   ub1 buff[RDSZ];
   size_t rdamt;
@@ -2151,8 +2151,6 @@ int consume(pb_file *pbf, size_t amt){
 #ifdef DEBUG
   printf("%d bytes consumed\n", amt);
 #endif
-
-  return 0;
 }
 
 void usage(const char *filename){
