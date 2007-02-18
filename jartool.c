@@ -2118,7 +2118,13 @@ int list_jar(int fd, const char **files, int file_num){
   return 0;
 }
 
-void consume(pb_file *pbf, size_t amt){
+/**
+ * Consume bytes from a pushback buffer.
+ *
+ * @param pbf The pushback buffer to consume from.
+ * @param amt The amount of bytes to consume.
+ */
+static void consume(pb_file *pbf, size_t amt){
   size_t tc = 0; /* total amount consumed */
   ub1 buff[RDSZ];
   size_t rdamt;
