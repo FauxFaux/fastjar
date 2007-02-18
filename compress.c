@@ -261,10 +261,6 @@ int inflate_file(pb_file *pbf, int out_fd, struct zipentry *ze){
     if(zs.avail_in == 0){
       if((rdamt = pb_read(pbf, in_buff, RDSZ)) == 0)
         break;
-      else if((int)rdamt < 0){
-        perror("read");
-        exit(EXIT_FAILURE);
-      }
 
 #ifdef DEBUG
       printf("%d bytes read\n", rdamt);

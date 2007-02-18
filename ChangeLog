@@ -1,5 +1,11 @@
 2007-02-18  Dalibor Topic  <robilad@kaffe.org>
 
+	* compress.c (inflate_file): Removed code handling
+	negative return value from pb_read, since it is always
+	non-negative.
+
+2007-02-18  Dalibor Topic  <robilad@kaffe.org>
+
 	* pushback.h (pb_read): Added documentation.
 	* pushback.c: Added myself to authors.
 
