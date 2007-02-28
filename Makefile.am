@@ -31,7 +31,11 @@ grepjar_SOURCES = jargrep.c jargrep.h
 
 info_TEXINFOS = fastjar.texi
 man_MANS = fastjar.1 grepjar.1
-EXTRA_DIST = $(man_MANS) texi2pod.pl
+
+EXTRA_DIST = \
+	CHANGES \
+	$(man_MANS) \
+	texi2pod.pl
 
 TEXI2POD = perl $(srcdir)/texi2pod.pl
 POD2MAN = pod2man --center="GNU" --release=@VERSION@

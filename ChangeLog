@@ -1,5 +1,11 @@
 2007-02-28  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.am (EXTRA_DIST): Added CHANGES. Reformatted.
+
+	Reported by:  Petteri Räty  <betelgeuse@gentoo.org>
+
+2007-02-28  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (extract_jar): Exit if write call fails.
 	Added casts.
 	(list_jar) Added casts.
