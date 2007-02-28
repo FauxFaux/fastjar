@@ -1762,8 +1762,14 @@ int extract_jar(int fd, const char **files, int file_num){
         
         ze.crc = crc32(ze.crc, (Bytef*)rd_buff, rdamt);
 
-        if(f_fd >= 0)
-          write(f_fd, rd_buff, rdamt);
+        if(f_fd >= 0) {
+	  ssize_t num_written;
+          num_written = write(f_fd, rd_buff, rdamt);
+	  if (num_written == -1) {
+	    perror("write");
+	    exit(EXIT_FAILURE);
+	  }
+	}
 
         out_a += rdamt;
         in_a -= rdamt;
@@ -1794,8 +1800,8 @@ int extract_jar(int fd, const char **files, int file_num){
     }
 
     if(crc != ze.crc){
-      fprintf(stderr, "Error! CRCs do not match! Got %x, expected %x\n",
-              ze.crc, crc);
+      fprintf(stderr, "Error! CRCs do not match! Got %lx, expected %lx\n",
+              (unsigned long) ze.crc, (unsigned long) crc);
       exit(EXIT_FAILURE);
     }
 
@@ -1804,7 +1810,7 @@ int extract_jar(int fd, const char **files, int file_num){
     if(verbose && dir == FALSE && handle)
       printf("%10s: %s\n",
              (method == 8 ? "inflated" : "extracted"),
-             filename);
+             (const char *) filename);
   }
 
   return 0;
@@ -1970,14 +1976,14 @@ static int list_jar(int fd, const char **files, int file_num){
           for(j = 0; j < file_num; j++)
             if(strcmp(files[j], (const char *)filename) == 0){
               if(verbose)
-                printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
+                printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, (const char *) filename);
               else
                 printf("%s\n", (const char *) filename);
               break;
             }
         } else {
           if(verbose)
-            printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
+            printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, (const char *) filename);
           else
             printf("%s\n", (const char *) filename);
         }            
@@ -2083,7 +2089,7 @@ static int list_jar(int fd, const char **files, int file_num){
       }
       
       pb_read(&pbf, filename, fnlen);
-      filename[fnlen] = '\0';
+      filename[fnlen] = (ub1) '\0';
       
       /* the header is at the end.  In a JAR file, this means that the data
          happens to be compressed.  We have no choice but to inflate the
@@ -2120,14 +2126,14 @@ static int list_jar(int fd, const char **files, int file_num){
         for(j = 0; j < file_num; j++)
           if(strcmp(files[j], (const char *)filename) == 0){
             if(verbose)
-              printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
+              printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, (const char *) filename);
             else
               printf("%s\n", (const char *) filename);
             break;
           }
       } else {
         if(verbose)
-          printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, filename);
+          printf("%6lu %s %s\n", (unsigned long) usize, ascii_date, (const char *) filename);
         else
           printf("%s\n", (const char *) filename);
       }        
