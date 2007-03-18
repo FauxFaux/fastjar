@@ -42,7 +42,6 @@
 #include <getopt.h>
 
 #include "regex.h"
-#include "snprintf.h"
 
 #include "jargrep.h"
 #include "jartool.h"

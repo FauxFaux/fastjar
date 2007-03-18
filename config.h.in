@@ -3,6 +3,9 @@
 /* Define this to an absolute name of <stdint.h>. */
 #undef ABSOLUTE_STDINT_H
 
+/* Define this to an absolute name of <stdio.h>. */
+#undef ABSOLUTE_STDIO_H
+
 /* Define this to an absolute name of <string.h>. */
 #undef ABSOLUTE_STRING_H
 
@@ -159,6 +162,9 @@
 /* Define if <stdint.h> exists, doesn't clash with <sys/types.h>, and declares
    uintmax_t. */
 #undef HAVE_STDINT_H_WITH_UINTMAX
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H

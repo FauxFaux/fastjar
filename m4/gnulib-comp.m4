@@ -50,13 +50,15 @@ AC_SUBST([LTALLOCA])
   gl_REGEX
   gl_SIZE_MAX
   gl_FUNC_SNPRINTF
+  gl_STDIO_MODULE_INDICATOR([snprintf])
   gt_TYPE_SSIZE_T
   AM_STDBOOL_H
   gl_STDINT_H
+  gl_STDIO_H
   gl_FUNC_STRDUP
   gl_STRING_MODULE_INDICATOR([strdup])
   gl_HEADER_STRING_H
-  gl_HEADER_UNISTD
+  gl_UNISTD_H
   gl_FUNC_VASNPRINTF
   gl_WCHAR_H
   gl_WCTYPE_H
@@ -98,6 +100,7 @@ AC_DEFUN([gl_LIBSOURCES],
 # This macro records the list of files which have been installed by
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
+  build-aux/link-warning.h
   lib/alloca.c
   lib/alloca_.h
   lib/asnprintf.c
@@ -124,9 +127,9 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/regexec.c
   lib/size_max.h
   lib/snprintf.c
-  lib/snprintf.h
   lib/stdbool_.h
   lib/stdint_.h
+  lib/stdio_.h
   lib/strdup.c
   lib/string_.h
   lib/unistd_.h
@@ -155,6 +158,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/stdbool.m4
   m4/stdint.m4
   m4/stdint_h.m4
+  m4/stdio_h.m4
   m4/strdup.m4
   m4/string_h.m4
   m4/ulonglong.m4

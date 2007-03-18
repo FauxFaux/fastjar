@@ -1,3 +1,26 @@
+2007-03-18  Dalibor Topic  <robilad@kaffe.org>
+
+	* jargrep.c, jartool.c: Don't include snprintf.h any more.
+
+	* lib/Makefile.am,
+        lib/Makefile.in,
+        lib/snprintf.c,
+        lib/string.h,
+        lib/string_.h,
+        lib/unistd_.h,
+        lib/vasnprintf.c,
+        m4/gnulib-comp.m4,
+        m4/regex.m4,
+        m4/snprintf.m4,
+        m4/string_h.m4,
+        m4/unistd_h.m4:
+	Updated.
+
+	* aclocal.m4,
+	config.h.in,
+	configure,
+	Makefile.in: Regenerated.
+
 2007-02-28  Dalibor Topic  <robilad@kaffe.org>
 
 	* Makefile.am (EXTRA_DIST): Added CHANGES. Reformatted.
