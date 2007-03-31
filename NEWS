@@ -1,6 +1,10 @@
 New in release 0.96-pre (unreleased)
 ------------------------------------
 
+* Added CHANGES file to the distribute files.
+
+* Various splint cleanups.
+
 New in release 0.95
 -------------------
 
