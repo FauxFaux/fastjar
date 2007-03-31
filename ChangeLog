@@ -1,3 +1,28 @@
+2007-03-31  Dalibor Topic  <robilad@kaffe.org>
+
+	* Makefile.in,
+	config.h.in
+	configure
+	lib/Makefile.am
+	lib/Makefile.in
+	lib/alloca_.h
+	lib/getopt_.h
+	lib/printf-parse.c
+	lib/regexec.c
+	lib/snprintf.c
+	lib/stdbool_.h
+	lib/stdint_.h
+	lib/stdio_.h
+	lib/string.h
+	lib/string_.h
+	lib/vasnprintf.c
+	lib/vasnprintf.h
+	m4/gnulib-comp.m4
+	m4/snprintf.m4
+	m4/stdio_h.m4
+	m4/vasnprintf.m4:
+	Updated and regenerated.
+
 2007-03-18  Dalibor Topic  <robilad@kaffe.org>
 
 	* jargrep.c, jartool.c: Don't include snprintf.h any more.

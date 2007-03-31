@@ -105,6 +105,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/alloca_.h
   lib/asnprintf.c
   lib/config.charset
+  lib/float+.h
   lib/getopt.c
   lib/getopt1.c
   lib/getopt_.h
