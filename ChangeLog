@@ -1,5 +1,9 @@
 2008-08-06  Dalibor Topic  <robilad@kaffe.org>
 
+	* README: Updated the options and features list.
+
+2008-08-06  Dalibor Topic  <robilad@kaffe.org>
+
 	* configure.ac (AC_INIT), fastjar.texi, README, NEWS: 
 	Bumped version to 0.96. Autoupdated.
 

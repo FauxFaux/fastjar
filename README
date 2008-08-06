@@ -60,19 +60,21 @@ want fastjar to be fast, use the -0 (zero, not O) flag to turn off compression.
 
 Supported flags:
 --------------------------
--c  | create a new archive
--v  | verbose output
--f  | specify archive file name
--m  | specify existing manifest file
--M  | don't create manifest
--0  | store only
--C  | change to dir
--t  | list contents
--x  | extract contents
+-c     | create a new archive
+-v     | verbose output
+-f     | specify archive file name
+-m     | specify existing manifest file
+-M     | don't create manifest
+-0     | store only
+-C     | change to dir
+-t     | list contents
+-u     | update exisiting archive
+-x     | extract contents
+@FILE  | treat contents of FILE as additonal options
 
 Unsupported flags:
 ----------------------------
--u  | update exisiting archive
+-J     | Pass an option to a JVM
 
 If you use the "unsupported" flags, nothing bad will happen, but then again
 nothing will happen at all.  
@@ -80,12 +82,10 @@ nothing will happen at all.
 
 Unsupported features (in this release):
 ---------------------------------------------
-  * updating
   * full manifest support (?)
 
 Order or features for the future:
 --------------------------------------------
-  * archive updating
   * full manifest support
   * filtering
   * dependency checking
