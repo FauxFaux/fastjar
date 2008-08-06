@@ -6,7 +6,7 @@
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
+   the Free Software Foundation; either version 3, or (at your option)
    any later version.
 
    This program is distributed in the hope that it will be useful,
@@ -1689,11 +1689,9 @@ create_cd_newstate (const re_dfa_t *dfa, const re_node_set *nodes,
 
   for (i = 0 ; i < nodes->nelem ; i++)
     {
-      unsigned int constraint = 0;
       re_token_t *node = dfa->nodes + nodes->elems[i];
       re_token_type_t type = node->type;
-      if (node->constraint)
-	constraint = node->constraint;
+      unsigned int constraint = node->constraint;
 
       if (type == CHARACTER && !constraint)
 	continue;
@@ -1706,8 +1704,6 @@ create_cd_newstate (const re_dfa_t *dfa, const re_node_set *nodes,
 	newstate->halt = 1;
       else if (type == OP_BACK_REF)
 	newstate->has_backref = 1;
-      else if (type == ANCHOR)
-	constraint = node->opr.ctx_type;
 
       if (constraint)
 	{

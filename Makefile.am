@@ -13,6 +13,8 @@ bin_PROGRAMS = fastjar grepjar
 noinst_LTLIBRARIES = libfastjar_convenience.la
 
 libfastjar_convenience_la_SOURCES = \
+	argv.c \
+	argv.h \
 	compress.c \
 	compress.h \
 	dostime.c \

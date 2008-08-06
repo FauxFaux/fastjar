@@ -1,0 +1,9 @@
+.deps
+.dirstamp
+float_h.m4
+gnulib-comp.m4
+include_next.m4
+malloc.m4
+mbstate_t.m4
+printf.m4
+stdlib_h.m4

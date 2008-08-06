@@ -8,9 +8,9 @@
 @c the word ``Java'.
 
 @c When this manual is copyrighted.
-@set copyrights-fastjar 2002, 2007
+@set copyrights-fastjar 2002, 2007, 2008
 
-@set version 0.95
+@set version 0.96
 
 @c Common macros to support generating man pages:
 
@@ -157,6 +157,9 @@ Do not create a manifest file for the entries.
 @item -i
 Generate an index of the packages in this jar and its Class-Path.
 
+@item -J
+All options starting with @option{-J} are ignored.
+
 @item -0
 Store only; use no ZIP compression.
 
@@ -174,6 +177,9 @@ Include manifest information from specified @var{manifest} file.
 Generate verbose output on standard output.
 
 @end table
+
+Parameters of the form @option{@@}@var{FILE} are considered to be names of files, and
+are expanded with the contents of the file.
 
 All remaining options are considered to be names of files.
 

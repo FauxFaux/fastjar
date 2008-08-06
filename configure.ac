@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.61)
-AC_INIT([fastjar],[0.96-pre]) 
+AC_INIT([fastjar],[0.96]) 
 AC_CONFIG_SRCDIR([jartool.h])
 AM_INIT_AUTOMAKE([-Wall gnu 1.10])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -13,8 +14,8 @@ AC_PROG_INSTALL
 AC_EXEEXT
 
 AC_DISABLE_STATIC
-AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+
+LT_INIT([win32-dll])
 AC_SUBST(LIBTOOL_DEPS)
 
 AM_MAINTAINER_MODE

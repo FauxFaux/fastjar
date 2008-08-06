@@ -67,6 +67,7 @@
 #include "pushback.h"
 #include "compress.h"
 #include "shift.h"
+#include "argv.h"
 
 /* Some systems have mkdir that takes a single argument.  */
 #ifdef MKDIR_TAKES_ONE_ARG
@@ -160,7 +161,7 @@ static const char *progname;
 #define OPT_HELP     LONG_OPT (0)
 
 /* This holds all options.  */
-#define OPTION_STRING "-ctxuvVf:m:C:0Mi:E@"
+#define OPTION_STRING "-ctxuvVf:m:C:0Mi:J:E@"
 
 /* Define the MANIFEST content here to have it easier with calculations
    below.  This is for the case we create an empty MANIFEST.MF.  */
@@ -202,6 +203,7 @@ int main(int argc, char **argv)
   if(argc < 2)
     usage(argv[0]);
   
+  expandargv (&argc, &argv); /* expand @FILE parameters */
   new_argc = 0;
   new_argv = (const char **) malloc (argc * sizeof (char *));
 
@@ -250,7 +252,9 @@ int main(int argc, char **argv)
       action = ACTION_INDEX;
       jarfile = optarg;
       break;
-
+    case 'J':
+      /* ignored */
+      break;
     case OPT_HELP:
       help(argv[0]);
       break;
@@ -2234,6 +2238,10 @@ Store many files together in a single `jar' file.\n\
                   and its Class-Path (currently unimplemented)\n\
   -v              generate verbose output on standard output\n\
   -V, --version   display version information\n\
+");
+  printf("\n\
+  -J*             -J options are ignored\n\
+  @FILE           expand options and files from FILE\n\
 ");
   printf("\n\
 If any file is a directory then it is processed recursively.\n\

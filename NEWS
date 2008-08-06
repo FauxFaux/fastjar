@@ -1,5 +1,7 @@
-New in release 0.96-pre (unreleased)
+New in release 0.96 (unreleased)
 ------------------------------------
+
+* Added support for -J and @file options.
 
 * Added CHANGES file to the distribute files.
 
