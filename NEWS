@@ -1,9 +1,11 @@
-New in release 0.96 (unreleased)
+New in release 0.96
 ------------------------------------
 
 * Added support for -J and @file options.
 
 * Added CHANGES file to the distribute files.
+
+* Fixed file name extraction, so that it can now be used during OpenJDK build.
 
 * Various splint cleanups.
 
