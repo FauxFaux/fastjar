@@ -1538,8 +1538,16 @@ int extract_jar(int fd, const char **files, int file_num){
   int handle;
   int j;
 
-  init_inflation();
+  /*  Let's be able to hold 10 subdirs, initially. */
+  int subdir_list_size = 10;
+  /* If any file is contained within a directory in this list, 
+   * then it should be extracted. A file is considered to be contained
+   * in a directory if the directory is a substring of the file path. */
+  char **subdir_list = malloc(subdir_list_size * sizeof(char *));
+  /* Next available index to use. */
+  int subdir_list_index = 0;
 
+  init_inflation();
   pb_init(&pbf, fd);
 
   for(;;){
@@ -1628,15 +1636,90 @@ int extract_jar(int fd, const char **files, int file_num){
 #ifdef DEBUG    
     printf("filename is %s\n", filename);
 #endif
-
-    if(file_num > 0){
+    /* If we have any subdirs that we're processing, then we must check */
+    if(file_num > 0 || subdir_list_index > 0){
       handle = FALSE;
       
-      for(j = 0; j < file_num; j++)
-        if(strcmp(files[j], (const char *)filename) == 0){
+      for(j = 0; j < subdir_list_index; j++) {
+#ifdef DEBUG
+        printf("extract_jar: %s substring of %s ? (subdir_list check)", subdir_list[j], filename);
+#endif
+        char * index = strstr((const char *)filename,(const char *)subdir_list[j]);
+        /* If the subdir is found as a substring at the beginning 
+         * of the current filename, then handle this filename. */
+        if(index != NULL && (((const char *)filename - index) == 0)) {
+#ifdef DEBUG
+          printf(" ... yes\n");
+#endif
           handle = TRUE;
           break;
+        } else {
+#ifdef DEBUG
+          printf("... no, index=%d, filename=%d\n", index, filename);
+#endif
         }
+      }
+
+      if (handle == FALSE) {
+        for(j = 0; j < file_num; j++) {
+#ifdef DEBUG
+          printf("extract_jar: %s same as %s ? ",files[j],filename);
+#endif
+          if(strcmp(files[j], (const char *)filename) == 0){
+#ifdef DEBUG
+            printf(" ... yes\n");
+#endif
+            handle = TRUE;
+            break;
+          } else {
+#ifdef DEBUG
+            printf(" ... no\n");
+#endif
+          }
+
+          /* Test to see if files[j] is a directory, too */
+          /* + 1 for extra '/' character */
+          int test_dir_len = strlen(files[j]) + 1;
+          char * test_dir = malloc(test_dir_len + 1 * sizeof(char));
+          strcpy(test_dir, files[j]);
+          test_dir[test_dir_len - 1] = '/';
+          test_dir[test_dir_len] = '\0';
+
+          char * index = strstr((const char *) filename, (const char *) test_dir);
+#ifdef DEBUG
+          printf("extract_jar: %s substring of %s ? ", test_dir, filename);
+#endif
+          /* If test_dir is indeed a directory, then add it to subdir_list, so 
+           * that we may extract any other files within this directory. */
+          if (index != NULL && (((const char *)filename - index) == 0)) {
+#ifdef DEBUG
+            printf(" ... yes\n");
+#endif
+            /* Add 10 more spots to subdir_list */
+            if (subdir_list_index == subdir_list_size) {
+              subdir_list_size = subdir_list_size + 10;
+              subdir_list = realloc(subdir_list, (subdir_list_size) * sizeof(char));
+
+              if (subdir_list == NULL) {
+                fprintf(stderr, "error realloc-ing subdir_list_size\n");
+                exit(EXIT_FAILURE);
+              }
+            }
+
+            subdir_list[subdir_list_index] = malloc((test_dir_len + 1)*sizeof(char));
+            strcpy(subdir_list[subdir_list_index], test_dir);
+            handle = TRUE;
+            subdir_list_index++;
+            break;
+          } else {
+#ifdef DEBUG
+            printf(" ... no \n");
+#endif
+          }
+
+          free(test_dir);
+        }
+      }
     }
 
     if(!handle)
@@ -1816,6 +1899,9 @@ int extract_jar(int fd, const char **files, int file_num){
              (const char *) filename);
   }
 
+  for (j = 0; j < subdir_list_index; j++) {
+    free(subdir_list[j]);
+  }
   return 0;
 }
 

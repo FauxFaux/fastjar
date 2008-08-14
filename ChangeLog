@@ -1,3 +1,11 @@
+2008-08-14  Joshua Sumali <jsumali@redhat.com>
+
+	* jartool.c: Made it more compatible with OpenJDK.
+
+	Originally, files underneath a directory were not extracted, so full path names 
+	had to be specified. Also directory names had to be specified as 'dirname/' to 
+	be extracted, which should be just 'dirname'. Fixed this behaviour.
+
 2008-08-06  Dalibor Topic  <robilad@kaffe.org>
 
 	* README: Updated the options and features list.
