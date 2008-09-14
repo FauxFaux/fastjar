@@ -89,13 +89,13 @@ am_fastjar_OBJECTS = jartool.$(OBJEXT)
 fastjar_OBJECTS = $(am_fastjar_OBJECTS)
 fastjar_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
-fastjar_DEPENDENCIES = $(am__DEPENDENCIES_1) lib/libgnu.la \
-	libfastjar_convenience.la
+fastjar_DEPENDENCIES = lib/libgnu.la libfastjar_convenience.la \
+	$(am__DEPENDENCIES_1)
 am_grepjar_OBJECTS = jargrep.$(OBJEXT)
 grepjar_OBJECTS = $(am_grepjar_OBJECTS)
 grepjar_LDADD = $(LDADD)
-grepjar_DEPENDENCIES = $(am__DEPENDENCIES_1) lib/libgnu.la \
-	libfastjar_convenience.la
+grepjar_DEPENDENCIES = lib/libgnu.la libfastjar_convenience.la \
+	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -488,7 +488,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib
 AM_CFLAGS = @fastjar_warn_cflags@
 AM_LDFLAGS = -no-undefined
-LDADD = $(ZLIBS) lib/libgnu.la libfastjar_convenience.la 
+LDADD = lib/libgnu.la libfastjar_convenience.la $(ZLIBS)
 noinst_LTLIBRARIES = libfastjar_convenience.la
 libfastjar_convenience_la_SOURCES = \
 	argv.c \

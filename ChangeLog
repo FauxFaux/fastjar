@@ -1,3 +1,7 @@
+2008-09-14  Dalibor Topic  <robilad@kaffe.org>
+
+	* Makefile.am (LDADD): Fixed build on cygwin.
+
 2008-08-14  Dalibor Topic  <robilad@kaffe.org>
 
 	* NEWS: Updated for Joshua Sumali's fix.
