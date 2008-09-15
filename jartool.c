@@ -813,48 +813,51 @@ int make_manifest(int jfd, const char *mf_name, int updating)
   int mod_time; /* file modification time */
   struct zipentry *ze;
   
-  nlen = 9;  /* trust me on this one */
+  /* If we are creating a new manifest, create a META-INF directory entry */
+  if (0 == updating) {
+    nlen = 9;  /* trust me on this one */
 
-  memset((file_header + 12), '\0', 16); /*clear mod time, crc, size fields*/
+    memset((file_header + 12), '\0', 16); /*clear mod time, crc, size fields*/
   
-  current_time = time(NULL);
-  if(current_time == (time_t)-1){
-    perror("time");
-    exit(EXIT_FAILURE);
+    current_time = time(NULL);
+    if(current_time == (time_t)-1){
+      perror("time");
+      exit(EXIT_FAILURE);
+    }
+
+    mod_time = unix2dostime(&current_time);
+  
+    PACK_UB2(file_header, LOC_EXTRA, 0);
+    PACK_UB2(file_header, LOC_COMP, 0);
+    PACK_UB2(file_header, LOC_FNLEN, nlen);
+    PACK_UB4(file_header, LOC_MODTIME, mod_time);
+  
+    if(verbose)
+      printf("adding: META-INF/ (in=0) (out=0) (stored 0%%)\n");
+  
+    ze = (zipentry*)malloc(sizeof(zipentry));
+    if(ze == NULL){
+      perror("malloc");
+      exit(EXIT_FAILURE);
+    }
+  
+    memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
+    ze->filename = strdup("META-INF/");
+    if (NULL == ze->filename) {
+      perror("strdup");
+      exit(EXIT_FAILURE);
+    }
+
+    ze->offset = lseek(jfd, 0, SEEK_CUR);
+    ze->mod_time = (ub2)(mod_time & 0x0000ffff);
+    ze->mod_date = (ub2)((mod_time & 0xffff0000) >> 16);
+    ze->compressed = FALSE;
+
+    add_entry(ze);
+
+    write(jfd, file_header, 30);
+    write(jfd, "META-INF/", nlen);
   }
-
-  mod_time = unix2dostime(&current_time);
-  
-  PACK_UB2(file_header, LOC_EXTRA, 0);
-  PACK_UB2(file_header, LOC_COMP, 0);
-  PACK_UB2(file_header, LOC_FNLEN, nlen);
-  PACK_UB4(file_header, LOC_MODTIME, mod_time);
-  
-  if(verbose)
-    printf("adding: META-INF/ (in=0) (out=0) (stored 0%%)\n");
-  
-  ze = (zipentry*)malloc(sizeof(zipentry));
-  if(ze == NULL){
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
-  memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
-  ze->filename = strdup("META-INF/");
-  if (NULL == ze->filename) {
-     perror("strdup");
-     exit(EXIT_FAILURE);
-  }
-
-  ze->offset = lseek(jfd, 0, SEEK_CUR);
-  ze->mod_time = (ub2)(mod_time & 0x0000ffff);
-  ze->mod_date = (ub2)((mod_time & 0xffff0000) >> 16);
-  ze->compressed = FALSE;
-
-  add_entry(ze);
-  
-  write(jfd, file_header, 30);
-  write(jfd, "META-INF/", nlen);
 
   /* if the user didn't specify an external manifest file... */
   if(mf_name == NULL){
