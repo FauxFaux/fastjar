@@ -1,5 +1,9 @@
 2008-09-14  Dalibor Topic  <robilad@kaffe.org>
 
+	* configure.ac, fastjar.texi, README, NEWS: Bumped version up to 0.97.
+
+2008-09-14  Dalibor Topic  <robilad@kaffe.org>
+
 	* lib/snprintf.h, lib/string.h: Removed unused files.
 
 2008-09-14  Dalibor Topic  <robilad@kaffe.org>

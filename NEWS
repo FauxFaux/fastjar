@@ -1,5 +1,10 @@
+New in release 0.97
+-------------------
+
+* Build fix for Cygwin.
+
 New in release 0.96
-------------------------------------
+-------------------
 
 * Added support for -J and @file options.
 

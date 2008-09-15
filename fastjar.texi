@@ -10,7 +10,7 @@
 @c When this manual is copyrighted.
 @set copyrights-fastjar 2002, 2007, 2008
 
-@set version 0.96
+@set version 0.97
 
 @c Common macros to support generating man pages:
 
