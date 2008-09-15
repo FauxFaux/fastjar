@@ -1,5 +1,9 @@
 2008-09-14  Dalibor Topic  <robilad@kaffe.org>
 
+	* lib/.cvsignore : Removed.
+
+2008-09-14  Dalibor Topic  <robilad@kaffe.org>
+
 	* Makefile.am (LDADD): Fixed build on cygwin.
 
 2008-08-14  Dalibor Topic  <robilad@kaffe.org>
