@@ -1,5 +1,9 @@
 2008-09-17  Dalibor Topic  <robilad@kaffe.org>
 
+	* jartool.c (extract_jar): Use C99's uint32_t instead of ub4.
+ 
+2008-09-17  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (make_manifest): Initialize mod_time before use.
 
 2008-09-17  Xerxes Rånby  <xerxes@zafena.se>

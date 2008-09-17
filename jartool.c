@@ -23,6 +23,9 @@
 #include "config.h"
 #endif
 
+#include <inttypes.h>
+#include <stdint.h>
+
 #include <zlib.h>
 
 #ifdef HAVE_STDLIB_H
@@ -1523,7 +1526,7 @@ int create_central_header(int fd){
 int extract_jar(int fd, const char **files, int file_num){
   size_t rdamt;
   int out_a, in_a;
-  ub4 signature;
+  uint32_t signature;
   ub4 csize;
   ub4 crc;
   ub2 fnlen;
@@ -1583,7 +1586,7 @@ int extract_jar(int fd, const char **files, int file_num){
 #endif
       break;
     }else if(signature != 0x04034b50){
-      printf("Ick! %#x\n", signature);
+      printf("Ick! %#" PRIx32 "\n", signature);
       break;
     }
     
