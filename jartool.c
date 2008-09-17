@@ -1701,7 +1701,7 @@ int extract_jar(int fd, const char **files, int file_num){
             /* Add 10 more spots to subdir_list */
             if (subdir_list_index == subdir_list_size) {
               subdir_list_size = subdir_list_size + 10;
-              subdir_list = realloc(subdir_list, (subdir_list_size) * sizeof(char));
+              subdir_list = realloc(subdir_list, (subdir_list_size) * sizeof(char *));
 
               if (subdir_list == NULL) {
                 fprintf(stderr, "error realloc-ing subdir_list_size\n");
@@ -1905,6 +1905,7 @@ int extract_jar(int fd, const char **files, int file_num){
   for (j = 0; j < subdir_list_index; j++) {
     free(subdir_list[j]);
   }
+  free(subdir_list); 
   return 0;
 }
 

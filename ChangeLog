@@ -1,3 +1,9 @@
+2008-09-17  Xerxes Rånby  <xerxes@zafena.se>
+
+        * jartool.c (extract_jar): Corrected size passed to realloc
+        to prevent memory overwrite. Reported as Debian bug #499015.
+        Fixed memory leak.
+
 2008-09-15  Dalibor Topic  <robilad@kaffe.org>
 
 	* jartool.c (make_manifest): Only create META-INF dir when a new 
