@@ -27,14 +27,16 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <unistd.h>
+#include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <ctype.h>
+#include <unistd.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -132,7 +134,7 @@ relevent information.  2 means we still haven't reached embdedded file list and 
 do some more reading.
 */
 static int check_sig(ub1 *scratch, pb_file *pbfp) {
-	ub4 signature;
+	uint32_t signature;
 	int retflag = 0;
 
 	signature = UNPACK_UB4(scratch, 0);
@@ -152,7 +154,7 @@ static int check_sig(ub1 *scratch, pb_file *pbfp) {
 #endif
       retflag = 1;
     }else if(signature != 0x04034b50){
-      printf("Ick! %#x\n", signature);
+      printf("Ick! %#" PRIx32 "\n", signature);
       retflag = 1;
     }
     
@@ -386,8 +388,8 @@ purpose:	Verify the CRC matches that as what is stored in the jar file.
 */
 
 static void check_crc(pb_file *pbf, const char *stream, ub4 usize) {
-	ub4 crc=0;
-	ub4 lcrc;
+	uint32_t crc=0;
+	uint32_t lcrc;
 	ub1 scratch[16];
 
 	crc = crc32(crc, NULL, 0);
@@ -402,8 +404,9 @@ static void check_crc(pb_file *pbf, const char *stream, ub4 usize) {
 	}
 	lcrc = UNPACK_UB4(scratch, 4);
 	if(crc != lcrc){
-    	fprintf(stderr, "Error! CRCs do not match! Got %x, expected %x\n",
-              crc, lcrc);
+    	fprintf(stderr, "Error! CRCs do not match! Got %" PRIx32 
+                        ", expected %" PRIx32 "\n",
+                crc, lcrc);
       	exit(EXIT_FAILURE);
     }
 }
