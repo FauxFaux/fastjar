@@ -105,6 +105,7 @@ struct ziplistentry
 
 typedef struct ziplistentry ziplistentry;
 
+static void exit_on_error(const char* message);
 static void usage(const char*);
 static void help(const char *);
 static void version(void);
@@ -357,8 +358,7 @@ int main(int argc, char **argv)
       if ((jarfd = open (jarfile, O_RDWR | O_BINARY)) < 0)
 	{
 	  fprintf (stderr, "Error opening %s for reading!\n", jarfile);
-	  perror (jarfile);
-	  exit(EXIT_FAILURE);
+	  exit_on_error (jarfile);
 	}
 
       /* Assert that jarfd is seekable. */
@@ -428,7 +428,8 @@ int main(int argc, char **argv)
     /* Check if the file shrunk when we updated it. */
     if (action == ACTION_UPDATE)
 #ifdef HAVE_FTRUNCATE
-      ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR));
+      if (-1 == ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR)))
+	exit_on_error("ftruncate");
 #else
       _chsize (jarfd, lseek (jarfd, 0, SEEK_CUR));
 #endif
@@ -465,7 +466,8 @@ int main(int argc, char **argv)
     create_central_header(jarfd);
 
 #ifdef HAVE_FTRUNCATE
-    ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR));
+    if (-1 == ftruncate (jarfd, lseek (jarfd, 0, SEEK_CUR)))
+      exit_on_error("ftruncate");
 #else
     _chsize (jarfd, lseek (jarfd, 0, SEEK_CUR));
 #endif
@@ -479,6 +481,13 @@ int main(int argc, char **argv)
   }
   
   exit(EXIT_SUCCESS);
+}
+
+static void
+exit_on_error(const char* message)
+{
+  perror(message);
+  exit(EXIT_FAILURE);
 }
 
 static int args_current_g;
@@ -524,10 +533,7 @@ get_next_arg (void)
 
       s = (char *) malloc (len);
       if (s == NULL)
-	{
-	  perror ("malloc");
-	  exit(EXIT_FAILURE);
-	}
+	exit_on_error("malloc");
 
       /* Get rid of '\n' and '\r' first. */
       while (1)
@@ -558,10 +564,7 @@ get_next_arg (void)
 	      len *= 2;
 	      s = (char *) realloc (s, len);
 	      if (s == NULL)
-		{
-		  perror ("realloc");
-		  exit(EXIT_FAILURE);
-		}
+		  exit_on_error ("realloc");
 	    }
 	}
 
@@ -675,6 +678,7 @@ looks_like_dir (const char *fname)
 /*
  * Read the zip entries of an existing file, building `ziplist' as we go.
  */
+static
 int read_entries (int fd)
 {
   struct zipentry *ze;
@@ -825,10 +829,8 @@ int make_manifest(int jfd, const char *mf_name, int updating)
     memset((file_header + 12), '\0', 16); /*clear mod time, crc, size fields*/
   
     current_time = time(NULL);
-    if(current_time == (time_t)-1){
-      perror("time");
-      exit(EXIT_FAILURE);
-    }
+    if(current_time == (time_t)-1)
+      exit_on_error("time");
 
     PACK_UB2(file_header, LOC_EXTRA, 0);
     PACK_UB2(file_header, LOC_COMP, 0);
@@ -839,17 +841,13 @@ int make_manifest(int jfd, const char *mf_name, int updating)
       printf("adding: META-INF/ (in=0) (out=0) (stored 0%%)\n");
   
     ze = (zipentry*)malloc(sizeof(zipentry));
-    if(ze == NULL){
-      perror("malloc");
-      exit(EXIT_FAILURE);
-    }
+    if(ze == NULL)
+      exit_on_error("malloc");
   
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
     ze->filename = strdup("META-INF/");
-    if (NULL == ze->filename) {
-      perror("strdup");
-      exit(EXIT_FAILURE);
-    }
+    if (NULL == ze->filename)
+      exit_on_error("strdup");
 
     ze->offset = lseek(jfd, 0, SEEK_CUR);
     ze->mod_time = (ub2)(mod_time & 0x0000ffff);
@@ -858,8 +856,10 @@ int make_manifest(int jfd, const char *mf_name, int updating)
 
     add_entry(ze);
 
-    write(jfd, file_header, 30);
-    write(jfd, "META-INF/", nlen);
+    if (-1 == write(jfd, file_header, 30))
+      exit_on_error("write");
+    if (-1 == write(jfd, "META-INF/", nlen))
+      exit_on_error("write");
   }
 
   /* if the user didn't specify an external manifest file... */
@@ -892,17 +892,13 @@ int make_manifest(int jfd, const char *mf_name, int updating)
       printf("adding: META-INF/MANIFEST.MF (in=56) (out=56) (stored 0%%)\n");
     
     ze = (zipentry*)malloc(sizeof(zipentry));
-    if(ze == NULL){
-      perror("malloc");
-      exit(EXIT_FAILURE);
-    }
+    if(ze == NULL)
+      exit_on_error("malloc");
     
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
     ze->filename = strdup("META-INF/MANIFEST.MF");
-    if (NULL == ze->filename) {
-      perror("strdup");
-      exit(EXIT_FAILURE);
-    }
+    if (NULL == ze->filename)
+      exit_on_error("strdup");
     
     ze->offset = lseek(jfd, 0, SEEK_CUR);
     ze->mod_time = (ub2)(mod_time & 0x0000ffff);
@@ -914,9 +910,12 @@ int make_manifest(int jfd, const char *mf_name, int updating)
     
     add_entry(ze);
     
-    write(jfd, file_header, 30);
-    write(jfd, "META-INF/MANIFEST.MF", nlen);
-    write(jfd, mf, mf_len);
+    if (-1 == write(jfd, file_header, 30))
+      exit_on_error("write");
+    if (-1 == write(jfd, "META-INF/MANIFEST.MF", nlen))
+      exit_on_error("write");
+    if (-1 == write(jfd, mf, mf_len))
+      exit_on_error("write");
     free(mf);
     }
     else {
@@ -941,11 +940,8 @@ int make_manifest(int jfd, const char *mf_name, int updating)
       exit(EXIT_FAILURE);
     }
 
-    if(add_file_to_jar(jfd, mfd, "META-INF/MANIFEST.MF", &statbuf, updating)){
-      perror("error writing to jar");
-      exit(EXIT_FAILURE);
-    }
-
+    if(add_file_to_jar(jfd, mfd, "META-INF/MANIFEST.MF", &statbuf, updating))
+      exit_on_error("error writing to jar");
   }
 
   return 0;
@@ -969,10 +965,7 @@ add_to_jar_with_dir (int fd, const char* new_dir, const char* file,
   
   old_dir = (char *) malloc (old_dir_len);
   if (old_dir == NULL)
-    {
-      perror ("malloc");
-      exit(EXIT_FAILURE);
-    }
+      exit_on_error ("malloc");
 
   while (1)
     {
@@ -986,10 +979,7 @@ add_to_jar_with_dir (int fd, const char* new_dir, const char* file,
       old_dir_len *= 2;
       old_dir = (char *) realloc (old_dir, old_dir_len); 
       if (old_dir == NULL)
-	{
-	  perror ("realloc");
-	  exit(EXIT_FAILURE);
-	}
+	  exit_on_error ("realloc");
     }
 
   if (chdir(new_dir) == -1) {
@@ -1080,10 +1070,8 @@ add_to_jar (int fd, const char *file, const int updating)
     PACK_UB4(file_header, LOC_MODTIME, mod_time);
 
     ze = (zipentry*)malloc(sizeof(zipentry));
-    if(ze == NULL){
-      perror("malloc");
-      exit(EXIT_FAILURE);
-    }
+    if(ze == NULL)
+      exit_on_error("malloc");
 
     memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
     ze->filename = strdup(fullname);
@@ -1116,8 +1104,10 @@ add_to_jar (int fd, const char *file, const int updating)
     if (!existing)
       {
 	add_entry (ze);
-	write (fd, file_header, 30);
-	write (fd, fullname, nlen);
+	if (-1 == write (fd, file_header, 30))
+	  exit_on_error("write");
+	if (-1 == write (fd, fullname, nlen))
+	  exit_on_error("write");
 	end_of_entries = lseek (fd, 0, SEEK_CUR);
 
 	if (verbose)
@@ -1224,11 +1214,9 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
     memset((file_header + LOC_CRC), '\0', 12); /* clear crc/usize/csize */
   
   ze = (zipentry*)malloc(sizeof(zipentry));
-  if(ze == NULL){
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
+  if(ze == NULL)
+    exit_on_error("malloc");
+
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
   ze->filename = strdup(fname);
 
@@ -1265,11 +1253,12 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
      as before */
   
   /* Write the local header */
-  write(jfd, file_header, 30);
-    
-  /* write the file name to the zip file */
-  write(jfd, fname, file_name_length);
+  if (-1 == write(jfd, file_header, 30))
+      exit_on_error("write");
 
+  /* write the file name to the zip file */
+  if (1 == write(jfd, fname, file_name_length))
+    exit_on_error("write");
 
   if(verbose){
     if (existing)
@@ -1320,10 +1309,8 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
   if(seekable){
     offset = (ze->csize + strlen(ze->filename) + 16);
     
-    if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1){
-      perror("lseek");
-      exit(EXIT_FAILURE);
-    }
+    if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1)
+      exit_on_error("lseek");
 
     if(write(jfd, (data_descriptor + 4), 12) != 12){
       perror("write");
@@ -1332,10 +1319,9 @@ int add_file_to_jar(int jfd, int ffd, const char *fname, struct stat *statbuf,
     
     offset -= 12;
 
-    if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1){
-      perror("lseek");
-      exit(EXIT_FAILURE);
-    }
+    if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1)
+      exit_on_error("lseek");
+
   } else if(do_compress){
     /* Sun's jar tool will only allow a data descriptor if the entry is
        compressed, but we'll save 16 bytes/entry if we only use it when
@@ -1480,9 +1466,11 @@ int create_central_header(int fd){
     PACK_UB2(header, CEN_FNLEN, strlen(ze->filename));
     PACK_UB4(header, CEN_OFFSET, ze->offset);
 
-    write(fd, header, 46);
+    if (-1 == write(fd, header, 46))
+      exit_on_error("write");
 
-    write(fd, ze->filename, strlen(ze->filename));
+    if (-1 == write(fd, ze->filename, strlen(ze->filename)))
+      exit_on_error("write");
   }
 
   dir_size = lseek(fd, 0, SEEK_CUR) - start_offset;
@@ -1510,8 +1498,9 @@ int create_central_header(int fd){
   end_header[20] = 0;
   end_header[21] = 0;
 
-  write(fd, end_header, 22);
-  
+  if (-1 == write(fd, end_header, 22))
+    exit_on_error("write");
+
   if(verbose)
     printf("Total:\n------\n(in = %d) (out = %d) (%s %d%%)\n", 
            total_in, 
@@ -1769,10 +1758,8 @@ int extract_jar(int fd, const char **files, int file_num){
 	} else if (strcmp(tmp_buff, ".") != 0)
 	  ++depth;
         if(stat(tmp_buff, &sbuf) < 0){
-          if(errno != ENOENT){
-            perror("stat");
-            exit(EXIT_FAILURE);
-          }
+          if(errno != ENOENT)
+            exit_on_error("stat");
 
         } else if(S_ISDIR(sbuf.st_mode)){
 #ifdef DEBUG    
@@ -1788,10 +1775,9 @@ int extract_jar(int fd, const char **files, int file_num){
 #ifdef DEBUG    
         printf("Making directory..\n");
 #endif
-        if(mkdir(tmp_buff, 0755) < 0){
-          perror("mkdir");
-          exit(EXIT_FAILURE);
-        }
+        if(mkdir(tmp_buff, 0755) < 0)
+          exit_on_error("mkdir");
+
         if(verbose && handle)
           printf("%10s: %s/\n", "created", tmp_buff);
 
@@ -1818,8 +1804,7 @@ int extract_jar(int fd, const char **files, int file_num){
 
       if(f_fd < 0){
         fprintf(stderr, "Error extracting JAR archive!\n");
-        perror((const char *)filename);
-        exit(EXIT_FAILURE);
+        exit_on_error((const char *)filename);
       }
     }
 
@@ -1847,20 +1832,16 @@ int extract_jar(int fd, const char **files, int file_num){
 
       while(out_a < (int)csize){
         rdamt = (in_a > RDSZ ? RDSZ : in_a);
-        if(pb_read(&pbf, rd_buff, rdamt) != rdamt){
-          perror("read");
-          exit(EXIT_FAILURE);
-        }
+        if(pb_read(&pbf, rd_buff, rdamt) != rdamt)
+          exit_on_error("read");
         
         ze.crc = crc32(ze.crc, (Bytef*)rd_buff, rdamt);
 
         if(f_fd >= 0) {
 	  ssize_t num_written;
           num_written = write(f_fd, rd_buff, rdamt);
-	  if (num_written == -1) {
-	    perror("write");
-	    exit(EXIT_FAILURE);
-	  }
+	  if (num_written == -1)
+	    exit_on_error("write");
 	}
 
         out_a += rdamt;
@@ -1875,10 +1856,8 @@ int extract_jar(int fd, const char **files, int file_num){
     /* if there is a data descriptor left, compare the CRC */
     if(flags & 0x0008){
 
-      if(pb_read(&pbf, scratch, 16) != 16){
-        perror("read");
-        exit(EXIT_FAILURE);
-      }
+      if(pb_read(&pbf, scratch, 16) != 16)
+        exit_on_error("read");
 
       signature = UNPACK_UB4(scratch, 0);
 
@@ -1943,15 +1922,11 @@ static int list_jar(int fd, const char **files, int file_num){
 
   /* This should be the start of the central-header-end section */
   if(seekable){
-    if(lseek(fd, -22, SEEK_END) == (off_t)-1){
-      perror("lseek");
-      exit(EXIT_FAILURE);
-    }
+    if(lseek(fd, -22, SEEK_END) == (off_t)-1)
+      exit_on_error("lseek");
     
-    if(read(fd, &tmp, sizeof(ub4)) != 4){
-      perror("read");
-      exit(EXIT_FAILURE);
-    }
+    if(read(fd, &tmp, sizeof(ub4)) != 4)
+      exit_on_error("read");
 
 #ifdef WORDS_BIGENDIAN
     tmp = L2BI(tmp);
@@ -1965,20 +1940,14 @@ static int list_jar(int fd, const char **files, int file_num){
          position, so we have to fall back on the method used for
          non-seekable files. */
       seekable = FALSE;
-      if(lseek(fd, 0, SEEK_SET) == (off_t)-1){
-        perror("lseek");
-        exit(EXIT_FAILURE);
-      }
+      if(lseek(fd, 0, SEEK_SET) == (off_t)-1)
+        exit_on_error("lseek");
     } else {
-      if(lseek(fd, 6, SEEK_CUR) == (off_t)-1){
-        perror("lseek");
-        exit(EXIT_FAILURE);
-      }
+      if(lseek(fd, 6, SEEK_CUR) == (off_t)-1)
+        exit_on_error("lseek");
   
-      if(read(fd, &cen_size, 2) != 2){
-        perror("read");
-        exit(EXIT_FAILURE);
-      }
+      if(read(fd, &cen_size, 2) != 2)
+        exit_on_error("read");
 
 #ifdef WORDS_BIGENDIAN
       cen_size = L2BS(cen_size);
@@ -1986,15 +1955,12 @@ static int list_jar(int fd, const char **files, int file_num){
 
       /*   printf("%hu entries in central header\n", cen_size); */
 
-      if(lseek(fd, 4, SEEK_CUR) == (off_t)-1){
-        perror("lseek");
-        exit(EXIT_FAILURE);
-      }
+      if(lseek(fd, 4, SEEK_CUR) == (off_t)-1)
+        exit_on_error("lseek");
 
-      if(read(fd, &tmp, 4) != 4){
-        perror("read");
-        exit(EXIT_FAILURE);
-      }
+      if(read(fd, &tmp, 4) != 4)
+        exit_on_error("read");
+
 
 #ifdef WORDS_BIGENDIAN
       tmp = L2BI(tmp);
@@ -2004,10 +1970,8 @@ static int list_jar(int fd, const char **files, int file_num){
 
       /*   printf("Central header offset = %d\n", central_header_offset); */
 
-      if(lseek(fd, central_header_offset, SEEK_SET) != central_header_offset){
-        perror("lseek");
-        exit(EXIT_FAILURE);
-      }
+      if(lseek(fd, central_header_offset, SEEK_SET) != central_header_offset)
+        exit_on_error("lseek");
 
       /* Loop through the entries in the central header */
       for(i = 0; i < cen_size; i++){
@@ -2015,10 +1979,8 @@ static int list_jar(int fd, const char **files, int file_num){
 
         read_amt = read(fd, &cen_header, 46);
     
-        if(read_amt == -1 || read_amt != 46){
-          perror("read");
-          exit(EXIT_FAILURE);
-        }
+        if(read_amt == -1 || read_amt != 46)
+          exit_on_error("read");
 
         signature = UNPACK_UB4(cen_header, 0);
         if(signature != 0x02014b50){
@@ -2040,10 +2002,9 @@ static int list_jar(int fd, const char **files, int file_num){
           tdate = dos2unixtime(mdate);
           s_tm = localtime(&tdate);
           time_string_length = strftime(ascii_date, 30, "%a %b %d %H:%M:%S %Z %Y", s_tm);
-	  if (0 == time_string_length) {
-	    perror("strftime");
-	    exit(EXIT_FAILURE);
-	  }
+	  if (0 == time_string_length)
+	    exit_on_error("strftime");
+
           ascii_date[30] = '\0';
         }
 
@@ -2052,18 +2013,16 @@ static int list_jar(int fd, const char **files, int file_num){
             free(filename);
 
           filename = malloc(sizeof(ub1) * (fnlen + 1));
-          if (NULL == filename) {
-            perror("malloc");
-            exit(EXIT_FAILURE);
-          }
+          if (NULL == filename)
+            exit_on_error("malloc");
+
           filename_len = fnlen + 1;
         }
     
         read_amt = read(fd, filename, fnlen);
-        if(read_amt == -1 || read_amt != (ssize_t) fnlen){
-          perror("read");
-          exit(EXIT_FAILURE);
-        }
+        if(read_amt == -1 || read_amt != (ssize_t) fnlen)
+          exit_on_error("read");
+
         filename[fnlen] = (ub1) '\0';
     
         /* if the user specified a list of files on the command line,
@@ -2086,10 +2045,8 @@ static int list_jar(int fd, const char **files, int file_num){
       
         size = eflen + clen;
         if(size > 0){
-          if(lseek(fd, size, SEEK_CUR) == (off_t)-1){
-            perror("lseek");
-            exit(EXIT_FAILURE);
-          }
+          if(lseek(fd, size, SEEK_CUR) == (off_t)-1)
+            exit_on_error("lseek");
 	}
       }
     }
@@ -2254,10 +2211,8 @@ static void consume(pb_file *pbf, size_t amt){
 #endif
   
   buff = (ub1 *) malloc(RDSZ * sizeof(ub1));
-  if (NULL == buff) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
+  if (NULL == buff)
+    exit_on_error("malloc");
 
   if (seekable){
     if (amt <= pbf->buff_amt)
@@ -2265,10 +2220,9 @@ static void consume(pb_file *pbf, size_t amt){
     else {
       off_t location;
       location = lseek(pbf->fd, amt - pbf->buff_amt, SEEK_CUR);
-      if (location == -1) {
-        perror("lseek");
-        exit(EXIT_FAILURE);
-      }
+      if (location == -1)
+        exit_on_error("lseek");
+
       tc += pb_read(pbf, buff, pbf->buff_amt); /* clear pbf */
     }
   } else
@@ -2471,10 +2425,8 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
     }
 
   current_time = time(NULL);
-  if(current_time == (time_t)-1){
-    perror("time");
-    exit(EXIT_FAILURE);
-  }
+  if(current_time == (time_t)-1)
+    exit_on_error("time");
 
   mod_time = unix2dostime(&current_time);
   file_name_length = strlen(fname);
@@ -2502,10 +2454,8 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
       memset((file_header + LOC_CRC), '\0', 12);  /* clear crc/usize/csize */
   
   ze = (zipentry*)malloc(sizeof(zipentry));
-  if(ze == NULL){
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
+  if(ze == NULL)
+    exit_on_error("malloc");
   
   memset(ze, 0, sizeof(zipentry)); /* clear all the fields*/
   ze->filename = strdup(fname);
@@ -2541,18 +2491,13 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
   
   /* Write the local header */
   written = write(jfd, file_header, 30);
-  if ((written == -1) || ((size_t) written != 30)){
-    perror("write");
-    exit(EXIT_FAILURE);
-  }
+  if ((written == -1) || ((size_t) written != 30))
+    exit_on_error("write");
 
   /* write the file name to the zip file */
   written = write(jfd, fname, file_name_length);
-  if ((written == -1) || ((size_t) written != file_name_length)){
-    perror("write");
-    exit(EXIT_FAILURE);
-  }
-
+  if ((written == -1) || ((size_t) written != file_name_length))
+    exit_on_error("write");
 
   if(verbose){
     if (existing)
@@ -2583,10 +2528,8 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
       
   ze->crc = crc32(ze->crc, (unsigned char*)content, content_length);
   written = write(jfd, content, content_length);
-  if ((written == -1) || ((size_t) written != content_length)){
-    perror("write");
-    exit(EXIT_FAILURE);
-  }
+  if ((written == -1) || ((size_t) written != content_length))
+    exit_on_error("write");
       
   /* write out data descriptor */
   PACK_UB4(data_descriptor, 4, ze->crc);
@@ -2597,10 +2540,8 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
   if(seekable){
     offset = (ze->csize + strlen(ze->filename) + 16);
     
-    if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1){
-      perror("lseek");
-      exit(EXIT_FAILURE);
-    }
+    if(lseek(jfd, -offset, SEEK_CUR) == (off_t)-1)
+      exit_on_error("lseek");
 
     if(write(jfd, (data_descriptor + 4), 12) != 12){
       perror("write");
@@ -2609,10 +2550,8 @@ int add_array_to_jar(int jfd, char* content, size_t content_length, const char *
     
     offset -= 12;
 
-    if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1){
-      perror("lseek");
-      exit(EXIT_FAILURE);
-    }
+    if(lseek(jfd, offset, SEEK_CUR) == (off_t)-1)
+      exit_on_error("lseek");
   } 
   
   if (existing)
@@ -2658,10 +2597,8 @@ char* get_index_entry(char* fname)
     {
       char * result = strdup(fname);
       if (!result)
-	{
-	  perror("strdup");
-	  exit(EXIT_FAILURE);
-	}
+	  exit_on_error("strdup");
+
       *strrchr(result, '/') = '\0';
       return result;
     }
