@@ -1,5 +1,10 @@
 2008-10-12  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.am (AM_CPPFLAGS): Added generated headers from
+	gnulib. Fix for fastjar bug #20061.
+
+2008-10-12  Dalibor Topic  <robilad@kaffe.org>
+
 	* jartool.c (exit_on_error): New function.
 	(main, get_next_arg, looks_like_dir, make_manifest,
 	add_to_jar_with_dir, add_to_jar, add_file_to_jar, 
