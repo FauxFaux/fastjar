@@ -50,6 +50,8 @@ DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alloca.m4 \
+	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/codeset.m4 $(top_srcdir)/m4/eoverflow.m4 \
 	$(top_srcdir)/m4/extensions.m4 $(top_srcdir)/m4/float_h.m4 \
 	$(top_srcdir)/m4/getopt.m4 $(top_srcdir)/m4/glibc21.m4 \
@@ -396,7 +398,6 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
-fastjar_warn_cflags = @fastjar_warn_cflags@
 gl_LIBOBJS = @gl_LIBOBJS@
 gl_LTLIBOBJS = @gl_LTLIBOBJS@
 gltests_LIBOBJS = @gltests_LIBOBJS@

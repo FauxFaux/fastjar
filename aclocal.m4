@@ -896,6 +896,8 @@ AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
 m4_include([m4/alloca.m4])
+m4_include([m4/ax_cflags_gcc_option.m4])
+m4_include([m4/ax_cflags_warn_all.m4])
 m4_include([m4/codeset.m4])
 m4_include([m4/eoverflow.m4])
 m4_include([m4/extensions.m4])

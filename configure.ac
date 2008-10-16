@@ -20,16 +20,18 @@ AC_SUBST(LIBTOOL_DEPS)
 
 AM_MAINTAINER_MODE
 
+AX_CFLAGS_WARN_ALL
+AX_CFLAGS_GCC_OPTION([-pedantic])
+AX_CFLAGS_GCC_OPTION([-W])
+AX_CFLAGS_GCC_OPTION([-Wextra])
+AX_CFLAGS_GCC_OPTION([-Wmissing-prototypes])
+AX_CFLAGS_GCC_OPTION([-Wstrict-prototypes])
+AX_CFLAGS_GCC_OPTION([-Wwrite-strings])
+
 AC_PATH_PROG([FLAWFINDER],[flawfinder])
 AC_PATH_PROG([PSCAN],[pscan])
 AC_PATH_PROG([RATS],[rats])
 AC_PATH_PROG([SPLINT],[splint])
-
-dnl Add warning flags if we are using gcc.
-if test "$GCC" = yes; then
-  fastjar_warn_cflags='-W -Wall -pedantic -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings'
-fi
-AC_SUBST(fastjar_warn_cflags)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT

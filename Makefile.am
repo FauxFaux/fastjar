@@ -4,7 +4,6 @@ SUBDIRS = lib
 ACLOCAL_AMFLAGS = -I m4
 
 AM_CPPFLAGS = -I. -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib
-AM_CFLAGS = @fastjar_warn_cflags@
 AM_LDFLAGS = -no-undefined
 LDADD = lib/libgnu.la libfastjar_convenience.la $(ZLIBS)
 
