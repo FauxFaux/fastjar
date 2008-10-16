@@ -1,5 +1,10 @@
 2008-10-16  Dalibor Topic  <robilad@kaffe.org>
 
+	* Makefile.am (pscan, flawfinder, rats, splint): Fixed to work when
+	builddir != srcdir.
+
+2008-10-16  Dalibor Topic  <robilad@kaffe.org>
+
 	* m4/ax_cflags_gcc_option.m4, m4/ax_cflags_warn_all.m4: 
 	Added new files from autoconf-archive.
 	* Makefile.am (AM_CFLAGS): Removed.

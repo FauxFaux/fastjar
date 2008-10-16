@@ -59,17 +59,22 @@ libtool: $(LIBTOOL_DEPS)
 
 # Support for static checkers
 pscan:
-	$(PSCAN) $(SOURCES)
+	for i in $(libfastjar_convenience_la_SOURCES) \
+		$(fastjar_SOURCES) $(grepjar_SOURCES); do \
+		$(PSCAN) $(top_srcdir)/$$i ; \
+	done
 
 flawfinder:
-	$(FLAWFINDER) $(SOURCES)
+	$(FLAWFINDER) $(top_srcdir)
 
 rats:
-	$(RATS) $(SOURCES)
+	$(RATS) $(top_srcdir)
 
-SPLINT_FLAGS=-I . -I $(srcdir)/lib -DHAVE_CONFIG_H +posixlib +weak
+SPLINT_FLAGS=-I . -I $(srcdir)/lib -I $(srcdir) -DHAVE_CONFIG_H -DPRIx32= -warnposix +weak
 splint:
-	$(SPLINT) $(SPLINT_FLAGS) $(libfastjar_convenience_la_SOURCES)
-	$(SPLINT) $(SPLINT_FLAGS) $(fastjar_SOURCES)
-	$(SPLINT) $(SPLINT_FLAGS) $(grepjar_SOURCES)
+	for i in $(libfastjar_convenience_la_SOURCES) \
+		$(fastjar_SOURCES) $(grepjar_SOURCES); do \
+		$(SPLINT) $(SPLINT_FLAGS) $(top_srcdir)/$$i ; \
+	done
+
 
