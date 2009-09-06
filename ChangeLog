@@ -1,3 +1,6 @@
+2009-09-06  Arthur Loiret <arthur.loiret@gmail.com>
+	* jartool.c (make_manifest): Fix segfault.
+
 2008-10-16  Dalibor Topic  <robilad@kaffe.org>
 
 	* Makefile.am (pscan, flawfinder, rats, splint): Fixed to work when
