@@ -1,5 +1,12 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if the compiler is building for multiple architectures of Apple
+   platforms at once. */
+#undef AA_APPLE_UNIVERSAL_BUILD
+
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* Define to the number of bits in type 'ptrdiff_t'. */
 #undef BITSIZEOF_PTRDIFF_T
 
@@ -23,9 +30,6 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
-/* Define as good substitute value for EOVERFLOW. */
-#undef EOVERFLOW
-
 /* Define to indicate the 'malloc' module. */
 #undef GNULIB_MALLOC_GNU
 
@@ -36,6 +40,9 @@
 /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
    */
 #undef HAVE_ALLOCA_H
+
+/* Define to 1 if you have the `btowc' function. */
+#undef HAVE_BTOWC
 
 /* Define to 1 if you have the declaration of `getc_unlocked', and to 0 if you
    don't. */
@@ -68,6 +75,9 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you have the <errno.h> header file. */
+#undef HAVE_ERRNO_H
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -82,9 +92,6 @@
 
 /* Define to 1 if you have the `getopt_long_only' function. */
 #undef HAVE_GETOPT_LONG_ONLY
-
-/* Define if your compiler supports the #include_next directive. */
-#undef HAVE_INCLUDE_NEXT
 
 /* Define if you have the 'intmax_t' type in <stdint.h> or <inttypes.h>. */
 #undef HAVE_INTMAX_T
@@ -129,6 +136,9 @@
 
 /* Define to 1 if you have the `mbrtowc' function. */
 #undef HAVE_MBRTOWC
+
+/* Define to 1 if you have the `mbsinit' function. */
+#undef HAVE_MBSINIT
 
 /* Define to 1 if <wchar.h> declares mbstate_t. */
 #undef HAVE_MBSTATE_T
@@ -175,6 +185,9 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if the system has the type `struct random_data'. */
+#undef HAVE_STRUCT_RANDOM_DATA
 
 /* Define to 1 if you have the <sys/bitypes.h> header file. */
 #undef HAVE_SYS_BITYPES_H
@@ -238,6 +251,15 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
+
+/* Define if the mbrtowc function has the NULL string argument bug. */
+#undef MBRTOWC_NULL_ARG_BUG
+
+/* Define if the mbrtowc function does not return 0 for a NUL character. */
+#undef MBRTOWC_NUL_RETVAL_BUG
+
+/* Define if the mbrtowc function returns a wrong return value. */
+#undef MBRTOWC_RETVAL_BUG
 
 /* Define if host mkdir takes a single argument. */
 #undef MKDIR_TAKES_ONE_ARG
@@ -304,13 +326,16 @@
    'wint_t'. */
 #undef WINT_T_SUFFIX
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#undef WORDS_BIGENDIAN
-
-/* Enable GNU extensions on systems that have them.  */
-#ifndef _GNU_SOURCE
-# undef _GNU_SOURCE
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
 #endif
 
 /* Define to 1 if on MINIX. */
@@ -327,14 +352,17 @@
 #undef _REGEX_LARGE_OFFSETS
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT32_T
 
 /* Define for Solaris 2.5.1 so the uint8_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT8_T
+
+/* Define to 500 only on HP-UX. */
+#undef _XOPEN_SOURCE
 
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
@@ -469,3 +497,13 @@
 /* Define to the type of an unsigned integer type of width exactly 8 bits if
    such a type exists and the standard includes do not define it. */
 #undef uint8_t
+
+/* Define as a marker that can be attached to function parameter declarations
+   for parameters that are not used.  This helps to reduce warnings, such as
+   from GCC -Wunused-parameter.  */
+#if __GNUC__ >= 3 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
+# define _UNUSED_PARAMETER_ __attribute__ ((__unused__))
+#else
+# define _UNUSED_PARAMETER_
+#endif
+

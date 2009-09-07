@@ -84,7 +84,7 @@
 # define SIZE_MAX ((size_t) -1)
 #endif
 
-#if (defined MB_CUR_MAX && HAVE_LOCALE_H && HAVE_WCTYPE_H && HAVE_ISWCTYPE && HAVE_WCRTOMB && HAVE_MBRTOWC && HAVE_WCSCOLL) || _LIBC
+#if (defined MB_CUR_MAX && HAVE_LOCALE_H && HAVE_WCTYPE_H && HAVE_ISWCTYPE && HAVE_WCSCOLL) || _LIBC
 # define RE_ENABLE_I18N
 #endif
 
@@ -161,9 +161,9 @@ typedef unsigned long int bitset_word_t;
    instead, deduce it directly from BITSET_WORD_MAX.  Avoid
    greater-than-32-bit integers and unconditional shifts by more than
    31 bits, as they're not portable.  */
-#if BITSET_WORD_MAX == 0xffffffff
+#if BITSET_WORD_MAX == 0xffffffffUL
 # define BITSET_WORD_BITS 32
-#elif BITSET_WORD_MAX >> 31 >> 5 == 1
+#elif BITSET_WORD_MAX >> 31 >> 4 == 1
 # define BITSET_WORD_BITS 36
 #elif BITSET_WORD_MAX >> 31 >> 16 == 1
 # define BITSET_WORD_BITS 48

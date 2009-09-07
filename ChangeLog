@@ -1,3 +1,8 @@
+2009-09-06  Dalibor Topic  <robilad@kaffe.org>
+
+	* configure.ac, fastjar.texi, README, NEWS: Bumped version up to 0.98.
+	* Regenerated generated autotools and gnulib files.
+
 2009-09-06  Arthur Loiret <arthur.loiret@gmail.com>
 	* jartool.c (make_manifest): Fix segfault.
 

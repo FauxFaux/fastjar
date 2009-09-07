@@ -7,3 +7,12 @@ malloc.m4
 mbstate_t.m4
 printf.m4
 stdlib_h.m4
+btowc.m4
+errno_h.m4
+locale-fr.m4
+locale-ja.m4
+locale-zh.m4
+mbrtowc.m4
+mbsinit.m4
+multiarch.m4
+wcrtomb.m4
