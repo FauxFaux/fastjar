@@ -1,3 +1,7 @@
+2010-06-10  Chris Ball  <cjb@laptop.org>
+
+	* jartool.c (add_file_to_jar): Fix write return value check.
+
 2010-03-01  Richard Guenther  <rguenther@suse.de>
 
 	* jartool.c (read_entries): Properly zero-terminate filename.
