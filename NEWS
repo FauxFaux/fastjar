@@ -1,3 +1,12 @@
+New in release 0.99
+-------------------
+
+* Fix for directory traversal security issue CVE 2010-0831.
+
+* Fix for memory corruption issue during libjava bootstrap.
+
+* Fix for adding one-character filenames to an archive.
+
 New in release 0.98
 -------------------
 

@@ -1,3 +1,4 @@
 autom4te.cache
 *.info
 link-warning.h
+arg-nonnull.h

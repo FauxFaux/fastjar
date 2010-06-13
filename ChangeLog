@@ -1,3 +1,8 @@
+2009-09-06  Dalibor Topic  <robilad@kaffe.org>
+
+	* configure.ac, fastjar.texi, README, NEWS: Bumped version up to 0.99.
+	* Regenerated generated autotools and gnulib files.
+
 2010-06-10  Jakub Jelinek  <jakub@redhat.com>
 	    Dan Rosenberg  <dan.j.rosenberg@gmail.com>
 
